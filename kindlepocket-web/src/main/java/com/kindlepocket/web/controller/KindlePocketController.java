@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,6 @@ import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 
 @RestController
-@SpringBootApplication
 @RequestMapping("/Weixin")
 public class KindlePocketController {
 
