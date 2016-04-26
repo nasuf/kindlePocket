@@ -8,7 +8,7 @@ public class SearchResult {
     private Long total;
 
     // search data
-    private List<?> rows;
+    private List<Item> rows;
 
     public Long getTotal() {
         return total;
@@ -18,12 +18,17 @@ public class SearchResult {
         this.total = total;
     }
 
-    public List<?> getRows() {
+    public List<Item> getRows() {
         return rows;
     }
 
-    public void setRows(List<?> rows) {
+    public void setRows(List<Item> rows) {
         this.rows = rows;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchResult [total=" + total + ", rows=" + rows.toString() + "]";
     }
 
 }

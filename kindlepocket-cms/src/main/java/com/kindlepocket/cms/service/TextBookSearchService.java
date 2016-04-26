@@ -1,5 +1,6 @@
 package com.kindlepocket.cms.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.junit.Test;
@@ -18,19 +20,11 @@ import com.kindlepocket.cms.pojo.SearchResult;
 @Service
 public class TextBookSearchService {
 
-    private HttpSolrServer httpSolrServer = new HttpSolrServer("http://localhost:8983/kindlePocket");
-
-    public void addInfos(List<Item> items) throws Exception {
-        // add data to solr server
-        this.httpSolrServer.addBeans(items);
-        this.httpSolrServer.commit();
-    }
-
     @Test
     public void testAddData() {
         HttpSolrServer solrServer = new HttpSolrServer("http://localhost:8983/kindlePocket");
         List<Item> items = new ArrayList<Item>();
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 1; i <= 200; i++) {
             Item item = new Item();
             item.setDownloadTimes(new Date().getTime());
             item.setAuthor("nasuf_" + i);
@@ -50,9 +44,28 @@ public class TextBookSearchService {
         }
     }
 
+    private HttpSolrServer httpSolrServer = new HttpSolrServer("http://localhost:8983/kindlePocket");
+
+    public void addInfos(List<Item> items) throws Exception {
+        // add data to solr server
+        this.httpSolrServer.addBeans(items);
+        this.httpSolrServer.commit();
+    }
+
     public void deleteInfos(List<String> ids) throws Exception {
         this.httpSolrServer.deleteById(ids);
         this.httpSolrServer.commit();
+    }
+
+    @Test
+    public void testDeleteInfos() throws SolrServerException, IOException {
+        HttpSolrServer solrServer = new HttpSolrServer("http://localhost:8983/kindlePocket");
+        ArrayList<String> arrayList = new ArrayList<String>();
+        for (int i = 0; i <= 100; i++) {
+            arrayList.add(i + "");
+        }
+        solrServer.deleteById(arrayList);
+        solrServer.commit();
     }
 
     public SearchResult search(String keyWords, Integer page, Integer rows) throws Exception {
@@ -95,6 +108,7 @@ public class TextBookSearchService {
                     if (!highlighting.getKey().equals(item.getId().toString())) {
                         continue;
                     }
+                    // item.setId((long) 1);
                     item.setTitle(StringUtils.join(highlighting.getValue().get("title"), ""));
                     break;
                 }
@@ -106,5 +120,4 @@ public class TextBookSearchService {
         searchResult.setTotal(queryResponse.getResults().getNumFound());
         return searchResult;
     }
-
 }

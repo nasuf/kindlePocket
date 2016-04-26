@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -18,18 +19,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 
+@RestController
 @SpringBootApplication
 @RequestMapping("/Weixin")
 public class KindlePocketController {
 
     private static final long serialVersionUID = 1L;
 
-    private TextBookInfoSearchService searchService = new TextBookInfoSearchService();
+    @Autowired
+    private TextBookInfoSearchService searchService;// = new TextBookInfoSearchService();
 
     private static Logger logger = Logger.getLogger(KindlePocketController.class);
 
@@ -132,7 +136,7 @@ public class KindlePocketController {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(KindlePocketController.class, args);
     }
 

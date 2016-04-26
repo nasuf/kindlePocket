@@ -33,10 +33,10 @@ import com.kindlepocket.web.pojo.HttpResult;
 @Service
 public class ApiService {
 
-    @Autowired(required = false)
+    @Autowired
     private CloseableHttpClient httpClient;
 
-    @Autowired(required = false)
+    @Autowired
     private RequestConfig requestConfig;
 
     /**
