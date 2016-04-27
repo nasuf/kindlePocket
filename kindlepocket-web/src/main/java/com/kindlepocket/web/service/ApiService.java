@@ -22,7 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.kindlepocket.web.pojo.HttpResult;
 
@@ -30,7 +30,7 @@ import com.kindlepocket.web.pojo.HttpResult;
  * 负责和外部接口对接，发起http请求
  * 
  */
-@Service
+@Component
 public class ApiService {
 
     @Autowired

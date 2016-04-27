@@ -11,20 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 
-@RestController
+@Component
 @RequestMapping("/Weixin")
 public class KindlePocketController {
 
@@ -134,8 +133,8 @@ public class KindlePocketController {
 
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(KindlePocketController.class, args);
-    }
+    /*
+     * public static void main(String[] args) { SpringApplication.run(KindlePocketController.class, args); }
+     */
 
 }
