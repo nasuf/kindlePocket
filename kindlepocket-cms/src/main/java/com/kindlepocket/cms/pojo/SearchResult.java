@@ -28,7 +28,7 @@ public class SearchResult {
 
     @Override
     public String toString() {
-        return "SearchResult [total=" + total + ", rows=" + rows.toString() + "]";
+        return "SearchResult [total=" + total + ", rows=" + rows + "]";
     }
 
 }

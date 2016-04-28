@@ -1,27 +1,32 @@
 package com.kindlepocket.cms.controller;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.SearchResult;
 import com.kindlepocket.cms.service.TextBookSearchService;
 
 @Controller
-@EnableAutoConfiguration
 @RequestMapping("/search")
 public class TextBookSearchController {
 
-    private TextBookSearchService searchService = new TextBookSearchService();
+    @Autowired
+    private TextBookSearchService searchService;// = new TextBookSearchService();
 
     private static Logger logger = Logger.getLogger(TextBookSearchController.class);
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     @RequestMapping("/title")
-    public ModelAndView searchByKeyWords(@RequestParam("title") String title) {
+    public ResponseEntity<String> searchByKeyWords(@RequestParam("title") String title) {
 
         if (logger.isInfoEnabled()) {
             logger.info("***search key words of title:" + title);
@@ -34,10 +39,11 @@ public class TextBookSearchController {
             if (logger.isInfoEnabled()) {
                 logger.info("search result:" + result.toString());
             }
+            return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(result));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mv;
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     public static void main(String[] args) {

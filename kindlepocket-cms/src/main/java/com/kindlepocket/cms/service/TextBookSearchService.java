@@ -12,12 +12,12 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.junit.Test;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.kindlepocket.cms.pojo.Item;
 import com.kindlepocket.cms.pojo.SearchResult;
 
-@Service
+@Component
 public class TextBookSearchService {
 
     @Test
