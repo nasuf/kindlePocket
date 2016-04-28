@@ -104,6 +104,7 @@ public class KindlePocketController {
                 default:
                     // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
                     List<String> titleList = this.searchService.search(content);
+                    logger.info("找到" + titleList.size() + "本书籍");
                     responseMessage = MessageUtil.initPicTextMessage(toUserName, fromUserName, titleList);
                     break;
                 }

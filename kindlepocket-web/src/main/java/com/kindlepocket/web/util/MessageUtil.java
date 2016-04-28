@@ -157,10 +157,19 @@ public class MessageUtil {
         List<PicText> picTextList = new ArrayList<PicText>();
         PicTextMessage picTextMessage = new PicTextMessage();
 
-        for (String title : titles) {
+        if (titles.size() > 0) {
+            for (String title : titles) {
+                PicText picText = new PicText();
+                picText.setTitle(title);
+                picText.setDescription("kindle text books sharing platform");
+                picText.setPicUrl("http://33051bbe.nat123.net/Weixin/WEB-INF/imgs/welcome.jpg");
+                picText.setUrl("www.nasuf.cn");
+                picTextList.add(picText);
+            }
+        } else {
             PicText picText = new PicText();
-            picText.setTitle(title);
-            picText.setDescription("kindle text books sharing platform");
+            picText.setTitle("Sorry, the textBook you searched is not instore yet");
+            picText.setDescription("click and upload it :)");
             picText.setPicUrl("http://33051bbe.nat123.net/Weixin/WEB-INF/imgs/welcome.jpg");
             picText.setUrl("www.nasuf.cn");
             picTextList.add(picText);
