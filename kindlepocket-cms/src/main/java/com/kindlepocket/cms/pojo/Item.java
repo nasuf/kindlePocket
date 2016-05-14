@@ -1,13 +1,17 @@
 package com.kindlepocket.cms.pojo;
 
 import org.apache.solr.client.solrj.beans.Field;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // ignore unknown fields
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Document
 public class Item {
 
+    @Id
     @Field("id")
     private Long id;
 
