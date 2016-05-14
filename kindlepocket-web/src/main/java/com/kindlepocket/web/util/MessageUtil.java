@@ -163,7 +163,9 @@ public class MessageUtil {
                 picText.setTitle(title);
                 picText.setDescription("kindle text books sharing platform");
                 picText.setPicUrl("http://33051bbe.nat123.net/Weixin/WEB-INF/imgs/welcome.jpg");
-                picText.setUrl("www.nasuf.cn");
+                picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
+                picText.setUrl(picText.getUrl().replace("\"", ""));
+                System.out.println("url:" + picText.getUrl());
                 picTextList.add(picText);
             }
         } else {
