@@ -13,15 +13,16 @@ import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 
-@Component
-@RestController
+@Controller
 @RequestMapping("/Weixin")
 public class KindlePocketController {
 
@@ -32,8 +33,13 @@ public class KindlePocketController {
 
     private static Logger logger = Logger.getLogger(KindlePocketController.class);
 
+    @RequestMapping("/homepage")
+    public String toIndex() {
+        System.out.println("redirecting to homepage...");
+        return "index";
+    }
+
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
-    @ResponseBody
     public void validate(HttpServletRequest request, HttpServletResponse response,
             @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
             @RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
@@ -61,7 +67,6 @@ public class KindlePocketController {
     }
 
     @RequestMapping(value = "/wx.do", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity processMessage(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 

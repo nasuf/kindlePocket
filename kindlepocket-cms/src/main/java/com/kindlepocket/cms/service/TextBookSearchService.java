@@ -24,14 +24,14 @@ public class TextBookSearchService {
     public void testAddData() {
         HttpSolrServer solrServer = new HttpSolrServer("http://localhost:8983/kindlePocket");
         List<Item> items = new ArrayList<Item>();
-        for (int i = 1; i <= 200; i++) {
+        for (int i = 400; i <= 450; i++) {
             Item item = new Item();
             item.setDownloadTimes(new Date().getTime());
             item.setAuthor("nasuf_" + i);
             item.setId((long) i);
             item.setKindleMailTimes((long) i);
             item.setMailTimes((long) i);
-            item.setTitle("nasuf's No." + i);
+            item.setTitle("ephemeris_No." + i);
             item.setUploadDate(new Date().getTime());
             item.setUploaderName("nasuf_" + i);
             items.add(item);
@@ -81,6 +81,7 @@ public class TextBookSearchService {
         // whether need highlight
         boolean isHighlighting = !StringUtils.equals("*", keyWords) && StringUtils.isNotEmpty(keyWords);
 
+        isHighlighting = false;
         if (isHighlighting) {
             // highlight config
             // enable highlight
