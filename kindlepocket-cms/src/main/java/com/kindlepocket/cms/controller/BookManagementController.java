@@ -73,7 +73,7 @@ public class BookManagementController {
         this.gridFSService.saveFiles(title);
         Long endTime = new Date().getTime();
         if (logger.isInfoEnabled()) {
-            logger.info("\n book " + title + "has been saved successfully! time cost "
+            logger.info("\n book " + title + " has been saved successfully! time cost "
                     + (endTime - startTime) / 1000 + " seconds");
         }
 
