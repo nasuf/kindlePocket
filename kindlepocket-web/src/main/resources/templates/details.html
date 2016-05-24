@@ -18,61 +18,25 @@
 <script th:src="@{/js/flat-ui.min.js}"></script>
 <script th:src="@{/js/application.js}"></script>
 
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
-<!--[if lt IE 9]>
-      <script src="../../dist/js/vendor/html5shiv.js"></script>
-      <script src="../../dist/js/vendor/respond.min.js"></script>
-    <![endif]-->
-
-<!-- <script>
-	var states = new Bloodhound({
-		datumTokenizer : function(d) {
-			return Bloodhound.tokenizers.whitespace(d.word);
-		},
-		queryTokenizer : Bloodhound.tokenizers.whitespace,
-		limit : 4,
-		local : [ {
-			word : "Alabama"
-		}, {
-			word : "Alaska"
-		}, {
-			word : "Arizona"
-		}, {
-			word : "Arkansas"
-		}, {
-			word : "California"
-		}, {
-			word : "Colorado"
-		} ]
-	});
-
-	states.initialize();
-
-	/* $('input.tagsinput').tagsinput();
-
-	$('input.tagsinput-typeahead').tagsinput('input').typeahead(null, {
-		name : 'states',
-		displayKey : 'word',
-		source : states.ttAdapter()
-	}); */
-
-	$('input.typeahead-only').typeahead(null, {
-		name : 'states',
-		displayKey : 'word',
-		source : states.ttAdapter()
-	});
-</script>
- -->
 </head>
 <body>
 	<style>
 body {
 	min-height: 2000px;
 	padding-top: 70px;
+	background-color: gainsboro;
 }
 
 .container {
 	margin-top: 20px;
+}
+
+#sendToKindleBtn {
+	margin-left: 80px;
+}
+
+#sendToOtherEmailsBtn {
+	margin-left:10px;
 }
 </style>
 
@@ -106,23 +70,68 @@ body {
 		</div>
 	</nav>
 
-	<div class="container">
 
-		<!-- Main component for a primary marketing message or call to action -->
-		<div class="jumbotron">
-			<h1>Kindle Your Kindle</h1>
-			<!-- <h5 class="demo-panel-title">type keywords of TITLE or AUTHOR</h5> -->
-			<div class="form-group">
-				<input class="form-control typeahead-only input-lg" type="text"
-					id="typeahead-demo-01" placeholder="Search"/>
+	<div class="container">
+		<h4>Search Results</h4>
+		<div class="row">
+			<div class="col-sm-6 col-md-4">
+				<div class="todo">
+					<div class="todo-search">
+						<input class="todo-search-field" type="search" value=""
+							placeholder="Search" />
+					</div>
+					<ul>
+						<li class="todo-done">
+							<div class="todo-icon fui-user"></div>
+							<div class="todo-content">
+								<h4 class="todo-name">
+									Meet <strong>Adrian</strong> at <strong>6pm</strong>
+								</h4>
+								Times Square
+							</div>
+						</li>
+						<li>
+							<div class="todo-icon fui-list"></div>
+							<div class="todo-content">
+								<h4 class="todo-name">
+									Chat with <strong>V.Kudinov</strong>
+								</h4>
+								Skype conference an 9 am
+							</div>
+						</li>
+						<li>
+							<div class="todo-icon fui-eye"></div>
+							<div class="todo-content">
+								<h4 class="todo-name">
+									Watch <strong>Iron Man</strong>
+								</h4>
+								1998 Broadway
+							</div>
+						</li>
+						<li>
+							<div class="todo-icon fui-time"></div>
+							<div class="todo-content">
+								<h4 class="todo-name">
+									Fix bug on a <strong>Website</strong>
+								</h4>
+								As soon as possible
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- /.todo -->
 			</div>
-			<p>
-				<a class="btn btn-lg btn-primary" href="http://www.nasuf.cn"
-					style="margin-top: 10px" role="button">View More &raquo;</a>
-			</p>
+			<!-- /.col-md-4 -->
 		</div>
+		<!-- /.row -->
+
+		<button id="sendToKindleBtn" type="button"
+			class="btn btn-primary btn-sm">Send to Kindle</button>
+		<button id="sendToOtherEmailsBtn" type="button"
+			class="btn btn-primary btn-sm">Send to Other Emails</button>
 
 	</div>
+	<!-- /.container -->
 	<!-- /container -->
 
 

@@ -29,9 +29,12 @@ public class GridFSService {
         GridFSInputFile gfsInput;
         try {
             gfsInput = new GridFS(db, "fs").createFile(uploadedFile);
-            // get extension name
+            // set gridFs chunckSize as 10M
+            gfsInput.setChunkSize(1024 * 1024 * 10L);
+            // set extension name
             gfsInput.setContentType("txt");
-            gfsInput.setFilename(uploadedFile.getName());// 保存到数据库的文件名为qq123456789logo
+            // set file name saved in gridfs
+            gfsInput.setFilename(uploadedFile.getName());
             gfsInput.save();
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,7 +46,8 @@ public class GridFSService {
     public void readFiles() {
         DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(Item.class)).getDB();
 
-        GridFSDBFile gfsFile = new GridFS(db, "fs").findOne("阿特拉斯耸耸肩.txt");// 查找文件名qq123456789logo输出保存
+        // query file saved in gridfs
+        GridFSDBFile gfsFile = new GridFS(db, "fs").findOne("阿特拉斯耸耸肩.txt");
         try {
             File uploadedFile = new File(gfsFile.getFilename());
             if (!uploadedFile.exists()) {

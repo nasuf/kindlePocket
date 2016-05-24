@@ -35,8 +35,18 @@ public class KindlePocketController {
 
     @RequestMapping("/homepage")
     public String toIndex() {
-        System.out.println("redirecting to homepage...");
+        if (logger.isInfoEnabled()) {
+            logger.info("redirecting to homePage...");
+        }
         return "index";
+    }
+
+    @RequestMapping("/details")
+    public String toSearchDetailPage() {
+        if (logger.isInfoEnabled()) {
+            logger.info("redirecting to searching details");
+        }
+        return "details";
     }
 
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
