@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.Item;
 import com.kindlepocket.cms.service.BookRepository;
 import com.kindlepocket.cms.service.GridFSService;
@@ -33,6 +35,8 @@ public class BookManagementController {
     @Autowired
     private GridFSService gridFSService;
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     @RequestMapping("/insert")
     public void testInsert() {
         System.out.println("inserting............");
@@ -52,15 +56,16 @@ public class BookManagementController {
     public ResponseEntity<String> testFind(@RequestParam(value = "title") String title) {
         title = title.toString();
         System.out.println("title:" + title);
-        Item book = this.bookRepository.findByTitle(title);
-        System.out.println("book:" + book);
-        this.mailService.sendMail(book.getTitle());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Email Send Successfully!");
-        // System.out.println(book.getAuthor());
-        // List<Item> books = this.bookRepository.findAll();
-        // for (Item item : books) {
-        // System.out.println(item);
-        // }
+        List<Item> books = this.bookRepository.findByTitleLike(title);
+        System.out.println("book:" + books);
+        // this.mailService.sendMail(book.getTitle());
+        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Email Send Successfully!");
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @RequestMapping(value = "/saveAll", method = RequestMethod.GET)

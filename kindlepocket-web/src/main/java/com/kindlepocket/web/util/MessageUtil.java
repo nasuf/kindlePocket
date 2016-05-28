@@ -158,9 +158,9 @@ public class MessageUtil {
         PicTextMessage picTextMessage = new PicTextMessage();
 
         if (titles.size() > 0) {
-            for (String title : titles) {
+            for (int i = 0; i < 5; i++) {
                 PicText picText = new PicText();
-                picText.setTitle(title);
+                picText.setTitle(titles.get(i));
                 picText.setDescription("kindle text books sharing platform");
                 picText.setPicUrl("http://33051bbe.nat123.net/imgs/welcome.jpg");
                 // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
@@ -169,6 +169,15 @@ public class MessageUtil {
                 System.out.println("url:" + picText.getUrl());
                 picTextList.add(picText);
             }
+            PicText picText = new PicText();
+            picText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
+            picText.setDescription("kindle text books sharing platform");
+            picText.setPicUrl("http://33051bbe.nat123.net/imgs/welcome.jpg");
+            // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
+            // picText.setUrl(picText.getUrl().replace("\"", ""));
+            picText.setUrl("http://33051bbe.nat123.net/Weixin/details");
+            System.out.println("url:" + picText.getUrl());
+            picTextList.add(picText);
         } else {
             PicText picText = new PicText();
             picText.setTitle("Sorry, the textBook you searched is not instore yet");

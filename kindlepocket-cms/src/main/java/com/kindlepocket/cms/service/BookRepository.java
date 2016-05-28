@@ -1,5 +1,7 @@
 package com.kindlepocket.cms.service;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +12,7 @@ public interface BookRepository extends MongoRepository<Item, String> {
 
     Item findByAuthor(String author);
 
-    Item findByTitle(String title);
+    List<Item> findByTitleLike(String title);
 
     /*
      * @Query("{'age':?0") List<Item> withQueryFindByAge(Integer age);
