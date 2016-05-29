@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kindlepocket.cms.pojo.Item;
 import com.kindlepocket.cms.service.BookRepository;
+import com.kindlepocket.cms.service.GridFSService;
 import com.kindlepocket.cms.service.MailService;
 
 @RestController
 @RequestMapping("/bookManage")
 public class BookManagementController {
 
+    private static Logger logger = Logger.getLogger(BookManagementController.class);
+
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private GridFSService gridFSService;
 
     @RequestMapping("/insert")
     public void testInsert() {
@@ -56,10 +63,31 @@ public class BookManagementController {
         // }
     }
 
+    @RequestMapping(value = "/saveAll", method = RequestMethod.GET)
+    public void saveBooks(@RequestParam(value = "title") String title) {
+
+        if (logger.isInfoEnabled()) {
+            logger.info("\n saving book named " + title);
+        }
+        Long startTime = new Date().getTime();
+        this.gridFSService.saveFiles(title);
+        Long endTime = new Date().getTime();
+        if (logger.isInfoEnabled()) {
+            logger.info("\n book " + title + " has been saved successfully! time cost "
+                    + (endTime - startTime) / 1000 + " seconds");
+        }
+
+    }
+
     @RequestMapping("/revome")
     public void testRemove() {
         System.out.println("removing...");
         this.bookRepository.deleteAll();
         System.out.println("removment finished!");
+    }
+
+    @RequestMapping("/preview")
+    public void previewBook() {
+        this.gridFSService.readFiles();
     }
 }

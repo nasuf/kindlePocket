@@ -16,6 +16,5 @@
 <title>Insert title here</title>
 </head>
 <body>
-	12
 </body>
 </html>
