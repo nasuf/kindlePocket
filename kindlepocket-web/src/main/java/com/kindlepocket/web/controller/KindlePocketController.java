@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,10 +43,27 @@ public class KindlePocketController {
     }
 
     @RequestMapping("/details")
-    public String toSearchDetailPage() {
+    public String toSearchDetailPage(HttpServletRequest request, HttpServletResponse response) {
+
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                String cookieName = cookie.getName();
+                String cookieValue = cookie.getValue();
+                System.out.println("cookieName: " + cookieName + " cookieValue: " + cookieValue);
+            }
+        } else {
+            System.out.println("no cookie received");
+        }
+
         if (logger.isInfoEnabled()) {
             logger.info("redirecting to searching details");
         }
+
+        Cookie cookie = new Cookie("kindlePocketCookieKey", "kindlePocketCookieValue");
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
         return "details";
     }
 
