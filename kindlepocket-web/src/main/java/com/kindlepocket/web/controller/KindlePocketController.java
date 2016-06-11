@@ -71,7 +71,7 @@ public class KindlePocketController {
     public void validate(HttpServletRequest request, HttpServletResponse response,
             @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
             @RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
-
+        //http://33051bbe.nat123.net/Weixin/wx.do
         if (logger.isInfoEnabled()) {
             logger.info("\n***The message got: signature:" + signature + " timestamp:" + timestamp
                     + " nonce:" + nonce + " echostr:" + echostr);
