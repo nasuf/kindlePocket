@@ -67,6 +67,12 @@ public class KindlePocketController {
         return "details";
     }
 
+    @RequestMapping("/binding")
+    public String toBindingPage(){
+        logger.info("redirecting to binding page");
+        return "binding";
+    }
+
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
     public void validate(HttpServletRequest request, HttpServletResponse response,
             @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
@@ -123,20 +129,20 @@ public class KindlePocketController {
 
                 switch (content) {
                 case "1":
-                    responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.firstMenu());
+                    responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName,"kindlePocket","kindle text books sharing platform","/imgs/welcome.jpg","/Weixin/binding");
                     break;
                 case "2":
-                    responseMessage = MessageUtil
-                            .initText(toUserName, fromUserName, MessageUtil.secondMenu());
+                    responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName,"绑定步骤","点击绑定kindle","/imgs/welcome.jpg","/Weixin/binding");
                     break;
-                case "3":
-                    responseMessage = MessageUtil.initPicTextMessage(toUserName, fromUserName);
+                case "menu":
+                    responseMessage = MessageUtil.initText(toUserName, fromUserName,  MessageUtil.menuText());
+
                     break;
                 default:
                     // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
                     List<String> titleList = this.searchService.search(content);
                     logger.info("找到" + titleList.size() + "本书籍");
-                    responseMessage = MessageUtil.initPicTextMessage(toUserName, fromUserName, titleList);
+                    responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList);
                     break;
                 }
 
