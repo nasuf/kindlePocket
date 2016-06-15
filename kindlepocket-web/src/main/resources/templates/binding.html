@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="binding">
 <head>
     <meta charset="UTF-8" />
-    <title>register</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>Kindle Binding</title>
 </head>
 
 <!-- Loading Bootstrap -->
@@ -16,38 +17,41 @@
 <script src="/js/jquery.min.js"></script>
 <script src="/js/flat-ui.min.js"></script>
 <script src="/js/application.js"></script>
+<script src="/js/angular-1.3.0.js"></script>
+<script src="/js/angular-ui-router.js"></script>
+<script src="/js/binding.js"></script>
 
 <body>
 
 <div class="login">
-    <div class="login-screen">
-        <div class="login-form">
+   <!-- <div class="login-screen">-->
+        <div class="login-form" ng-controller="formController">
 
             <div class="form-group">
-                <input type="text" class="form-control login-field" value="" placeholder="请输入手机号" id="binding-phone" />
+                <input type="text" class="form-control login-field" value="" placeholder="请输入手机号" id="binding-phone" ng-model="bindingData.phone"/>
                 <label class="login-field-icon fui-user" for="binding-phone"></label>
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control login-field" value="" placeholder="请输入个人邮箱" id="binding-email" />
+                <input type="email" class="form-control login-field" value="" placeholder="请输入个人邮箱" id="binding-email" ng-model="bindingData.email"/>
                 <label class="login-field-icon fui-mail" for="binding-email"></label>
             </div>
 
             <div class="form-group">
-                <input type="password" class="form-control login-field" value="" placeholder="请输入个人邮箱密码或授权码" id="binding-pwd" />
+                <input type="password" class="form-control login-field" value="" placeholder="请输入个人邮箱密码或授权码" id="binding-pwd" ng-model="bindingData.pwd"/>
                 <label class="login-field-icon fui-lock" for="binding-pwd"></label>
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control login-field" value="" placeholder="请输入kindle邮箱" id="binding-kindleEmail" />
+                <input type="email" class="form-control login-field" value="" placeholder="请输入kindle邮箱" id="binding-kindleEmail" ng-model="bindingData.kindleEmail"/>
                 <label class="login-field-icon fui-mail" for="binding-kindleEmail"></label>
             </div>
 
 
-            <a class="btn btn-primary btn-lg btn-block" href="#">绑定！</a>
+            <a class="btn btn-primary btn-lg btn-block" href="#" ng-click="submitForm()">绑定！</a>
             <a class="login-link" href="#">Any problem ?</a>
         </div>
-    </div>
+   <!-- </div>-->
 </div>
 
 </body>

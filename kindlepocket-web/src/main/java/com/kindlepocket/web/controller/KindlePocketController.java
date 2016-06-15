@@ -73,6 +73,12 @@ public class KindlePocketController {
         return "binding";
     }
 
+    @RequestMapping(value = "/bindingData",method = RequestMethod.POST)
+    public String bindingData(@RequestParam("phone")String phone,@RequestParam("email")String email,@RequestParam("pwd")String pwd,@RequestParam("kindleEmail")String kindleEmail){
+        logger.info("phone:"+phone+" email:"+email+" pwd:"+pwd+" kindleEmail:"+kindleEmail);
+        return "binding";
+    }
+
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
     public void validate(HttpServletRequest request, HttpServletResponse response,
             @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
