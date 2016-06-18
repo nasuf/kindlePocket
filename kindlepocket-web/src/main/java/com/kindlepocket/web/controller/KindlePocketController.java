@@ -47,15 +47,22 @@ public class KindlePocketController {
         return "index";
     }
 
+
     @RequestMapping("/details")
     public String toSearchDetailPage() {
         return "details";
     }
 
+    @RequestMapping("/testToBindingPage")
+    public String testToBindingPage(Model model) {
+        model.addAttribute("testKey", "testValue");
+        return "binding";
+    }
+
     @RequestMapping("/toBindingPage")
-    public String toBindingPage(HttpServletRequest request, HttpServletResponse response, @RequestParam("subscriberOpenId") String subscriberOpenId, Model model) {
+    public String toBindingPage(HttpServletRequest request, HttpServletResponse response, @RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("isBinded")String isBinded, Model model) {
         if (logger.isInfoEnabled()) {
-            logger.info("redirecting to binding page; openId:" + subscriberOpenId);
+            logger.info("redirecting to binding page; openId:" + subscriberOpenId+" isBinded:"+isBinded);
         }
 
         //model.addAttribute("subscriberOpenId",subscriberOpenId);
@@ -63,6 +70,8 @@ public class KindlePocketController {
         cookie.setPath("/");
         cookie.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(cookie);
+
+        model.addAttribute("subscriberOpenId", subscriberOpenId);
 
         return "binding";
     }
@@ -84,7 +93,7 @@ public class KindlePocketController {
                 if (subscriberOpenIdKey.equalsIgnoreCase("subscriberOpenId")) {
                     this.ssbService.binding(subscriberOpenId, phone, email, emailPwd, kindleEmail);
                     if (logger.isInfoEnabled()) {
-                        logger.info("subscriber: " + subscriberOpenId + "has binded information!");
+                        logger.info("subscriber: " + subscriberOpenId + " has binded information!");
                     }
                 } else {
                     if (logger.isInfoEnabled()) {
@@ -96,7 +105,7 @@ public class KindlePocketController {
             System.out.println("no cookie received");
         }
 
-        return "binding";
+        return null;
     }
 
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
@@ -164,7 +173,11 @@ public class KindlePocketController {
                         responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket", "kindle text books sharing platform", "/imgs/welcome.jpg", "/Weixin/binding");
                         break;
                     case "2":
-                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/Weixin/toBindingPage?subscriberOpenId=" + fromUserName);
+                        Boolean isBinded = false;
+                        if(isBinded(fromUserName)){
+                            isBinded = true;
+                        }
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/Weixin/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
                         break;
                     case "menu":
                         responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
@@ -199,23 +212,7 @@ public class KindlePocketController {
         }
     }
 
-  /*  @RequestMapping("/test")
-    public void test(HttpServletResponse response,HttpServletRequest request){
-        Cookie cookie = new Cookie("subscriberOpenId","123");
-        cookie.setPath("/");
-        cookie.setMaxAge(Integer.MAX_VALUE);
-        response.addCookie(cookie);
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        out.print("123");
-    }*/
-
-    /*
-     * public static void main(String[] args) { SpringApplication.run(KindlePocketController.class, args); }
-     */
-
+    public Boolean isBinded(String subscriberOpenId) {
+        return this.ssbService.findIsBinded(subscriberOpenId);
+    }
 }
