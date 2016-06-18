@@ -4,7 +4,7 @@ angular.module('binding',[])
     $scope.submitForm = function(){
         $http({
             method: 'POST',
-            url: 'http://8fec2f10.ngrok.io/Weixin/bindingData',
+            url: 'http://c5533fca.ngrok.io/Weixin/bindingData',
             // pass in data as strings
             data: $.param($scope.bindingData),
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }

@@ -2,8 +2,6 @@ package com.kindlepocket.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpCookie;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +64,7 @@ public class KindlePocketController {
         cookie.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(cookie);
 
-        return "binding";
+        return "binding.html";
     }
 
     @RequestMapping(value = "/bindingData", method = RequestMethod.POST)
