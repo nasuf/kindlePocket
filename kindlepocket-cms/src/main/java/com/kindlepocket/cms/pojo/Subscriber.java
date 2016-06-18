@@ -5,9 +5,11 @@ import java.util.Date;
 import org.apache.solr.client.solrj.beans.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 // ignore unknown fields
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Document
 public class Subscriber {
 
     @Field("openId")
