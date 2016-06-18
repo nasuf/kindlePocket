@@ -28,7 +28,7 @@
         <div class="login-form" ng-controller="formController">
 
             <div class="form-group">
-                <input type="text" class="form-control login-field" value="" placeholder="请输入手机号" id="binding-phone" ng-model="bindingData.phone"/>
+                <input type="text" class="form-control login-field" value="${subscriberOpenId}" placeholder="请输入手机号" id="binding-phone" ng-model="bindingData.phone"/>
                 <label class="login-field-icon fui-user" for="binding-phone"></label>
             </div>
 
@@ -38,8 +38,8 @@
             </div>
 
             <div class="form-group">
-                <input type="password" class="form-control login-field" value="" placeholder="请输入个人邮箱密码或授权码" id="binding-pwd" ng-model="bindingData.pwd"/>
-                <label class="login-field-icon fui-lock" for="binding-pwd"></label>
+                <input type="password" class="form-control login-field" value="" placeholder="请输入个人邮箱密码或授权码" id="binding-emailPwd" ng-model="bindingData.emailPwd"/>
+                <label class="login-field-icon fui-lock" for="binding-emailPwd"></label>
             </div>
 
             <div class="form-group">

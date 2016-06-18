@@ -2,6 +2,8 @@ package com.kindlepocket.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpCookie;
 import java.util.List;
 import java.util.Map;
 
@@ -9,12 +11,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.kindlepocket.web.service.SubscriberService;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +31,13 @@ public class KindlePocketController {
 
     private static final long serialVersionUID = 1L;
 
+    private static String SUBSCRIBER_OPENID = null;
+
     @Autowired
     private TextBookInfoSearchService searchService;// = new TextBookInfoSearchService();
+
+    @Autowired
+    private SubscriberService ssbService;
 
     private static Logger logger = Logger.getLogger(KindlePocketController.class);
 
@@ -43,46 +50,61 @@ public class KindlePocketController {
     }
 
     @RequestMapping("/details")
-    public String toSearchDetailPage(HttpServletRequest request, HttpServletResponse response) {
+    public String toSearchDetailPage() {
+        return "details";
+    }
+
+    @RequestMapping("/toBindingPage")
+    public String toBindingPage(HttpServletRequest request, HttpServletResponse response, @RequestParam("subscriberOpenId") String subscriberOpenId, Model model) {
+        if (logger.isInfoEnabled()) {
+            logger.info("redirecting to binding page; openId:" + subscriberOpenId);
+        }
+
+        //model.addAttribute("subscriberOpenId",subscriberOpenId);
+        Cookie cookie = new Cookie("subscriberOpenId", subscriberOpenId);
+        cookie.setPath("/");
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        response.addCookie(cookie);
+
+        return "binding";
+    }
+
+    @RequestMapping(value = "/bindingData", method = RequestMethod.POST)
+    public String bindingData(HttpServletRequest request, HttpServletResponse response, @RequestParam("phone") String phone, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
+        if (logger.isInfoEnabled()) {
+            logger.info("phone:" + phone + " email:" + email + " emailPwd:" + emailPwd + " kindleEmail:" + kindleEmail);
+        }
 
         Cookie[] cookies = request.getCookies();
         if (null != cookies) {
             for (Cookie cookie : cookies) {
-                String cookieName = cookie.getName();
-                String cookieValue = cookie.getValue();
-                System.out.println("cookieName: " + cookieName + " cookieValue: " + cookieValue);
+
+                System.out.println("cookieName:" + cookie.getName() + " cookieValue:" + cookie.getValue());
+
+                String subscriberOpenIdKey = cookie.getName();
+                String subscriberOpenId = cookie.getValue();
+                if (subscriberOpenIdKey.equalsIgnoreCase("subscriberOpenId")) {
+                    this.ssbService.binding(subscriberOpenId, phone, email, emailPwd, kindleEmail);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("subscriber: " + subscriberOpenId + "has binded information!");
+                    }
+                } else {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("no valid subscriber information received!");
+                    }
+                }
             }
         } else {
             System.out.println("no cookie received");
         }
 
-        if (logger.isInfoEnabled()) {
-            logger.info("redirecting to searching details");
-        }
-
-        Cookie cookie = new Cookie("kindlePocketCookieKey", "kindlePocketCookieValue");
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
-        response.addCookie(cookie);
-        return "details";
-    }
-
-    @RequestMapping("/binding")
-    public String toBindingPage(){
-        logger.info("redirecting to binding page");
-        return "binding";
-    }
-
-    @RequestMapping(value = "/bindingData",method = RequestMethod.POST)
-    public String bindingData(@RequestParam("phone")String phone,@RequestParam("email")String email,@RequestParam("pwd")String pwd,@RequestParam("kindleEmail")String kindleEmail){
-        logger.info("phone:"+phone+" email:"+email+" pwd:"+pwd+" kindleEmail:"+kindleEmail);
         return "binding";
     }
 
     @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
     public void validate(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
-            @RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
+                         @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
+                         @RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
         //http://33051bbe.nat123.net/Weixin/wx.do
         if (logger.isInfoEnabled()) {
             logger.info("\n***The message got: signature:" + signature + " timestamp:" + timestamp
@@ -107,15 +129,19 @@ public class KindlePocketController {
     }
 
     @RequestMapping(value = "/wx.do", method = RequestMethod.POST)
-    public ResponseEntity processMessage(HttpServletRequest request, HttpServletResponse response)
+    public void processMessage(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        /*
-         * PrintWriter out = null; try { out = response.getWriter(); } catch (IOException e) { e.printStackTrace(); }
-         */
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         try {
 
@@ -124,6 +150,8 @@ public class KindlePocketController {
             String toUserName = map.get("ToUserName");
             String msgType = map.get("MsgType");
             String content = map.get("Content");
+
+            this.SUBSCRIBER_OPENID = fromUserName;
 
             if (logger.isInfoEnabled()) {
                 logger.info("\n***The message got: fromUserName:" + fromUserName + " toUserName:"
@@ -134,22 +162,22 @@ public class KindlePocketController {
             if (MessageUtil.MESSAGE_TEXT.equals(msgType)) {
 
                 switch (content) {
-                case "1":
-                    responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName,"kindlePocket","kindle text books sharing platform","/imgs/welcome.jpg","/Weixin/binding");
-                    break;
-                case "2":
-                    responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName,"绑定步骤","点击绑定kindle","/imgs/welcome.jpg","/Weixin/binding");
-                    break;
-                case "menu":
-                    responseMessage = MessageUtil.initText(toUserName, fromUserName,  MessageUtil.menuText());
+                    case "1":
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket", "kindle text books sharing platform", "/imgs/welcome.jpg", "/Weixin/binding");
+                        break;
+                    case "2":
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/Weixin/toBindingPage?subscriberOpenId=" + fromUserName);
+                        break;
+                    case "menu":
+                        responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
 
-                    break;
-                default:
-                    // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-                    List<String> titleList = this.searchService.search(content);
-                    logger.info("找到" + titleList.size() + "本书籍");
-                    responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList);
-                    break;
+                        break;
+                    default:
+                        // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+                        List<String> titleList = this.searchService.search(content);
+                        logger.info("找到" + titleList.size() + "本书籍");
+                        responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList);
+                        break;
                 }
 
                 /*
@@ -158,24 +186,35 @@ public class KindlePocketController {
             } else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) {
                 String eventType = map.get("Event");
                 if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
+
                     responseMessage = MessageUtil.initText(toUserName, fromUserName,
                             MessageUtil.welcomeText());
+
                 }
             }
             if (logger.isInfoEnabled()) {
                 logger.info("\n***The message responsed: \n" + responseMessage);
             }
-            // out.print(responseMessage);
-            return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
-
+            out.print(responseMessage);
         } catch (DocumentException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        } /*
-           * finally { out.close(); }
-           */
-
+        }
     }
+
+  /*  @RequestMapping("/test")
+    public void test(HttpServletResponse response,HttpServletRequest request){
+        Cookie cookie = new Cookie("subscriberOpenId","123");
+        cookie.setPath("/");
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        response.addCookie(cookie);
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.print("123");
+    }*/
 
     /*
      * public static void main(String[] args) { SpringApplication.run(KindlePocketController.class, args); }
