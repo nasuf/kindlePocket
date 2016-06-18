@@ -64,7 +64,7 @@ public class KindlePocketController {
         cookie.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(cookie);
 
-        return "binding.html";
+        return "binding";
     }
 
     @RequestMapping(value = "/bindingData", method = RequestMethod.POST)
