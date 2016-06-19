@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="binding">
+
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
@@ -33,8 +34,16 @@
         margin-bottom: 19px;
       }
 
-
 </style>
+
+<script>
+      $(function () {
+        $('[data-toggle=tooltip]').tooltip();
+
+        //ensure the tooltip will not display immediatly when the page opened.
+        $('.tooltip-hide').tooltip('hide');
+      });
+</script>
 
 
 <body>
@@ -77,36 +86,43 @@
 
 <div class="login">
     <!-- <div class="login-screen">-->
-    <div class="login-form" ng-controller="formController">
+    <form class="login-form" name="bindingForm" ng-controller="formController" novalidate ng-submit="submitForm()">
 
         <div class="form-group">
-            <input type="text" class="form-control login-field" value="" placeholder="请输入手机号"
-                   id="binding-phone" ng-model="bindingData.phone" required/>
+            <input type="text" class="form-control login-field tooltip-hide" value="" placeholder="请输入手机号"
+                   id="binding-phone" name="phone" ng-model="bindingData.phone" ng-minlength="11" ng-maxlength="11"
+                   required data-placement="top" data-toggle="tooltip"
+                   title="手机号是日后网页端应用上线后，绑定您的账号的凭证之一，但请放心填写，我们不会通过短信打扰您; 手机号长度11位，请不要输错"/>
             <label class="login-field-icon fui-user" for="binding-phone"></label>
         </div>
 
         <div class="form-group">
-            <input type="email" class="form-control login-field" value="" placeholder="请输入个人邮箱" id="binding-email"
-                   ng-model="bindingData.email"/>
+            <input type="email" class="form-control login-field tooltip-hide" value="" placeholder="请输入个人邮箱"
+                   id="binding-email" name="email"
+                   ng-model="bindingData.email" required data-placement="top" data-toggle="tooltip"
+                   title="我们将会通过您的个人邮箱给您的kindle推送书籍; 邮箱地址格式: example@163.com"/>
             <label class="login-field-icon fui-mail" for="binding-email"></label>
         </div>
 
         <div class="form-group">
-            <input type="password" class="form-control login-field" value="" placeholder="请输入个人邮箱密码或授权码"
-                   id="binding-emailPwd" ng-model="bindingData.emailPwd"/>
+            <input type="password" class="form-control login-field tooltip-hide" value="" placeholder="请输入个人邮箱密码或授权码"
+                   name="emailPwd"
+                   id="binding-emailPwd" ng-model="bindingData.emailPwd" required data-placement="top"
+                   data-toggle="tooltip" title="请放心，密码不会泄露，当然授权码听起来似乎更安全一些"/>
             <label class="login-field-icon fui-lock" for="binding-emailPwd"></label>
         </div>
 
         <div class="form-group">
-            <input type="email" class="form-control login-field" value="" placeholder="请输入kindle邮箱"
-                   id="binding-kindleEmail" ng-model="bindingData.kindleEmail"/>
+            <input type="email" class="form-control login-field  tooltip-hide" value="" placeholder="请输入kindle邮箱"
+                   id="binding-kindleEmail" name="kindleEmail" ng-model="bindingData.kindleEmail" required
+                   data-placement="top" data-toggle="tooltip"
+                   title="您可以在kindle设备的「设置」-「设备选项」-「个性化您的kindle」中找到您的个人kindle设备邮箱地址">
             <label class="login-field-icon fui-mail" for="binding-kindleEmail"></label>
         </div>
-
-
-        <a class="btn btn-primary btn-lg btn-block" href="#" ng-click="submitForm()">绑定！</a>
+        <button class="btn btn-primary btn-lg btn-block" type="submit" href="#"  ng-disabled="bindingForm.$invalid">绑定！</button>
         <a class="login-link" href="#">Any problem ?</a>
-    </div>
+
+    </form>
     <!-- </div>-->
 </div>
 

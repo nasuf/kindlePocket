@@ -73,7 +73,12 @@ public class KindlePocketController {
 
         model.addAttribute("subscriberOpenId", subscriberOpenId);
 
-        return "binding";
+        if(isBinded == "true"){
+            return "infoUpdate";
+        } else {
+            return "binding";
+        }
+
     }
 
     @RequestMapping(value = "/bindingData", method = RequestMethod.POST)
