@@ -9,15 +9,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kindlepocket.web.pojo.HttpResult;
 import com.kindlepocket.web.service.SubscriberService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
@@ -32,12 +34,14 @@ public class KindlePocketController {
     private static String SUBSCRIBER_OPENID = null;
 
     @Autowired
-    private TextBookInfoSearchService searchService;// = new TextBookInfoSearchService();
+    private TextBookInfoSearchService searchService;
 
     @Autowired
     private SubscriberService ssbService;
 
     private static Logger logger = Logger.getLogger(KindlePocketController.class);
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @RequestMapping("/homepage")
     public String toIndex() {
@@ -59,11 +63,17 @@ public class KindlePocketController {
         return "binding";
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @param subscriberOpenId
+     * @param isBinded
+     * @param model
+     * @return
+     */
     @RequestMapping("/toBindingPage")
     public String toBindingPage(HttpServletRequest request, HttpServletResponse response, @RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("isBinded")String isBinded, Model model) {
-        if (logger.isInfoEnabled()) {
-            logger.info("redirecting to binding page; openId:" + subscriberOpenId+" isBinded:"+isBinded);
-        }
 
         //model.addAttribute("subscriberOpenId",subscriberOpenId);
         Cookie cookie = new Cookie("subscriberOpenId", subscriberOpenId);
@@ -73,18 +83,24 @@ public class KindlePocketController {
 
         model.addAttribute("subscriberOpenId", subscriberOpenId);
 
-        if(isBinded == "true"){
+        if(isBinded.equalsIgnoreCase("true")){
+            if (logger.isInfoEnabled()) {
+                logger.info("redirecting to info update page; openId:" + subscriberOpenId+" isBinded:"+isBinded);
+            }
             return "infoUpdate";
         } else {
+            if (logger.isInfoEnabled()) {
+                logger.info("redirecting to binding page; openId:" + subscriberOpenId+" isBinded:"+isBinded);
+            }
             return "binding";
         }
 
     }
 
     @RequestMapping(value = "/bindingData", method = RequestMethod.POST)
-    public String bindingData(HttpServletRequest request, HttpServletResponse response, @RequestParam("phone") String phone, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
+    public String bindingData(HttpServletRequest request, HttpServletResponse response, @RequestParam("phone") String phone,@RequestParam("userName")String userName, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
         if (logger.isInfoEnabled()) {
-            logger.info("phone:" + phone + " email:" + email + " emailPwd:" + emailPwd + " kindleEmail:" + kindleEmail);
+            logger.info("phone:" + phone + "userName" + userName + " email:" + email + " emailPwd:" + emailPwd + " kindleEmail:" + kindleEmail);
         }
 
         Cookie[] cookies = request.getCookies();
@@ -96,7 +112,7 @@ public class KindlePocketController {
                 String subscriberOpenIdKey = cookie.getName();
                 String subscriberOpenId = cookie.getValue();
                 if (subscriberOpenIdKey.equalsIgnoreCase("subscriberOpenId")) {
-                    this.ssbService.binding(subscriberOpenId, phone, email, emailPwd, kindleEmail);
+                    this.ssbService.binding(subscriberOpenId, phone, userName,  email, emailPwd, kindleEmail);
                     if (logger.isInfoEnabled()) {
                         logger.info("subscriber: " + subscriberOpenId + " has binded information!");
                     }
@@ -217,7 +233,49 @@ public class KindlePocketController {
         }
     }
 
-    public Boolean isBinded(String subscriberOpenId) {
-        return this.ssbService.findIsBinded(subscriberOpenId);
+    private Boolean isBinded(String subscriberOpenId) {
+        HttpResult result = this.ssbService.findSubscriberInfo(subscriberOpenId);
+        if(!StringUtils.isEmpty(result.getBody())){
+            if(logger.isInfoEnabled()){
+                logger.info("the user has binded");
+            }
+            return true;
+        } else {
+            if(logger.isInfoEnabled()){
+                logger.info("the user has not binded");
+            }
+            return false;
+        }
+    }
+
+    @RequestMapping(value = "/getSubscriberInfo", method=RequestMethod.GET)
+    @ResponseBody
+    private String getSubscriberInfo(@RequestParam("subscriberOpenId")String subscriberOpenId,HttpServletResponse response){
+        if(logger.isInfoEnabled()){
+            logger.info("search for subscriber info; openId: "+subscriberOpenId);
+        }
+        HttpResult result = this.ssbService.findSubscriberInfo(subscriberOpenId);
+        if(logger.isInfoEnabled()){
+            logger.info("searching result: "+ result);
+        }
+            //JsonNode node = MAPPER.readTree(result.toString());
+            //response.setHeader("Access-Control-Allow-Origin", "*");
+        try {
+            JsonNode node = MAPPER.readTree(result.getBody());
+            System.out.println("node:"+node.toString());
+            return result.getBody();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/updateSubscriberInfo", method = RequestMethod.POST)
+    private String updateSubscriberInfo(HttpServletRequest request, HttpServletResponse response, @RequestParam("openId")String openId,@RequestParam("phone") String phone, @RequestParam("userName")String userName, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
+        if (logger.isInfoEnabled()) {
+            logger.info("openId:"+ openId + " phone:" + phone + " userName" + userName + " email:" + email + " emailPwd:" + emailPwd + " kindleEmail:" + kindleEmail);
+            Boolean updated = this.ssbService.updateSubscriberInfo(openId, phone, userName, email, emailPwd, kindleEmail);
+        }
+        return null;
     }
 }

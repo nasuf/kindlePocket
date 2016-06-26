@@ -4,10 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class HttpResult {
 
-    // 响应状态码
+    // response code
     private Integer code;
 
-    // 响应体
+    // response body
     private String body;
 
     public HttpResult() {
@@ -38,4 +38,11 @@ public class HttpResult {
         this.body = body;
     }
 
+    @Override
+    public String toString() {
+        return "HttpResult{" +
+                "code=" + code +
+                ", body='" + body + '\'' +
+                '}';
+    }
 }
