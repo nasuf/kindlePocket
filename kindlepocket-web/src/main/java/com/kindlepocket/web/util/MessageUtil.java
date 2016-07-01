@@ -47,7 +47,7 @@ public class MessageUtil {
 
     public static final String MESSAGE_VIEW = "VIEW";
 
-    public static final String KINDLE_POCKET_HOST = "http://0e5662da.ngrok.io";
+    public static final String KINDLE_POCKET_HOST = "http://8a937c3d.ngrok.io";
 
     public static Map<String, String> xmlToMap(HttpServletRequest request) throws IOException,
             DocumentException {

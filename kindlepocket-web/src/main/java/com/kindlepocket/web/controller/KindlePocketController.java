@@ -278,4 +278,35 @@ public class KindlePocketController {
         }
         return null;
     }
+
+    @RequestMapping(value = "/getSubscriberOpenId", method = RequestMethod.GET)
+    @ResponseBody
+    public String getSubscriberOpenid(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+
+                System.out.println("cookieName:" + cookie.getName() + " cookieValue:" + cookie.getValue());
+
+                String subscriberOpenIdKey = cookie.getName();
+                String subscriberOpenId = cookie.getValue();
+                if (subscriberOpenIdKey.equals("subscriberOpenId")) {
+                    if(logger.isInfoEnabled()){
+                        logger.info("got subscriber openId: " + subscriberOpenId);
+                    }
+                    return subscriberOpenId;
+                } else {
+                    if (logger.isInfoEnabled()) {
+                        logger.info("no valid subscriber information received!");
+                    }
+                    return null;
+                }
+            }
+            return null;
+        } else {
+            System.out.println("no cookie received");
+            return null;
+        }
+    }
+
 }
