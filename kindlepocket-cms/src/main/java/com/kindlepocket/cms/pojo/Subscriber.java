@@ -5,28 +5,45 @@ import java.util.Date;
 import org.apache.solr.client.solrj.beans.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 // ignore unknown fields
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Document
 public class Subscriber {
 
-    @Field("id")
+    @Field("openId")
     private String id;
 
-    @Field("subscriberName")
-    private String subscriberName;
+    @Field("userName")
+    private String userName;
+
+    @Field("phone")
+    private String phone;
+
+    @Field("email")
+    private String email;
+
+    @Field("emailPwd")
+    private String emailPwd;
+
+    @Field("kindleEmail")
+    private String kindleEmail;
 
     @Field("subscribeDate")
     private Date subscribeDate;
 
     public Subscriber() {
-        super();
     }
 
-    public Subscriber(String subscriberName, Date subscribeDate) {
-        super();
-        this.subscriberName = subscriberName;
+    public Subscriber(String id, String userName, String phone, String email, Date subscribeDate, String kindleEmail, String emailPwd) {
+        this.id = id;
+        this.userName = userName;
+        this.phone = phone;
+        this.email = email;
         this.subscribeDate = subscribeDate;
+        this.kindleEmail = kindleEmail;
+        this.emailPwd = emailPwd;
     }
 
     public String getId() {
@@ -37,12 +54,44 @@ public class Subscriber {
         this.id = id;
     }
 
-    public String getSubscriberName() {
-        return subscriberName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setSubscriberName(String subscriberName) {
-        this.subscriberName = subscriberName;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmailPwd() {
+        return emailPwd;
+    }
+
+    public void setEmailPwd(String emailPwd) {
+        this.emailPwd = emailPwd;
+    }
+
+    public String getKindleEmail() {
+        return kindleEmail;
+    }
+
+    public void setKindleEmail(String kindleEmail) {
+        this.kindleEmail = kindleEmail;
     }
 
     public Date getSubscribeDate() {
@@ -55,8 +104,14 @@ public class Subscriber {
 
     @Override
     public String toString() {
-        return "Subscriber [id=" + id + ", subscriberName=" + subscriberName + ", subscribeDate="
-                + subscribeDate + "]";
+        return "Subscriber{" +
+                "id='" + id + '\'' +
+                ", userName='" + userName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", emailPwd='" + emailPwd + '\'' +
+                ", kindleEmail='" + kindleEmail + '\'' +
+                ", subscribeDate=" + subscribeDate +
+                '}';
     }
-
 }

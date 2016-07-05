@@ -27,13 +27,14 @@ public class TextBookInfoSearchService {
         Map<String, Object> contentMap = new HashMap<String, Object>();
         contentMap.put("title", content);
         try {
-            String result = this.apiService.doGet("http://127.0.0.1:8081/search/title", contentMap);
+            // String result = this.apiService.doGet("http://127.0.0.1:8081/search/title", contentMap);
+            String result = this.apiService.doGet("http://127.0.0.1:9091/bookManage/findall", contentMap);
             JsonNode readTree = MAPPER.readTree(result);
-            Iterator<JsonNode> iterator = readTree.get("rows").iterator();
+            System.out.println("readTree: " + readTree);
+            Iterator<JsonNode> iterator = readTree.iterator();
             while (iterator.hasNext()) {
                 titles.add(iterator.next().get("title").toString());
             }
-            System.out.println("result:" + readTree);
         } catch (Exception e) {
             e.printStackTrace();
         }
