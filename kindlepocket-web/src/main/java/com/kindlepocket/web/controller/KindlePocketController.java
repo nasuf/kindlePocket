@@ -26,7 +26,7 @@ import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 
 @Controller
-@RequestMapping("/Weixin")
+@RequestMapping("/KindlePocket")
 public class KindlePocketController {
 
     private static final long serialVersionUID = 1L;
@@ -129,7 +129,7 @@ public class KindlePocketController {
         return null;
     }
 
-    @RequestMapping(value = "/wx.do", method = RequestMethod.GET)
+    @RequestMapping(value = "/inPocket.do", method = RequestMethod.GET)
     public void validate(HttpServletRequest request, HttpServletResponse response,
                          @RequestParam("signature") String signature, @RequestParam("timestamp") String timestamp,
                          @RequestParam("nonce") String nonce, @RequestParam("echostr") String echostr) {
@@ -156,7 +156,7 @@ public class KindlePocketController {
         }
     }
 
-    @RequestMapping(value = "/wx.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/inPocket.do", method = RequestMethod.POST)
     public void processMessage(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
@@ -191,14 +191,14 @@ public class KindlePocketController {
 
                 switch (content) {
                     case "1":
-                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket", "kindle text books sharing platform", "/imgs/welcome.jpg", "/Weixin/binding");
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket", "kindle text books sharing platform", "/imgs/welcome.jpg", "/KindlePocket/binding");
                         break;
                     case "2":
                         Boolean isBinded = false;
                         if(isBinded(fromUserName)){
                             isBinded = true;
                         }
-                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/Weixin/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
                         break;
                     case "menu":
                         responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());

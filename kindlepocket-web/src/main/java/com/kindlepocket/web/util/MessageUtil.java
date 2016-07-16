@@ -47,7 +47,7 @@ public class MessageUtil {
 
     public static final String MESSAGE_VIEW = "VIEW";
 
-    public static final String KINDLE_POCKET_HOST = "http://8a937c3d.ngrok.io";
+    public static final String KINDLE_POCKET_HOST = "http://96b0d45c.ngrok.io";
 
     public static Map<String, String> xmlToMap(HttpServletRequest request) throws IOException,
             DocumentException {
@@ -170,7 +170,7 @@ public class MessageUtil {
                 picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
                 // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                 // picText.setUrl(picText.getUrl().replace("\"", ""));
-                picText.setUrl(KINDLE_POCKET_HOST+"/Weixin/details");
+                picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/details");
                 System.out.println("url:" + picText.getUrl());
                 picTextList.add(picText);
             }
@@ -180,7 +180,7 @@ public class MessageUtil {
             picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
             // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
             // picText.setUrl(picText.getUrl().replace("\"", ""));
-            picText.setUrl(KINDLE_POCKET_HOST+"/Weixin/details");
+            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/details");
             System.out.println("url:" + picText.getUrl());
             picTextList.add(picText);
         } else {
@@ -189,7 +189,7 @@ public class MessageUtil {
             picText.setDescription("click and upload it :)");
             picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
             // picText.setUrl("www.nasuf.cn");
-            picText.setUrl(KINDLE_POCKET_HOST+"/Weixin/homepage");
+            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/homepage");
             picTextList.add(picText);
         }
 

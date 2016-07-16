@@ -5,14 +5,14 @@ angular.module('infoUpdate',[])
 
      $http({
         method: 'GET',
-        url: 'http://8a937c3d.ngrok.io/Weixin/getSubscriberOpenId'
+        url: 'http://96b0d45c.ngrok.io/KindlePocket/getSubscriberOpenId'
     }).success(function(data,status){
         $scope.subscriberData.openId = data;
         alert("find open id successfully! id= " + data);
 
          $http({
                 method: 'GET',
-                url: 'http://8a937c3d.ngrok.io/Weixin/getSubscriberInfo?subscriberOpenId='+$scope.subscriberData.openId
+                url: 'http://96b0d45c.ngrok.io/KindlePocket/getSubscriberInfo?subscriberOpenId='+$scope.subscriberData.openId
             }).success(function(data,status){
                 $scope.subscriberData.userName = data.userName;
                 $scope.subscriberData.phone = data.phone;
@@ -32,7 +32,7 @@ angular.module('infoUpdate',[])
     $scope.updateInfo = function(){
           $http({
               method: 'POST',
-              url: 'http://8a937c3d.ngrok.io/Weixin/updateSubscriberInfo',
+              url: 'http://96b0d45c.ngrok.io/KindlePocket/updateSubscriberInfo',
               data: $.param($scope.subscriberData),
               headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
           }).success(function(data,status){
