@@ -54,40 +54,66 @@ public class KindlePocketController {
 
 
     @RequestMapping("/toDetailsPage")
-    public String toSearchDetailPage(@RequestParam("idList")String idList, HttpServletRequest request, HttpServletResponse response) {
+    public String toSearchDetailPage(@RequestParam("single")String single, @RequestParam("idList")String idList, @RequestParam("queryParam")String queryParam, HttpServletRequest request, HttpServletResponse response) {
         if(logger.isInfoEnabled()){
             logger.info("redirecting to details page...");
         }
-        Cookie cookie = new Cookie("idList",idList);
+        Cookie cookie = null;
+        Cookie temp = null;
+        if(single.equals("false")){
+            cookie = new Cookie("queryParam",queryParam);
+            temp = new Cookie("idList", null);
+        } else {
+            cookie = new Cookie("idList",idList);
+            temp = new Cookie("queryParam", null);
+        }
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/");
+        temp.setMaxAge(0);
+        temp.setPath("/");
         response.addCookie(cookie);
+        response.addCookie(temp);
         return "details";
     }
 
     @RequestMapping("/getDetails")
     @ResponseBody
-    public String queryDetails(HttpServletRequest request){
-        String idList = null;
+    public String getDetails(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        JsonNode result = null;
+        JsonNode queryResult = null;
+        String result = null;
         if(!(null == cookies)){
             for(Cookie cookie : cookies){
                 if(cookie.getName().equals("idList")){
-                    idList = cookie.getValue();
+                    // query single book with id
+                    String idList = cookie.getValue();
                     if(logger.isInfoEnabled()){
                         logger.info("idList: " + idList);
                     }
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key","id");
                     queryMap.put("value",idList);
-                    result = this.searchService.search(queryMap);
+                    queryResult = this.searchService.search(queryMap);
+                    StringBuffer buffer = new StringBuffer();
+                    result = buffer.append("[").append(queryResult.toString()).append("]").toString();
                     if(logger.isInfoEnabled()){
-                        logger.info("query single result:" + result.toString());
+                        logger.info("query single result:" + result);
                     }
+                    break;
+                } else if(cookie.getName().equals("queryParam")) {
+                    // query all the matched books
+                    String queryParam = cookie.getValue();
+                    Map<String, Object> queryMap = new HashMap<String, Object>();
+                    queryMap.put("key", "title");
+                    queryMap.put("value", queryParam);
+                    result = this.searchService.search(queryMap).toString();
+                    if(logger.isInfoEnabled()){
+                        logger.info("query all the matched books:" + result);
+                    }
+                    break;
                 }
             }
-            return result.toString();
+            return result;
         } else {
             if(logger.isInfoEnabled()){
                 logger.info("no cookies received");
@@ -260,7 +286,7 @@ public class KindlePocketController {
                             idList.add(book.get("id").toString());
                         }
                         logger.info("找到" + titleList.size() + "本书籍");
-                        responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList, idList);
+                        responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList, idList, content);
                         break;
                 }
 

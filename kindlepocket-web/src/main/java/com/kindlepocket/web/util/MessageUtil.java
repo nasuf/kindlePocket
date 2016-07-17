@@ -47,7 +47,7 @@ public class MessageUtil {
 
     public static final String MESSAGE_VIEW = "VIEW";
 
-    public static final String KINDLE_POCKET_HOST = "http://14831r54q5.iask.in";
+    public static final String KINDLE_POCKET_HOST = "http://6bd9895a.ngrok.io";
 
     public static Map<String, String> xmlToMap(HttpServletRequest request) throws IOException,
             DocumentException {
@@ -157,7 +157,7 @@ public class MessageUtil {
         return message;
     }
 
-    public static String initSearchResultsPicTextMessage(String toUserName, String fromUserName, List<String> titles, List<String> idList) {
+    public static String initSearchResultsPicTextMessage(String toUserName, String fromUserName, List<String> titles, List<String> idList, String queryParam) {
         String message = null;
         List<PicText> picTextList = new ArrayList<PicText>();
         PicTextMessage picTextMessage = new PicTextMessage();
@@ -170,7 +170,7 @@ public class MessageUtil {
                 picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
                 // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                 // picText.setUrl(picText.getUrl().replace("\"", ""));
-                picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?idList="+idList.get(i));
+                picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
                 System.out.println("url:" + picText.getUrl());
                 picTextList.add(picText);
             }
@@ -180,7 +180,7 @@ public class MessageUtil {
             picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
             // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
             // picText.setUrl(picText.getUrl().replace("\"", ""));
-            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?idList="+idList.toString());
+            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam);
             System.out.println("url:" + picText.getUrl());
             picTextList.add(picText);
         } else {

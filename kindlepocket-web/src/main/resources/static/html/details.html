@@ -57,27 +57,16 @@
 </div>
 
 <div class="container-fluid" ng-controller="detailController" data-ng-init="getDetails()">
-	<div class="row" align="center">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="thumbnail">
-				<img src="/imgs/favicon.ico" alt="#">
-				<div>
-					<p>{{details.title}}</p>
-					<p>author: {{details.author}}</p>
-					<p class="col-sm-offset-4"><a href="#" class="btn btn-primary" role="button">Send to Kindle</a> <a href="#" class="btn btn-default" role="button">Preview</a></p>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="row" align="center">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="thumbnail">
-				<img src="/imgs/favicon.ico" alt="#">
-				<div>
-					<p>{{details.title}}</p>
-					<p>author: {{details.author}}</p>
-					<p class="col-sm-offset-4"><a href="#" class="btn btn-primary" role="button">Send to Kindle</a> <a href="#" class="btn btn-default" role="button">Preview</a></p>
+	<div ng-repeat="detail in details">
+		<div class="row" align="center">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="thumbnail">
+					<!--<img src="/imgs/favicon.ico" alt="#">-->
+					<div>
+						<p>{{detail.title}}</p>
+						<p>author: {{detail.author}}</p>
+						<p class="col-sm-offset-4"><a href="#" class="btn btn-primary" role="button">Send to Kindle</a> <a href="#" class="btn btn-default" role="button">Preview</a></p>
+					</div>
 				</div>
 			</div>
 		</div>
