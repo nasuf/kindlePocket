@@ -2,10 +2,10 @@ package com.kindlepocket.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/KindlePocket")
@@ -52,9 +53,47 @@ public class KindlePocketController {
     }
 
 
-    @RequestMapping("/details")
-    public String toSearchDetailPage() {
+    @RequestMapping("/toDetailsPage")
+    public String toSearchDetailPage(@RequestParam("idList")String idList, HttpServletRequest request, HttpServletResponse response) {
+        if(logger.isInfoEnabled()){
+            logger.info("redirecting to details page...");
+        }
+        Cookie cookie = new Cookie("idList",idList);
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        cookie.setPath("/");
+        response.addCookie(cookie);
         return "details";
+    }
+
+    @RequestMapping("/getDetails")
+    @ResponseBody
+    public String queryDetails(HttpServletRequest request){
+        String idList = null;
+        Cookie[] cookies = request.getCookies();
+        JsonNode result = null;
+        if(!(null == cookies)){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("idList")){
+                    idList = cookie.getValue();
+                    if(logger.isInfoEnabled()){
+                        logger.info("idList: " + idList);
+                    }
+                    Map<String, Object> queryMap = new HashMap<String, Object>();
+                    queryMap.put("key","id");
+                    queryMap.put("value",idList);
+                    result = this.searchService.search(queryMap);
+                    if(logger.isInfoEnabled()){
+                        logger.info("query single result:" + result.toString());
+                    }
+                }
+            }
+            return result.toString();
+        } else {
+            if(logger.isInfoEnabled()){
+                logger.info("no cookies received");
+            }
+            return null;
+        }
     }
 
     @RequestMapping("/testToBindingPage")
@@ -206,9 +245,22 @@ public class KindlePocketController {
                         break;
                     default:
                         // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-                        List<String> titleList = this.searchService.search(content);
+                        // List<String> titleList = this.searchService.search(content);
+                        Map<String, Object> queryMap = new HashMap<String, Object>();
+                        queryMap.put("key","title");
+                        queryMap.put("value", content);
+                        JsonNode result = this.searchService.search(queryMap);
+                        List<String> titleList = new ArrayList<String>();
+                        List<String> idList = new ArrayList<String>();
+                        Iterator<JsonNode> iterator = result.iterator();
+                        JsonNode book = null;
+                        while(iterator.hasNext()){
+                            book = iterator.next();
+                            titleList.add(book.get("title").toString());
+                            idList.add(book.get("id").toString());
+                        }
                         logger.info("找到" + titleList.size() + "本书籍");
-                        responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList);
+                        responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList, idList);
                         break;
                 }
 

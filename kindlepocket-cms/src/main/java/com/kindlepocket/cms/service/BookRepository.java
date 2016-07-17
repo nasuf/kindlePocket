@@ -14,6 +14,8 @@ public interface BookRepository extends MongoRepository<Item, String> {
 
     List<Item> findByTitleLike(String title);
 
+    Item findById(Long id);
+
     /*
      * @Query("{'age':?0") List<Item> withQueryFindByAge(Integer age);
      */

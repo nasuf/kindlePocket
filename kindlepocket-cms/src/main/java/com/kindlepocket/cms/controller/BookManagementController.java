@@ -52,18 +52,33 @@ public class BookManagementController {
         this.bookRepository.insert(items);
     }
 
-    @RequestMapping(value = "/findall", method = RequestMethod.GET)
-    public ResponseEntity<String> testFind(@RequestParam(value = "title") String title) {
-        title = title.toString();
-        System.out.println("title:" + title);
-        List<Item> books = this.bookRepository.findByTitleLike(title);
-        System.out.println("book:" + books);
-        // this.mailService.sendMail(book.getTitle());
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Email Send Successfully!");
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    public ResponseEntity<String> findAll(@RequestParam(value = "key") String key, @RequestParam(value = "value") String value) {
+        List<Item> books = null;
+        Item book = null;
+        if(logger.isInfoEnabled()){
+            logger.info("query key: " + key + " query value: " + value);
+        }
+        if(key.toString().equals("title")){
+            books = this.bookRepository.findByTitleLike(value);
+            if(logger.isInfoEnabled()){
+                logger.info("query results: " + books.toString());
+            }
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } else if(key.toString().equals("id")){
+            book = this.bookRepository.findById(Long.parseLong(value));
+            if(logger.isInfoEnabled()){
+                logger.info("query result: " + book.toString());
+            }
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(book));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
@@ -94,5 +109,11 @@ public class BookManagementController {
     @RequestMapping("/preview")
     public void previewBook() {
         this.gridFSService.readFiles();
+    }
+
+    @RequestMapping("/testFind")
+    public void testFind(){
+        System.out.println(this.bookRepository.findByTitleLike("ephemeris"));
+        System.out.println(this.bookRepository.findById(100L));
     }
 }

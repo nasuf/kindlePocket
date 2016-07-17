@@ -1,11 +1,8 @@
 package com.kindlepocket.web.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,30 +17,41 @@ public class TextBookInfoSearchService {
     @Autowired
     private ApiService apiService;
 
-    public List<String> search(String content) {
+    private static Logger logger = Logger.getLogger(TextBookInfoSearchService.class);
 
-        List<String> titles = new ArrayList<String>();
+    public JsonNode search(Map<String, Object> queryMap) {
 
-        Map<String, Object> contentMap = new HashMap<String, Object>();
-        contentMap.put("title", content);
+      /*  List<String> titles = new ArrayList<String>();
+        Set<String> keySet = queryMap.keySet();
+        Iterator<String> iterator = keySet.iterator();
+        String key = null;
+        while(iterator.hasNext()){
+            String temp = iterator.next();
+            if(temp.equals("key")){
+                key = temp;
+            }
+        }
+        if(logger.isInfoEnabled()){
+            logger.info("query key is: "+ key);
+        }*/
+       /* Map<String, Object> contentMap = new HashMap<String, Object>();
+        contentMap.put("title", content);*/
         try {
             // String result = this.apiService.doGet("http://127.0.0.1:8081/search/title", contentMap);
-            String result = this.apiService.doGet("http://127.0.0.1:9091/bookManage/findall", contentMap);
+            String result = this.apiService.doGet("http://127.0.0.1:9091/bookManage/findAll", queryMap);
             JsonNode readTree = MAPPER.readTree(result);
             System.out.println("readTree: " + readTree);
-            Iterator<JsonNode> iterator = readTree.iterator();
+            return readTree;
+           /* Iterator<JsonNode> iterator = readTree.iterator();
             while (iterator.hasNext()) {
                 titles.add(iterator.next().get("title").toString());
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        /*
-         * List<String> titles = new ArrayList<String>(); // test titles.add("张学良口述历史"); titles.add("布谷鸟的呼唤");
-         */
-        return titles;
-
+        return null;
     }
+
 
 }
