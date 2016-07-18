@@ -47,7 +47,7 @@ public class MessageUtil {
 
     public static final String MESSAGE_VIEW = "VIEW";
 
-    public static final String KINDLE_POCKET_HOST = "http://6bd9895a.ngrok.io";
+    public static final String KINDLE_POCKET_HOST = "http://82e0c15d.ngrok.io";
 
     public static Map<String, String> xmlToMap(HttpServletRequest request) throws IOException,
             DocumentException {
@@ -163,26 +163,40 @@ public class MessageUtil {
         PicTextMessage picTextMessage = new PicTextMessage();
 
         if (titles.size() > 0) {
-            for (int i = 0; i < 5; i++) {
+            if(titles.size() >= 5){
+                for (int i = 0; i < 5; i++) {
+                    PicText picText = new PicText();
+                    picText.setTitle(titles.get(i).substring(1, titles.get(i).length()-1));
+                    picText.setDescription("kindle text books sharing platform");
+                    picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+                    // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
+                    // picText.setUrl(picText.getUrl().replace("\"", ""));
+                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
+                    System.out.println("url:" + picText.getUrl());
+                    picTextList.add(picText);
+                }
                 PicText picText = new PicText();
-                picText.setTitle(titles.get(i));
+                picText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
                 picText.setDescription("kindle text books sharing platform");
                 picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
                 // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                 // picText.setUrl(picText.getUrl().replace("\"", ""));
-                picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
+                picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam);
                 System.out.println("url:" + picText.getUrl());
                 picTextList.add(picText);
+            } else {
+                for (int i = 0; i < titles.size(); i++) {
+                    PicText picText = new PicText();
+                    picText.setTitle(titles.get(i).substring(1, titles.get(i).length()-1));
+                    picText.setDescription("kindle text books sharing platform");
+                    picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+                    // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
+                    // picText.setUrl(picText.getUrl().replace("\"", ""));
+                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
+                    System.out.println("url:" + picText.getUrl());
+                    picTextList.add(picText);
+                }
             }
-            PicText picText = new PicText();
-            picText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
-            picText.setDescription("kindle text books sharing platform");
-            picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
-            // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
-            // picText.setUrl(picText.getUrl().replace("\"", ""));
-            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam);
-            System.out.println("url:" + picText.getUrl());
-            picTextList.add(picText);
         } else {
             PicText picText = new PicText();
             picText.setTitle("Sorry, the textBook you searched is not instore yet");

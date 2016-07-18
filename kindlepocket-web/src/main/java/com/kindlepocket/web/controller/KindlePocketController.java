@@ -80,8 +80,7 @@ public class KindlePocketController {
     @ResponseBody
     public String getDetails(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        JsonNode queryResult = null;
-        String result = null;
+        JsonNode result = null;
         if(!(null == cookies)){
             for(Cookie cookie : cookies){
                 if(cookie.getName().equals("idList")){
@@ -93,9 +92,7 @@ public class KindlePocketController {
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key","id");
                     queryMap.put("value",idList);
-                    queryResult = this.searchService.search(queryMap);
-                    StringBuffer buffer = new StringBuffer();
-                    result = buffer.append("[").append(queryResult.toString()).append("]").toString();
+                    result = this.searchService.search(queryMap);
                     if(logger.isInfoEnabled()){
                         logger.info("query single result:" + result);
                     }
@@ -106,14 +103,14 @@ public class KindlePocketController {
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key", "title");
                     queryMap.put("value", queryParam);
-                    result = this.searchService.search(queryMap).toString();
+                    result = this.searchService.search(queryMap);
                     if(logger.isInfoEnabled()){
                         logger.info("query all the matched books:" + result);
                     }
                     break;
                 }
             }
-            return result;
+            return result.toString();
         } else {
             if(logger.isInfoEnabled()){
                 logger.info("no cookies received");
@@ -242,7 +239,7 @@ public class KindlePocketController {
             String fromUserName = map.get("FromUserName");
             String toUserName = map.get("ToUserName");
             String msgType = map.get("MsgType");
-            String content = map.get("Content");
+            String content = map.get("Content").trim();
 
             this.SUBSCRIBER_OPENID = fromUserName;
 
