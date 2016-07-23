@@ -1,14 +1,16 @@
 package com.kindlepocket.cms.service;
 
+import java.io.FileOutputStream;
 import java.util.Properties;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,11 +18,23 @@ public class MailService {
 
     private static Logger logger = Logger.getLogger(MailService.class);
 
-    public static void sendMail(String title) {
+    private static final String MAIL_HOST = "mail.host";
+    private static final String MAIL_HOST_VALUE = "smtp.163.com";
+    private static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
+    private static final String MAIL_TRANSPORT_PROTOCOL_VALUE = "smtp";
+    private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
+    private static final String MAIL_SMTP_AUTH_VALUE = "true";
+    private static final String MAIL_CONTENT_FORMAT_CHARSET = "text/html;charset=UTF-8";
+
+    @Autowired
+    private GridFSService gridFSService;
+
+
+    public static void sendSimpleMail(String title) {
         Properties prop = new Properties();
-        prop.setProperty("mail.host", "smtp.163.com");
-        prop.setProperty("mail.transport.protocol", "smtp");
-        prop.setProperty("mail.smtp.auth", "true");
+        prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
+        prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
+        prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
         // 使用JavaMail发送邮件的5个步骤
         // 1、创建session
         Session session = Session.getInstance(prop);
@@ -40,7 +54,33 @@ public class MailService {
             ts.close();
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
-                logger.error("email send failed!", e);
+                logger.error("email simple send failed!", e);
+            }
+        }
+    }
+
+    @Test
+    public void sendFileAttachedMail(String fileObjectId) {
+        Properties prop = new Properties();
+        prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
+        prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
+        prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
+        Session session = Session.getInstance(prop);
+        session.setDebug(true);
+        try {
+            Transport ts = session.getTransport();
+            ts.connect("smtp.163.com", "binglingxueyou1031", "blxyst103166");
+            String fromAdd = "binglingxueyou1031@163.com";
+            String toAdd = "842100455@qq.com";
+            String subject = "FILE ATTACHED MAIL TEST";
+            String content = "Mail Content RE";
+            String fileSavePath = "E://attachMail.eml";
+            Message message = createFileAttachedMail(session, fromAdd, toAdd, subject, content, fileObjectId, fileSavePath);
+            ts.sendMessage(message, message.getAllRecipients());
+            ts.close();
+        } catch (Exception e) {
+            if(logger.isErrorEnabled()){
+                logger.error("send fileAttachedMail failed!");
             }
         }
     }
@@ -56,8 +96,39 @@ public class MailService {
         // 邮件的标题
         message.setSubject(subject);
         // 邮件的文本内容
-        message.setContent(content, "text/html;charset=UTF-8");
+        message.setContent(content, MAIL_CONTENT_FORMAT_CHARSET);
         // 返回创建好的邮件对象
         return message;
     }
+
+    public MimeMessage createFileAttachedMail(Session session, String fromAdd, String toAdd, String subject,
+                                                     String content, String fileObjectId, String fileSavePath) throws Exception {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(fromAdd));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAdd));
+        message.setSubject(subject);
+        // 邮件正文
+        MimeBodyPart text  = new MimeBodyPart();
+        text.setContent(content, MAIL_CONTENT_FORMAT_CHARSET);
+
+        // 附件
+        MimeBodyPart attach = new MimeBodyPart();
+        DataHandler handler = new DataHandler(new FileDataSource(this.gridFSService.readFiles(fileObjectId)));
+        attach.setDataHandler(handler);
+        attach.setFileName(handler.getName());
+
+        // 创建容器描述数据关系
+        MimeMultipart mp = new MimeMultipart();
+        mp.addBodyPart(text);
+        mp.addBodyPart(attach);
+        mp.setSubType("mixed");
+
+        message.setContent(mp);
+        message.saveChanges();
+        //将创建的email写入到本地存储
+        message.writeTo(new FileOutputStream(fileSavePath));
+        return message;
+    }
+
+
 }

@@ -2,8 +2,6 @@ package com.kindlepocket.cms.pojo;
 
 import java.util.Date;
 
-import org.apache.solr.client.solrj.beans.Field;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,25 +10,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Subscriber {
 
-    @Field("openId")
     private String id;
 
-    @Field("userName")
     private String userName;
 
-    @Field("phone")
     private String phone;
 
-    @Field("email")
     private String email;
 
-    @Field("emailPwd")
     private String emailPwd;
 
-    @Field("kindleEmail")
     private String kindleEmail;
 
-    @Field("subscribeDate")
     private Date subscribeDate;
 
     public Subscriber() {

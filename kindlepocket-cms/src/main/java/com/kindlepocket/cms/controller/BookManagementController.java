@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kindlepocket.cms.pojo.Item;
+import com.kindlepocket.cms.pojo.TextBook;
 import com.kindlepocket.cms.service.BookRepository;
 import com.kindlepocket.cms.service.GridFSService;
 import com.kindlepocket.cms.service.MailService;
@@ -37,25 +37,32 @@ public class BookManagementController {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    @RequestMapping("/sendMail")
+    public void sendMail(@RequestParam(value = "fileObjectId")String fileObjectId){
+        this.mailService.sendFileAttachedMail(fileObjectId);
+    }
+
     @RequestMapping("/insert")
     public void testInsert() {
         System.out.println("inserting............");
-        List<Item> items = new ArrayList<Item>();
-        for (int i = 400; i < 450; i++) {
-            Item item = new Item();
-            item.setId((long) i);
-            item.setAuthor("nasuf_" + i);
-            item.setTitle("ephemeris_No." + i);
-            item.setUploadDate(new Date().getTime());
-            items.add(item);
+        List<TextBook> books = new ArrayList<TextBook>();
+        for (int i = 0; i < 500; i++) {
+            TextBook book = new TextBook();
+            book.setId((long) i);
+            book.setAuthor("nasuf_" + i);
+            book.setTitle("ephemeris_No." + i);
+            book.setUploadDate(new Date().getTime());
+            book.setDownloadTimes(0L);
+            book.setKindleMailTimes(0L);
+            book.setUploaderName("nasuf");
+            books.add(book);
         }
-        this.bookRepository.insert(items);
+        this.bookRepository.insert(books);
     }
 
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     public ResponseEntity<String> findAll(@RequestParam(value = "key") String key, @RequestParam(value = "value") String value) {
-        List<Item> books = null;
-        Item book = null;
+        List<TextBook> books = new ArrayList<TextBook>();
         if(logger.isInfoEnabled()){
             logger.info("query key: " + key + " query value: " + value);
         }
@@ -70,12 +77,13 @@ public class BookManagementController {
                 e.printStackTrace();
             }
         } else if(key.toString().equals("id")){
-            book = this.bookRepository.findById(Long.parseLong(value));
+            TextBook book = this.bookRepository.findById(Long.parseLong(value));
+            books.add(book);
             if(logger.isInfoEnabled()){
-                logger.info("query result: " + book.toString());
+                logger.info("query result: " + books.toString());
             }
             try {
-                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(book));
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -90,7 +98,7 @@ public class BookManagementController {
             logger.info("\n saving book named " + title);
         }
         Long startTime = new Date().getTime();
-        this.gridFSService.saveFiles(title);
+        this.gridFSService.saveFiles();
         Long endTime = new Date().getTime();
         if (logger.isInfoEnabled()) {
             logger.info("\n book " + title + " has been saved successfully! time cost "
@@ -104,11 +112,6 @@ public class BookManagementController {
         System.out.println("removing...");
         this.bookRepository.deleteAll();
         System.out.println("removment finished!");
-    }
-
-    @RequestMapping("/preview")
-    public void previewBook() {
-        this.gridFSService.readFiles();
     }
 
     @RequestMapping("/testFind")

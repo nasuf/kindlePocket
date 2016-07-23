@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
-import com.kindlepocket.cms.pojo.Item;
+import com.kindlepocket.cms.pojo.TextBook;
 import com.mongodb.DB;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -20,11 +22,12 @@ public class GridFSService {
     @Autowired
     MongoOperations mongoOperations;
 
-    public void saveFiles(String title) {
+    public void saveFiles() {
 
-        DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(Item.class)).getDB();
+        DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(TextBook.class)).getDB();
         db.requestStart();
-        File uploadedFile = new File("src/main/resources/" + title + ".txt");
+        //File uploadedFile = new File("src/main/resources/" + title + ".txt");
+        File uploadedFile = new File("src/main/resources/application.properties");
         String uploadedFileName = uploadedFile.getName();
         GridFSInputFile gfsInput;
         try {
@@ -43,19 +46,25 @@ public class GridFSService {
         db.requestDone();
     }
 
-    public void readFiles() {
-        DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(Item.class)).getDB();
+    public File readFiles(String fileObjectId) {
+        DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(TextBook.class)).getDB();
 
         // query file saved in gridfs
-        GridFSDBFile gfsFile = new GridFS(db, "fs").findOne("阿特拉斯耸耸肩.txt");
+        // by file name
+        //GridFSDBFile gfsFile = new GridFS(db, "fs").findOne("application.properties");
+        // by objectId
+        GridFSDBFile gfsFile = new GridFS(db,"fs").findOne(new ObjectId(fileObjectId));
         try {
-            File uploadedFile = new File(gfsFile.getFilename());
-            if (!uploadedFile.exists()) {
-                uploadedFile.createNewFile();
-            }
-            gfsFile.writeTo("src/main/resources/" + new Date().getTime() + "-" + uploadedFile.getName());
+            File preparedAttachedFile = new File(gfsFile.getFilename());
+           /* if (!preparedAttachedFile.exists()) {
+                preparedAttachedFile.createNewFile();
+            }*/
+           // gfsFile.writeTo("src/main/resources/" + new Date().getTime() + "-" + uploadedFile.getName());
+            gfsFile.writeTo(preparedAttachedFile);
+            return preparedAttachedFile;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
