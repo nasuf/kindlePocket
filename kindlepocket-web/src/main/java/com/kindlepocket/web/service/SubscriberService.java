@@ -30,6 +30,30 @@ public class SubscriberService {
     @Autowired
     private ApiService apiService;
 
+    public void add(String subscriberOpenId){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("subscriberOpenId", subscriberOpenId);
+        try {
+            this.apiService.doPost(CMS_SUBSCRIBER_URL+"/add", map);
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("add new subscriber failed!",e);
+            }
+        }
+    }
+
+    public void remove(String subscriberOpenId){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("subscriberOpenId", subscriberOpenId);
+        try {
+            this.apiService.doPost(CMS_SUBSCRIBER_URL+"/remove", map);
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("remove subscriber failed!",e);
+            }
+        }
+    }
+
     public void binding(String subsriberOpenId,String phone, String userName, String email, String emailPwd, String kindleEmail){
 
         HashMap<String, Object> map = new HashMap<String, Object>();
@@ -41,10 +65,10 @@ public class SubscriberService {
         map.put("kindleEmail",kindleEmail);
 
         try {
-            this.apiService.doPost(CMS_SUBSCRIBER_URL+"/add",map);
+            this.apiService.doPost(CMS_SUBSCRIBER_URL+"/bind",map);
         } catch (IOException e) {
-            if(logger.isWarnEnabled()){
-                logger.warn("add new subscriber failed!");
+            if(logger.isErrorEnabled()){
+                logger.error("bind subscriber info failed!", e);
             }
         }
     }

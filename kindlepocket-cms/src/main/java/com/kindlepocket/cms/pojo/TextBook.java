@@ -27,12 +27,16 @@ public class TextBook {
 
     private Long downloadTimes;
 
+    private Long size;
+
+    private String format;
+
     public TextBook() {
         super();
     }
 
     public TextBook(String title, String author, Long uploadDate, String uploaderName, Long mailTimes,
-            Long kindleMailTimes, Long downloadTimes) {
+            Long kindleMailTimes, Long downloadTimes, Long size, String format) {
         super();
         this.title = title;
         this.author = author;
@@ -41,6 +45,8 @@ public class TextBook {
         this.mailTimes = mailTimes;
         this.kindleMailTimes = kindleMailTimes;
         this.downloadTimes = downloadTimes;
+        this.size = size;
+        this.format = format;
     }
 
     public Long getId() {
@@ -107,11 +113,36 @@ public class TextBook {
         this.uploaderName = uploaderName;
     }
 
-    @Override
-    public String toString() {
-        return "Item [id=" + id + ", title=" + title + ", author=" + author + ", uploadDate=" + uploadDate
-                + ", uploaderName=" + uploaderName + ", mailTimes=" + mailTimes + ", kindleMailTimes="
-                + kindleMailTimes + ", downloadTimes=" + downloadTimes + "]";
+    public Long getSize() {
+        return size;
     }
 
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+
+    @Override
+    public String toString() {
+        return "TextBook{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", uploadDate=" + uploadDate +
+                ", uploaderName='" + uploaderName + '\'' +
+                ", mailTimes=" + mailTimes +
+                ", kindleMailTimes=" + kindleMailTimes +
+                ", downloadTimes=" + downloadTimes +
+                ", size=" + size +
+                ", format='" + format + '\'' +
+                '}';
+    }
 }

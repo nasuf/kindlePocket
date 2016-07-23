@@ -55,6 +55,8 @@ public class BookManagementController {
             book.setDownloadTimes(0L);
             book.setKindleMailTimes(0L);
             book.setUploaderName("nasuf");
+            book.setSize(0L);
+            book.setFormat("mobi");
             books.add(book);
         }
         this.bookRepository.insert(books);

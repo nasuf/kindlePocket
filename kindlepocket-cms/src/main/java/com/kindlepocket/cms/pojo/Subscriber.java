@@ -24,10 +24,16 @@ public class Subscriber {
 
     private Date subscribeDate;
 
+    private Integer isBinded;
+
+    private Date lastChangeDate;
+
+    private Integer isActive;
+
     public Subscriber() {
     }
 
-    public Subscriber(String id, String userName, String phone, String email, Date subscribeDate, String kindleEmail, String emailPwd) {
+    public Subscriber(String id, String userName, String phone, String email, Date subscribeDate, String kindleEmail, String emailPwd, Integer isBinded, Integer isActive) {
         this.id = id;
         this.userName = userName;
         this.phone = phone;
@@ -35,6 +41,9 @@ public class Subscriber {
         this.subscribeDate = subscribeDate;
         this.kindleEmail = kindleEmail;
         this.emailPwd = emailPwd;
+        this.isBinded = isBinded;
+        this.lastChangeDate = new Date();
+        this.isActive = isActive;
     }
 
     public String getId() {
@@ -93,6 +102,30 @@ public class Subscriber {
         this.subscribeDate = subscribeDate;
     }
 
+    public Integer getIsBinded() {
+        return isBinded;
+    }
+
+    public void setIsBinded(Integer isBinded) {
+        this.isBinded = isBinded;
+    }
+
+    public Date getLastChangeDate() {
+        return lastChangeDate;
+    }
+
+    public void setLastChangeDate(Date lastChangeDate) {
+        this.lastChangeDate = lastChangeDate;
+    }
+
+    public Integer getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Integer isActive) {
+        this.isActive = isActive;
+    }
+
     @Override
     public String toString() {
         return "Subscriber{" +
@@ -103,6 +136,9 @@ public class Subscriber {
                 ", emailPwd='" + emailPwd + '\'' +
                 ", kindleEmail='" + kindleEmail + '\'' +
                 ", subscribeDate=" + subscribeDate +
+                ", isBinded=" + isBinded +
+                ", lastChangeDate=" + lastChangeDate +
+                ", isActive=" + isActive +
                 '}';
     }
 }

@@ -34,19 +34,73 @@ public class SubscriberManagementController {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<String> add(@RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("phone") String phone, @RequestParam("userName")String userName, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
+    @RequestMapping(value="/add", method = RequestMethod.POST)
+    public ResponseEntity<String> add(@RequestParam("subscriberOpenId")String subscriberOpenId){
+        Subscriber temp = this.ssbRepository.findOne(subscriberOpenId);
+        Subscriber newSsb = null;
+        if(null == temp){
+            // the user is never subscribed.
+            if(logger.isInfoEnabled()){
+                logger.info("the user is never subscribed before, then add it.");
+            }
+            Subscriber ssb = new Subscriber();
+            ssb.setIsBinded(0);
+            ssb.setId(subscriberOpenId);
+            ssb.setSubscribeDate(new Date());
+            ssb.setLastChangeDate(new Date());
+            ssb.setIsActive(1);
+            newSsb = this.ssbRepository.insert(ssb);
+            if(logger.isInfoEnabled()){
+                logger.info("reActive the subscriber successfully!");
+            }
+        } else {
+            // the user is ever subscribed previously.
+            temp.setIsActive(1);
+            temp.setSubscribeDate(new Date());
+            temp.setLastChangeDate(new Date());
+            this.ssbRepository.save(temp);
+            if(logger.isInfoEnabled()){
+                logger.info("add the subscriber successfully!");
+            }
+            newSsb = temp;
+        }
 
-        Subscriber ssb = new Subscriber();
-        ssb.setId(subscriberOpenId);
+        if(null == newSsb){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } else {
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(newSsb));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    @RequestMapping(value="/remove", method=RequestMethod.POST)
+    public void setInActive(@RequestParam("subscriberOpenId") String subscriberOpenId){
+        Subscriber temp = this.ssbRepository.findOne(subscriberOpenId);
+        temp.setIsActive(0);
+        temp.setLastChangeDate(new Date());
+        this.ssbRepository.save(temp);
+        if(logger.isInfoEnabled()){
+            logger.info("subscriber:" + subscriberOpenId + " has unsubscribed! Info: " + temp.toString());
+        }
+    }
+
+    @RequestMapping(value = "/bind", method = RequestMethod.POST)
+    public ResponseEntity<String> bindInfo(@RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("phone") String phone, @RequestParam("userName")String userName, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
+
+        Subscriber ssb = this.ssbRepository.findOne(subscriberOpenId);
         ssb.setPhone(phone);
         ssb.setUserName(userName);
         ssb.setEmail(email);
         ssb.setEmailPwd(emailPwd);
         ssb.setKindleEmail(kindleEmail);
-        ssb.setSubscribeDate(new Date());
+        ssb.setIsBinded(1);
+        ssb.setLastChangeDate(new Date());
 
-        Subscriber newSsb = this.ssbRepository.insert(ssb);
+        Subscriber newSsb = this.ssbRepository.save(ssb);
         if(null == newSsb){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         } else {

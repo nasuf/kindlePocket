@@ -34,6 +34,8 @@ public class KindlePocketController {
 
     private static String SUBSCRIBER_OPENID = null;
 
+    private static final String BINDED = "1";
+
     @Autowired
     private TextBookInfoSearchService searchService;
 
@@ -239,7 +241,7 @@ public class KindlePocketController {
             String fromUserName = map.get("FromUserName");
             String toUserName = map.get("ToUserName");
             String msgType = map.get("MsgType");
-            String content = map.get("Content").trim();
+            String content = null == map.get("Content") ? null : map.get("Content").trim();
 
             this.SUBSCRIBER_OPENID = fromUserName;
 
@@ -260,10 +262,13 @@ public class KindlePocketController {
                         if(isBinded(fromUserName)){
                             isBinded = true;
                         }
-                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle", "/imgs/welcome.jpg", "/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
+                        responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle; \n输入\"menu\"或\"菜单\"查看更多选项", "/imgs/welcome.jpg", "/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
                         break;
                     case "menu":
                         responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+                    case "菜单":
+                        responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+
 
                         break;
                     default:
@@ -293,10 +298,12 @@ public class KindlePocketController {
             } else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) {
                 String eventType = map.get("Event");
                 if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
-
+                    this.ssbService.add(fromUserName);
                     responseMessage = MessageUtil.initText(toUserName, fromUserName,
                             MessageUtil.welcomeText());
 
+                } else if (MessageUtil.MESSAGE_UNSUBSCRIBE.equals(eventType)) {
+                    this.ssbService.remove(fromUserName);
                 }
             }
             if (logger.isInfoEnabled()) {
@@ -311,10 +318,19 @@ public class KindlePocketController {
     private Boolean isBinded(String subscriberOpenId) {
         HttpResult result = this.ssbService.findSubscriberInfo(subscriberOpenId);
         if(!StringUtils.isEmpty(result.getBody())){
-            if(logger.isInfoEnabled()){
-                logger.info("the user has binded");
+            try {
+                JsonNode info = MAPPER.readTree(result.getBody());
+                if(info.get("isBinded").toString().equals(BINDED)){
+                    if(logger.isInfoEnabled()){
+                        logger.info("the user has binded");
+                    }
+                    return true;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
             }
-            return true;
+            return false;
         } else {
             if(logger.isInfoEnabled()){
                 logger.info("the user has not binded");
