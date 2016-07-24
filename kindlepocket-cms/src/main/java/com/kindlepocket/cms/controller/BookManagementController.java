@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.kindlepocket.cms.pojo.Subscriber;
+import com.kindlepocket.cms.service.SubscriberRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,9 @@ public class BookManagementController {
     private BookRepository bookRepository;
 
     @Autowired
+    private SubscriberRepository ssbRepository;
+
+    @Autowired
     private MailService mailService;
 
     @Autowired
@@ -38,8 +43,19 @@ public class BookManagementController {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @RequestMapping("/sendMail")
-    public void sendMail(@RequestParam(value = "fileObjectId")String fileObjectId){
-        this.mailService.sendFileAttachedMail(fileObjectId);
+    public void sendMail(@RequestParam("bookId")String bookId, @RequestParam("subscriberOpenId")String subscriberOpenId){
+
+        Subscriber s = this.ssbRepository.findOne(subscriberOpenId);
+        String fromMail = s.getEmail();
+        String toMail = s.getKindleEmail();
+        String fromMailPwd = s.getEmailPwd();
+        if(logger.isInfoEnabled()){
+            logger.info("prepared to send email for " + s.getUserName() + " from : [" + fromMail + "] to : [" + toMail + "]");
+        }
+        this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
+        if(logger.isInfoEnabled()){
+            logger.info("mail send successfully!");
+        }
     }
 
     @RequestMapping("/insert")

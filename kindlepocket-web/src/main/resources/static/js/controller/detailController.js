@@ -26,6 +26,11 @@ angular.module('details',['detail.service'])
             pageSize * (pageIndex - 1),
             lastRecordIndex
         );
+    };
+
+    $scope.sendMail = function(id) {
+        //alert("id=" + id);
+        detailService.sendMail(id);
     }
 
 });

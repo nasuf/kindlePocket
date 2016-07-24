@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.web.pojo.HttpResult;
 import com.kindlepocket.web.service.SubscriberService;
+import com.kindlepocket.web.service.TextBookService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.kindlepocket.web.service.TextBookInfoSearchService;
 import com.kindlepocket.web.util.CheckUtil;
 import com.kindlepocket.web.util.MessageUtil;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,9 +35,14 @@ public class KindlePocketController {
     private static String SUBSCRIBER_OPENID = null;
 
     private static final String BINDED = "1";
+    private static final String MENU_ITEM_STRING_ONE = "1";
+    private static final String MENU_ITEM_STRING_TWO = "2";
+    private static final String MENU_ITEM_INIT_ENG = "menu";
+    private static final String MENU_ITEM_INIT_CHI = "菜单";
+
 
     @Autowired
-    private TextBookInfoSearchService searchService;
+    private TextBookService bookService;
 
     @Autowired
     private SubscriberService ssbService;
@@ -94,7 +99,7 @@ public class KindlePocketController {
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key","id");
                     queryMap.put("value",idList);
-                    result = this.searchService.search(queryMap);
+                    result = this.bookService.search(queryMap);
                     if(logger.isInfoEnabled()){
                         logger.info("query single result:" + result);
                     }
@@ -105,7 +110,7 @@ public class KindlePocketController {
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key", "title");
                     queryMap.put("value", queryParam);
-                    result = this.searchService.search(queryMap);
+                    result = this.bookService.search(queryMap);
                     if(logger.isInfoEnabled()){
                         logger.info("query all the matched books:" + result);
                     }
@@ -254,30 +259,27 @@ public class KindlePocketController {
             if (MessageUtil.MESSAGE_TEXT.equals(msgType)) {
 
                 switch (content) {
-                    case "1":
+                    case MENU_ITEM_STRING_ONE:
                         responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket", "kindle text books sharing platform", "/imgs/welcome.jpg", "/KindlePocket/binding");
                         break;
-                    case "2":
+                    case MENU_ITEM_STRING_TWO:
                         Boolean isBinded = false;
                         if(isBinded(fromUserName)){
                             isBinded = true;
                         }
                         responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤", "点击绑定kindle; \n输入\"menu\"或\"菜单\"查看更多选项", "/imgs/welcome.jpg", "/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded="+isBinded);
                         break;
-                    case "menu":
+                    case MENU_ITEM_INIT_ENG:
+                    case MENU_ITEM_INIT_CHI:
                         responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-                    case "菜单":
-                        responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-
-
                         break;
                     default:
                         // responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-                        // List<String> titleList = this.searchService.search(content);
+                        // List<String> titleList = this.bookService.search(content);
                         Map<String, Object> queryMap = new HashMap<String, Object>();
                         queryMap.put("key","title");
                         queryMap.put("value", content);
-                        JsonNode result = this.searchService.search(queryMap);
+                        JsonNode result = this.bookService.search(queryMap);
                         List<String> titleList = new ArrayList<String>();
                         List<String> idList = new ArrayList<String>();
                         Iterator<JsonNode> iterator = result.iterator();
@@ -400,4 +402,23 @@ public class KindlePocketController {
         }
     }
 
+    @RequestMapping(value="/sendMail", method=RequestMethod.GET)
+    public void sendMail(@RequestParam("bookId")String bookId, HttpServletRequest request){
+        System.out.print("entered sendMail function\n");
+        Cookie[] cookies = request.getCookies();
+        String subscriberOpenId = null;
+        if(null != cookies){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("subscriberOpenId")){
+                    subscriberOpenId = cookie.getValue();
+                    if(logger.isInfoEnabled()){
+                        logger.info("ready to send the book; bookId:" + bookId + " subscriberOpenId:" + subscriberOpenId);
+                    }
+                    this.bookService.sendMail(bookId,subscriberOpenId);
+                }
+            }
+        } else {
+            System.out.print("no cookie received");
+        }
+    }
 }

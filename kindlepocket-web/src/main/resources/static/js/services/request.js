@@ -5,7 +5,7 @@ angular.module('binding.services',[])
      var binding = function(action, params){
          return $http({
                  method: 'POST',
-                 url: 'http://7c4521cc.ngrok.io/KindlePocket/'+action+'',
+                 url: 'http://kindlepocket.nasuf.cn/KindlePocket/'+action+'',
                  // pass in data as strings
                  data: $.param(params),
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }

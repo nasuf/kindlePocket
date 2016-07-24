@@ -60,7 +60,7 @@ public class MailService {
     }
 
     @Test
-    public void sendFileAttachedMail(String fileObjectId) {
+    public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) {
         Properties prop = new Properties();
         prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
@@ -69,13 +69,14 @@ public class MailService {
         session.setDebug(true);
         try {
             Transport ts = session.getTransport();
-            ts.connect("smtp.163.com", "binglingxueyou1031", "blxyst103166");
-            String fromAdd = "binglingxueyou1031@163.com";
-            String toAdd = "842100455@qq.com";
+            String fromMailPrefix = fromMail.split("@")[0];
+            ts.connect(MAIL_HOST_VALUE,fromMailPrefix, fromMailPwd);
+            //String fromAdd = "binglingxueyou1031@163.com";
+            //String toAdd = "842100455@qq.com";
             String subject = "FILE ATTACHED MAIL TEST";
             String content = "Mail Content RE";
             String fileSavePath = "E://attachMail.eml";
-            Message message = createFileAttachedMail(session, fromAdd, toAdd, subject, content, fileObjectId, fileSavePath);
+            Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
             ts.sendMessage(message, message.getAllRecipients());
             ts.close();
         } catch (Exception e) {
