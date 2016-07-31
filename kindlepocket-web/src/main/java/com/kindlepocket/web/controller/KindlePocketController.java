@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.web.pojo.HttpResult;
+import com.kindlepocket.web.service.MailMessageSendService;
 import com.kindlepocket.web.service.SubscriberService;
 import com.kindlepocket.web.service.TextBookService;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +49,9 @@ public class KindlePocketController {
     @Autowired
     private SubscriberService ssbService;
 
+    @Autowired
+    private MailMessageSendService mailMessageSendService;
+
     private static Logger logger = Logger.getLogger(KindlePocketController.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -57,6 +62,11 @@ public class KindlePocketController {
             logger.info("redirecting to homePage...");
         }
         return "index";
+    }
+
+    @RequestMapping("/upload1")
+    public String toFileUpload() {
+        return "upload1";
     }
 
 
@@ -402,8 +412,8 @@ public class KindlePocketController {
         }
     }
 
-    @RequestMapping(value="/sendMail", method=RequestMethod.GET)
-    public void sendMail(@RequestParam("bookId")String bookId, HttpServletRequest request){
+    @RequestMapping(value="/sendMailMessage", method=RequestMethod.GET)
+    public void sendMailMessage(@RequestParam("bookId")String bookId, HttpServletRequest request){
         System.out.print("entered sendMail function\n");
         Cookie[] cookies = request.getCookies();
         String subscriberOpenId = null;
@@ -414,11 +424,28 @@ public class KindlePocketController {
                     if(logger.isInfoEnabled()){
                         logger.info("ready to send the book; bookId:" + bookId + " subscriberOpenId:" + subscriberOpenId);
                     }
-                    this.bookService.sendMail(bookId,subscriberOpenId);
+                    //this.bookService.sendMail(bookId,subscriberOpenId);
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("bookId",bookId);
+                    params.put("subscriberOpenId",subscriberOpenId);
+                    try {
+                        String paramsStr = MAPPER.writeValueAsString(params);
+                        if(logger.isInfoEnabled()){
+                            logger.info("sendMailMessage params: " + paramsStr);
+                        }
+                        this.mailMessageSendService.sendMsg(paramsStr);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
             System.out.print("no cookie received");
         }
     }
+
+  /*  @RequestMapping(value="/sendMailMessage", method=RequestMethod.GET)
+    public void sendMailMessage(@RequestParam("bookId")String bookId){
+        this.mailMessageSendService.sendMsg("helloRabbit");
+    }*/
 }

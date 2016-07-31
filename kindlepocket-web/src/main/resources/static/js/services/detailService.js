@@ -16,7 +16,7 @@ angular.module('detail.service',[])
         sendMail : function(bookId){
              return $http({
                  method: 'GET',
-                 url: 'http://localhost:9090/KindlePocket/sendMail?bookId='+bookId,
+                 url: 'http://localhost:9090/KindlePocket/sendMailMessage?bookId='+bookId,
                  // pass in data as strings
                  //data: $.param(params),
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }

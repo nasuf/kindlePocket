@@ -32,6 +32,7 @@ public class GridFSService {
         GridFSInputFile gfsInput;
         try {
             gfsInput = new GridFS(db, "fs").createFile(uploadedFile);
+            // gfsInput.setId(new ObjectId("1"));
             // set gridFs chunckSize as 10M
             gfsInput.setChunkSize(1024 * 1024 * 10L);
             // set extension name

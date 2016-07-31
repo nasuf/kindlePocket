@@ -64,7 +64,7 @@ public class BookManagementController {
         List<TextBook> books = new ArrayList<TextBook>();
         for (int i = 0; i < 500; i++) {
             TextBook book = new TextBook();
-            book.setId((long) i);
+            book.setId(i+"");
             book.setAuthor("nasuf_" + i);
             book.setTitle("ephemeris_No." + i);
             book.setUploadDate(new Date().getTime());

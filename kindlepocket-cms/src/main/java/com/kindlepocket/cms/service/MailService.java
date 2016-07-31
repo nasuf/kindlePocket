@@ -81,7 +81,7 @@ public class MailService {
             ts.close();
         } catch (Exception e) {
             if(logger.isErrorEnabled()){
-                logger.error("send fileAttachedMail failed!");
+                logger.error("send fileAttachedMail failed!",e);
             }
         }
     }
@@ -102,8 +102,7 @@ public class MailService {
         return message;
     }
 
-    public MimeMessage createFileAttachedMail(Session session, String fromAdd, String toAdd, String subject,
-                                                     String content, String fileObjectId, String fileSavePath) throws Exception {
+    public MimeMessage createFileAttachedMail(Session session, String fromAdd, String toAdd, String subject, String content, String fileObjectId, String fileSavePath) throws Exception {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(fromAdd));
         message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAdd));
