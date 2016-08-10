@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8"/>
+    <title>Kindle Pocket</title>
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.uploadify.min.js"></script>
+    <script type="text/javascript" src="/js/upload.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/uploadify.css">
+
+</head>
+<body>
+
+<input id="uploaderName" style="display:none" value="${uploaderName }">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" id="myModalLabel">
+        File Upload
+    </h4>
+</div>
+<div class="modal-body" id="myModalBody">
+    <!-- 文件上传实现二 -->
+    <div id="uploadfileQueue"></div>
+    <br>
+    <input type="file" id="file_upload"/>
+   <!-- <label><input id="commonCheckbox" type="checkbox" value="1"/>上传到公共库</label>-->
+    <!-- <input type="button" value="上传"
+     onclick="javascript:$('#file_upload').uploadify('upload','*')" >
+
+    <input type="button" value="取消上传"
+     onclick="javascript:$('#file_upload').uploadify('cancel','*')" >   -->
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"
+            onclick="javascript:$('#file_upload').uploadify('cancel','*')">关闭
+    </button>
+    <button type="button" class="btn btn-primary" onclick="javascript:$('#file_upload').uploadify('upload','*')">上传
+    </button>
+</div>
+
+</body>
+</html>
