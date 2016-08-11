@@ -2,8 +2,15 @@ package com.kindlepocket.cms.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.kindlepocket.cms.utils.Constants;
+import com.kindlepocket.cms.utils.FileUtil;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +22,8 @@ import com.mongodb.DB;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Component
 public class GridFSService {
@@ -22,28 +31,56 @@ public class GridFSService {
     @Autowired
     MongoOperations mongoOperations;
 
+    @Autowired
+    private BookRepository bookRepository;
+
+    private static Logger logger = Logger.getLogger(GridFSService.class);
+
     public void saveFiles() {
 
         DB db = mongoOperations.getCollection(mongoOperations.getCollectionName(TextBook.class)).getDB();
         db.requestStart();
-        //File uploadedFile = new File("src/main/resources/" + title + ".txt");
-        File uploadedFile = new File("src/main/resources/application.properties");
-        String uploadedFileName = uploadedFile.getName();
-        GridFSInputFile gfsInput;
-        try {
-            gfsInput = new GridFS(db, "fs").createFile(uploadedFile);
-            // gfsInput.setId(new ObjectId("1"));
-            // set gridFs chunckSize as 10M
-            gfsInput.setChunkSize(1024 * 1024 * 10L);
-            // set extension name
-            gfsInput.setContentType("txt");
-            // set file name saved in gridfs
-            gfsInput.setFilename(uploadedFile.getName());
-            gfsInput.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<File> files = new ArrayList<File>();
+        files = FileUtil.listFiles(Constants.UPLOAD_PATH_LOCAL, files);
 
+        for(File uploadedFile: files){
+            String uploadedFileName = uploadedFile.getName();
+            GridFSInputFile gfsInput;
+            try {
+                gfsInput = new GridFS(db, "fs").createFile(uploadedFile);
+                gfsInput.setId(new ObjectId(new Date()));
+                // set gridFs chunckSize as 10M
+                gfsInput.setChunkSize(1024 * 1024 * 10L);
+                // set extension name
+                gfsInput.setContentType("txt");
+                // set file name saved in gridfs
+                gfsInput.setFilename(uploadedFile.getName());
+                gfsInput.save();
+                if(logger.isInfoEnabled()){
+                    logger.info("save book [" + uploadedFileName + "] to gridFS");
+                }
+
+                TextBook book = new TextBook();
+                book.setId(gfsInput.getId().toString());
+                book.setTitle(uploadedFileName);
+                book.setAuthor(null);
+                book.setUploadDate(new Date().getTime());
+                book.setUploaderName(null);
+                book.setMailTimes(0L);
+                book.setKindleMailTimes(0L);
+                book.setDownloadTimes(0L);
+                book.setSize(gfsInput.getLength());
+                book.setFormat(gfsInput.getContentType());
+                bookRepository.save(book);
+                if(logger.isInfoEnabled()){
+                    logger.info("save book [" + uploadedFileName + "] to collection");
+                }
+            } catch (IOException e) {
+                if(logger.isErrorEnabled()){
+                    logger.error("save file to gridFS failed!", e);
+                }
+            }
+        }
         db.requestDone();
     }
 

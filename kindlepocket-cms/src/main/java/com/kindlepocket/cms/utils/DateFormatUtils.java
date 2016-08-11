@@ -34,11 +34,21 @@ public class DateFormatUtils {
      * @param timeMillis
      * @return
      */
+    public static String parseDateTimeToString(Long timeMillis) {
+        if (null == timeMillis || 0L == timeMillis)
+            return "";
+        else {
+            DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            Date d = new Date(timeMillis);
+            return formatter.format(d);
+        }
+    }
+
     public static String parseDateToString(Long timeMillis) {
         if (null == timeMillis || 0L == timeMillis)
             return "";
         else {
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             Date d = new Date(timeMillis);
             return formatter.format(d);
         }
@@ -92,8 +102,8 @@ public class DateFormatUtils {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(processTotalOnlineTime(13505085L));
+  /*  public static void main(String[] args) {
+        System.out.println(parseDateTimeToString(new Date().getTime()));
         System.out.println(parseDateToStringUnsplited(13505085L));
-    }
+    }*/
 }

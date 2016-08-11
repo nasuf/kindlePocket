@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +24,7 @@ import sun.misc.BASE64Encoder;
 
 public class FileUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * 
@@ -105,32 +107,53 @@ public class FileUtil {
         }
     }
 
-    public static long getFileSize(String filePath, HttpServletRequest request) throws IOException {
+    public static long getFileSize(File file) throws IOException {
         /*
          * String filePath = request .getSession() .getServletContext() .getRealPath( "/WEB-INF/upload/0acf7b008de64551b45e40dd7bac5ac4-uploadedIn-20151224160511-uploadedBy-nasuf-named-eclipse黑色主题插件.zip");
          */
         FileChannel fc = null;
         try {
-            File f = new File(filePath);
-            if (f.exists() && f.isFile()) {
-                FileInputStream fis = new FileInputStream(f);
+            if (file.exists() && file.isFile()) {
+                FileInputStream fis = new FileInputStream(file);
                 fc = fis.getChannel();
             } else {
-                LOGGER.info("file doesn't exist or is not a file");
+                logger.info("file doesn't exist or is not a file");
             }
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.toString());
+            logger.error(e.toString());
         } catch (IOException e) {
-            LOGGER.error(e.toString());
+            logger.error(e.toString());
         } finally {
             if (null != fc) {
                 try {
                     fc.close();
                 } catch (IOException e) {
-                    LOGGER.error(e.toString());
+                    logger.error(e.toString());
                 }
             }
         }
         return fc.size();
     }
+
+    public static List<File> listFiles(String folderPath, List<File> fileList ){
+       // List<File> fileList = new ArrayList<File>();
+        File rootPath = new File(folderPath);
+        File[] files = rootPath.listFiles();
+        for(File file: files){
+            if(file.isDirectory()){
+                listFiles(file.getAbsolutePath(),fileList);
+            } else {
+                fileList.add(file);
+                if(logger.isInfoEnabled()){
+                    logger.info("scanned files: " + file.getName() + "; path: " + file.getPath());
+                }
+            }
+        }
+        return fileList;
+    }
+
+  /*  public static void main(String args[]){
+        new FileUtil().listFiles("src/main/resources/static/");
+    }*/
+
 }

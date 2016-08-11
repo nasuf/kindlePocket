@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.kindlepocket.cms.pojo.Subscriber;
 import com.kindlepocket.cms.service.SubscriberRepository;
+import com.kindlepocket.cms.utils.Constants;
 import com.kindlepocket.cms.utils.DateFormatUtils;
 import com.kindlepocket.cms.utils.FileUtil;
 import org.apache.log4j.Logger;
@@ -38,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 public class BookManagementController {
 
     private static Logger logger = Logger.getLogger(BookManagementController.class);
+
+
 
     @Autowired
     private BookRepository bookRepository;
@@ -122,16 +125,16 @@ public class BookManagementController {
     }
 
     @RequestMapping(value = "/saveAll", method = RequestMethod.GET)
-    public void saveBooks(@RequestParam(value = "title") String title) {
+    public void saveBooks() {
 
         if (logger.isInfoEnabled()) {
-            logger.info("\n saving book named " + title);
+            logger.info("\n saving book ");
         }
         Long startTime = new Date().getTime();
         this.gridFSService.saveFiles();
         Long endTime = new Date().getTime();
         if (logger.isInfoEnabled()) {
-            logger.info("\n book " + title + " has been saved successfully! time cost "
+            logger.info("all books have been saved successfully! time cost "
                     + (endTime - startTime) / 1000 + " seconds");
         }
 
@@ -168,12 +171,22 @@ public class BookManagementController {
         List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("file");
         for (int i =0; i< files.size(); ++i) {
             MultipartFile file = files.get(i);
+            File uploadedFile = null;
+           // this.gridFSService.saveFiles(file);
+
             String fileOriginalName = file.getOriginalFilename();
+            String uploadFileName = DateFormatUtils.parseDateTimeToString(new Date().getTime())+ Constants.UNDER_LINE+fileOriginalName;
             if (!file.isEmpty()) {
                 try {
+                    File parentFilePath = new File(Constants.UPLOAD_PATH_LOCAL+DateFormatUtils.parseDateToString(new Date().getTime()));
+                    if(!parentFilePath.exists()){
+                        parentFilePath.mkdirs();
+                    }
                     byte[] bytes = file.getBytes();
+                    uploadedFile = new File(parentFilePath+Constants.SLASH+uploadFileName);
+                    uploadedFile.setWritable(true,true);
                     BufferedOutputStream stream =
-                            new BufferedOutputStream(new FileOutputStream(new File(fileOriginalName)));
+                            new BufferedOutputStream(new FileOutputStream(uploadedFile));
                     stream.write(bytes);
                     stream.close();
                 } catch (Exception e) {
