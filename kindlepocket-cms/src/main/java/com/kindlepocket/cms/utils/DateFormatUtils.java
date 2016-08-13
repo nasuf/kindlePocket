@@ -38,7 +38,7 @@ public class DateFormatUtils {
         if (null == timeMillis || 0L == timeMillis)
             return "";
         else {
-            DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssS");
             Date d = new Date(timeMillis);
             return formatter.format(d);
         }

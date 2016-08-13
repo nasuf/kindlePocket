@@ -139,13 +139,15 @@ public class FileUtil {
        // List<File> fileList = new ArrayList<File>();
         File rootPath = new File(folderPath);
         File[] files = rootPath.listFiles();
-        for(File file: files){
-            if(file.isDirectory()){
-                listFiles(file.getAbsolutePath(),fileList);
-            } else {
-                fileList.add(file);
-                if(logger.isInfoEnabled()){
-                    logger.info("scanned files: " + file.getName() + "; path: " + file.getPath());
+        if(null != files){
+            for(File file: files){
+                if(file.isDirectory()){
+                    listFiles(file.getAbsolutePath(),fileList);
+                } else {
+                    fileList.add(file);
+                    if(logger.isInfoEnabled()){
+                        logger.info("scanned files: " + file.getName() + "; path: " + file.getPath());
+                    }
                 }
             }
         }

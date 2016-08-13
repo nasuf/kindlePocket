@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.kindlepocket.cms.pojo.Subscriber;
-import com.kindlepocket.cms.service.SubscriberRepository;
+import com.kindlepocket.cms.service.*;
 import com.kindlepocket.cms.utils.Constants;
 import com.kindlepocket.cms.utils.DateFormatUtils;
 import com.kindlepocket.cms.utils.FileUtil;
@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.TextBook;
-import com.kindlepocket.cms.service.BookRepository;
-import com.kindlepocket.cms.service.GridFSService;
-import com.kindlepocket.cms.service.MailService;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -53,6 +50,9 @@ public class BookManagementController {
 
     @Autowired
     private GridFSService gridFSService;
+
+    @Autowired
+    private FileProcess fileProcess;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -131,12 +131,14 @@ public class BookManagementController {
             logger.info("\n saving book ");
         }
         Long startTime = new Date().getTime();
-        this.gridFSService.saveFiles();
+        //this.gridFSService.saveFiles();
+        new Thread(this.fileProcess).start();
+        //new Thread(this.fileProcess).start();
         Long endTime = new Date().getTime();
-        if (logger.isInfoEnabled()) {
+      /*  if (logger.isInfoEnabled()) {
             logger.info("all books have been saved successfully! time cost "
                     + (endTime - startTime) / 1000 + " seconds");
-        }
+        }*/
 
     }
 
@@ -175,10 +177,11 @@ public class BookManagementController {
            // this.gridFSService.saveFiles(file);
 
             String fileOriginalName = file.getOriginalFilename();
+            // file name example: 0_201601211430_temp.zip
             String uploadFileName = DateFormatUtils.parseDateTimeToString(new Date().getTime())+ Constants.UNDER_LINE+fileOriginalName;
             if (!file.isEmpty()) {
                 try {
-                    File parentFilePath = new File(Constants.UPLOAD_PATH_LOCAL+DateFormatUtils.parseDateToString(new Date().getTime()));
+                    File parentFilePath = new File(Constants.UN_SAVED_PATH + DateFormatUtils.parseDateToString(new Date().getTime()));
                     if(!parentFilePath.exists()){
                         parentFilePath.mkdirs();
                     }
