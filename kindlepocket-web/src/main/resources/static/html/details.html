@@ -35,6 +35,10 @@
         margin-bottom: 19px;
       }
 
+      @-moz-document url-prefix() {
+  		fieldset { display: table-cell; }
+	   }
+
 </style>
 
 <body>
@@ -57,21 +61,54 @@
 </div>
 
 <div class="container-fluid" ng-controller="detailController" data-ng-init="getDetails()">
-	<div ng-repeat="detail in details">
+	<!--<div ng-repeat="detail in details">
 		<div class="row" align="center">
 			<div class="col-md-8 col-md-offset-2">
 				<div class="thumbnail">
-					<!--<img src="/imgs/favicon.ico" alt="#">-->
+					&lt;!&ndash;<img src="/imgs/favicon.ico" alt="#">&ndash;&gt;
 					<div>
 						<p>{{detail.title}}</p>
 						<p>author: {{detail.author}}</p>
 						<p>size: {{detail.size}}</p>
 						<p>format: {{detail.format}}</p>
 						<p class="col-sm-offset-4">
-							<button data-toggle="modal" data-target="#mailList" href="#" class="btn btn-primary" role="button" ng-click="sendMail(detail.id)">Send to Kindle</button>
+							<button href="#" class="btn btn-primary" role="button" ng-click="sendMail(detail.id)">Send to Kindle</button>
 							<button href="#" class="btn btn-default" role="button">Preview</button>
 						</p>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>-->
+	<div class="table-responsive">
+		<div ng-repeat="detail in details">
+			<div class="panel panel-success">
+				<div class="panel-heading">{{detail.title}}</div>
+				<div class="panel-body">
+					<p>
+						作者：{{detail.author}} &nbsp;&nbsp;&nbsp;
+						大小：{{detail.size}}
+					</p>
+					<p>
+						格式：{{detail.format}} &nbsp;&nbsp;&nbsp;
+						发送次数：{{detail.kindleMailTimes}}
+					</p>
+					<!--<div class="table-responsive">
+						<table class="table table-condensed">
+							<tr>
+								<td>作者：{{detail.author}}</td>
+								<td>大小：{{detail.size}}</td>
+							</tr>
+							<tr>
+								<td>格式：{{detail.format}}</td>
+								<td>发送次数：{{detail.kindleMailTimes}}</td>
+							</tr>
+						</table>
+					</div>-->
+				</div>
+				<div class="panel-footer" align="right">
+					<button href="#" class="btn btn-primary" role="button" ng-click="sendMail(detail.id)">Send to Kindle</button>
+					<button href="#" class="btn btn-default" role="button">Preview</button>
 				</div>
 			</div>
 		</div>
@@ -90,13 +127,9 @@
 	</div>
 </div>
 
-<div class="modal fade" role="dialog" id="mailList" aria-labelledby="gridSystemModalLabel">
+<!--<div class="modal fade" role="dialog" id="mailList" aria-labelledby="gridSystemModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<!--<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="gridSystemModalLabel">Modal title</h4>
-			</div>-->
 			<div class="modal-body">
 				BODY
 			</div>
@@ -104,9 +137,9 @@
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary">Save changes</button>
 			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+		</div>
+	</div>
+</div>-->
 
 
 </body>

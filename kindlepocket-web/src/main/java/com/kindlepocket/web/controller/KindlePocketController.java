@@ -64,11 +64,6 @@ public class KindlePocketController {
         return "index";
     }
 
-    @RequestMapping("/upload1")
-    public String toFileUpload() {
-        return "upload1";
-    }
-
 
     @RequestMapping("/toDetailsPage")
     public String toSearchDetailPage(@RequestParam("single")String single, @RequestParam("idList")String idList, @RequestParam("queryParam")String queryParam, HttpServletRequest request, HttpServletResponse response) {

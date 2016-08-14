@@ -4,7 +4,7 @@ angular.module('detail.service',[])
     return {
         getDetails : function(){
             var deferred = $q.defer();
-            var path = 'http://localhost:9090/KindlePocket/getDetails';
+            var path = 'http://kindlepocket.nasuf.cn/KindlePocket/getDetails';
             var promise = $http.get(path).then(function(response){
                 return response;
             }, function(response){
@@ -16,15 +16,15 @@ angular.module('detail.service',[])
         sendMail : function(bookId){
              return $http({
                  method: 'GET',
-                 url: 'http://localhost:9090/KindlePocket/sendMailMessage?bookId='+bookId,
+                 url: 'http://kindlepocket.nasuf.cn/KindlePocket/sendMailMessage?bookId='+bookId,
                  // pass in data as strings
                  //data: $.param(params),
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
              }).success(function(data,status){
                  console.log("success! status:"+status);
-                 alert("sendMail successfully!")
+                 //alert("sendMail successfully!")
              }).error(function(data,status){
-                 alert("sendMail error!")
+                 //alert("sendMail error!")
                  console.log("error! status:"+status);
              })
         }
