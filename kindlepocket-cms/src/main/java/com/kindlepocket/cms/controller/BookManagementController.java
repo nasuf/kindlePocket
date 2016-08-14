@@ -95,28 +95,34 @@ public class BookManagementController {
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> findAll(@RequestParam(value = "key") String key, @RequestParam(value = "value") String value) {
-        List<TextBook> books = new ArrayList<TextBook>();
+        List<TextBook> queryResult = new ArrayList<TextBook>();
+        List<TextBook> booksQueriedByTitle = new ArrayList<TextBook>();
+        List<TextBook> booksQueriedByAuthor = new ArrayList<TextBook>();
         if(logger.isInfoEnabled()){
             logger.info("query key: " + key + " query value: " + value);
         }
         if(key.toString().equals("title")){
-            books = this.bookRepository.findByTitleLike(value);
+            //books = this.bookRepository.findByTitleLike(value);
+            booksQueriedByTitle = this.bookRepository.findByTitleLikeIgnoreCase(value);
+            booksQueriedByAuthor = this.bookRepository.findByAuthorLikeIgnoreCase(value);
+            queryResult.addAll(booksQueriedByTitle);
+            queryResult.addAll(booksQueriedByAuthor);
             if(logger.isInfoEnabled()){
-                logger.info("query results: " + books.toString());
+                logger.info("query results: " + queryResult.toString());
             }
             try {
-                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(queryResult));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         } else if(key.toString().equals("id")){
-            TextBook book = this.bookRepository.findById(Long.parseLong(value));
-            books.add(book);
+            TextBook book = this.bookRepository.findById(value);
+            queryResult.add(book);
             if(logger.isInfoEnabled()){
-                logger.info("query result: " + books.toString());
+                logger.info("query result: " + queryResult.toString());
             }
             try {
-                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(books));
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(queryResult));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -152,7 +158,7 @@ public class BookManagementController {
     @RequestMapping("/testFind")
     public void testFind(){
         System.out.println(this.bookRepository.findByTitleLike("ephemeris"));
-        System.out.println(this.bookRepository.findById(100L));
+        //System.out.println(this.bookRepository.findById(100L));
     }
 
     @RequestMapping("/toUpload")
