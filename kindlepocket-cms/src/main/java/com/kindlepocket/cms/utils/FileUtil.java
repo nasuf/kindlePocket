@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import sun.misc.BASE64Encoder;
 
+import static java.lang.System.out;
+
 
 public class FileUtil {
 
@@ -154,8 +156,137 @@ public class FileUtil {
         return fileList;
     }
 
-  /*  public static void main(String args[]){
-        new FileUtil().listFiles("src/main/resources/static/");
-    }*/
+    public static void copySingleFile(String oldPath, String newPath){
 
+        try {
+            File oldFile = new File(oldPath);
+            new File(newPath).mkdirs();
+            File newFile = new File(newPath+File.separator+oldFile.getName());
+            //newFile.createNewFile();
+            int bytesum = 0;
+            int byteread = 0;
+            if(oldFile.exists()){
+                InputStream in = new FileInputStream(oldFile);
+                FileOutputStream out = new FileOutputStream(newFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while((byteread = in.read(buffer)) != -1){
+                    bytesum += byteread;
+                    out.write(buffer, 0, byteread);
+                }
+            }
+            if(logger.isInfoEnabled()){
+                logger.info("file: [" + oldPath + "] has been copy to [" + newFile.getPath());
+            }
+        } catch (Exception e) {
+            if(logger.isErrorEnabled()){
+                logger.error("copy single file failed!", e);
+            }
+        }
+    }
+
+    public static void copyFolder(String oldPath, String newPath) {
+        try {
+            new File(newPath).mkdirs();
+            File oldFolder = new File(oldPath);
+            String[] oldFiles = oldFolder.list();
+            File temp = null;
+            for(int i=0; i<oldFiles.length; i++){
+                if(oldPath.endsWith(File.separator)){
+                    temp = new File(oldPath + oldFiles[i]);
+                } else {
+                    temp = new File(oldPath + File.separator + oldFiles[i]);
+                }
+
+                if(temp.isFile()){
+                    FileInputStream in = new FileInputStream(temp);
+                    FileOutputStream out = new FileOutputStream(newPath + Constants.SLASH + (temp.getName().toString()));
+                    byte[] b = new byte[1024 * 5];
+                    int len;
+                    while((len=in.read(b)) != -1){
+                        out.write(b, 0, len);
+                    }
+                    out.flush();
+                    out.close();
+                    in.close();
+                } else if(temp.isDirectory()){
+                    copyFolder(oldPath + Constants.SLASH + oldFiles[i], newPath + Constants.SLASH + oldFiles[i]);
+                }
+            }
+        } catch (Exception e) {
+            if(logger.isErrorEnabled()){
+                logger.error("copy folder failed!", e);
+            }
+        }
+    }
+
+    public static void deleteSingleFile(String filePath) {
+        File file = new File(filePath);
+        file.delete();
+        if(logger.isInfoEnabled()){
+            logger.info("file: [" + filePath + "] has been deleted!");
+        }
+    }
+
+    public static void deleteFolder(String folderPath){
+        deleteAllFiles(folderPath);
+        new File(folderPath).delete();
+        if(logger.isInfoEnabled()){
+            logger.info("folder: [" + folderPath + "] has been deleted!");
+        }
+    }
+
+    public static void deleteAllFiles(String path){
+        File file = new File(path);
+        if(!file.exists()){
+            if(logger.isWarnEnabled()){
+                logger.warn("path not exists!");
+            }
+            return ;
+        }
+        if(!file.isDirectory()){
+            if(logger.isWarnEnabled()){
+                logger.warn("path is not a directory!");
+            }
+        }
+        String[] tempList = file.list();
+        File temp = null;
+        for(int i=0; i<tempList.length; i++){
+            if(path.endsWith(File.separator)){
+                temp = new File(path + tempList[i]);
+            } else {
+                temp = new File(path + File.separator + tempList[i]);
+            }
+            if(temp.isFile()){
+                temp.delete();
+                if(logger.isInfoEnabled()){
+                    logger.info("file: [" + temp.getPath() + "] has been deleted!");
+                }
+            }
+            if(temp.isDirectory()){
+                deleteAllFiles(path + Constants.SLASH + tempList[i]);
+               // deleteFolder(path + Constants.SLASH + tempList[i]);
+            }
+        }
+    }
+
+    public static void moveFile(String oldPath, String newPath) {
+        copySingleFile(oldPath,newPath);
+        deleteSingleFile(oldPath);
+        if(logger.isInfoEnabled()){
+            logger.info("file:[" + oldPath + "] has been moved to [" + newPath + "]");
+        }
+    }
+
+    public static void moveFolder(String oldPath, String newPath){
+        copyFolder(oldPath,newPath);
+        deleteFolder(oldPath);
+        if(logger.isInfoEnabled()){
+            logger.info("folder:[" + oldPath + "] has been moved to [" + newPath + "]");
+        }
+    }
+
+    /*public static void main(String args[]){
+        new FileUtil().moveFolder("src/main/css7","src/main/css8");
+    }*/
 }

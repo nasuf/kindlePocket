@@ -87,12 +87,11 @@ public class GridFSService {
                         logger.info("save book [" + originalFileName + "] to collection");
                     }
 
-                   /* File savedFilePath = new File(Constants.SAVED_PATH);
-                    FileUtils.copyFileToDirectory(scannedFile,savedFilePath);
-                    if(logger.isInfoEnabled()){
-                        logger.info("copy book [" + scannedFile.getName() + "] to /saved/ path");
-                    }*/
+                    // eg: /usr/local/src/files/unsaved/20160815/*
                     String unSavedFilePath = scannedFile.getPath();
+                    if(unSavedFilePath.contains(Constants.SPACE)){
+                        unSavedFilePath.replace(Constants.SPACE, Constants.BACKSLASH+Constants.SPACE);
+                    }
                     File savedFile = new File(Constants.SAVED_PATH + DateFormatUtils.parseDateToString(new Date().getTime()));
                     if(!savedFile.exists()) {
                         if(logger.isInfoEnabled()){
@@ -100,11 +99,14 @@ public class GridFSService {
                         }
                         savedFile.mkdirs();
                     }
-                    String command = "mv " + unSavedFilePath + " " + savedFile.getPath();
+                    /*String command = "mv " + unSavedFilePath + " " + savedFile.getPath();
                     if(logger.isInfoEnabled()){
                         logger.info("prepared to execute command: " + command);
                     }
-                    Process process = Runtime.getRuntime().exec(command);
+                    // execute linux command to move scanned file to the destination directory.
+                    Process process = Runtime.getRuntime().exec(command);*/
+                    FileUtil.moveFile(unSavedFilePath,savedFile.getPath());
+
                     if(logger.isInfoEnabled()){
                         logger.info("file [" + scannedFile.getName() + "] has been moved to the destination directory");
                     }
@@ -122,7 +124,7 @@ public class GridFSService {
         }
     }
 
-   /* public static void main(String args[]){
+/*    public static void main(String args[]){
         File file = new File("/src/main/resources/static/files/unsaved/20160813/2016081318082057_HttpClientUtil.java");
         System.out.println(file.getPath());
         System.out.println(file.getAbsolutePath());

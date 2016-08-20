@@ -10,11 +10,18 @@ public class Constants {
     public static final String SLASH = "/";
     public static final String BACKSLASH = "\\";
 
+    public static final String SPACE = " ";
+
+    public static final String STAR_KEY = "*";
+
     public static final String UN_SAVED_PATH = "/usr/local/src/files/unsaved/";
     public static final String SAVED_PATH = "/usr/local/src/files/saved/";
 
     public static final String UN_SAVED_PATH_LOCAL = "src/main/resources/static/files/unsaved/";
     public static final String SAVED_PATH_LOCAL = "src/main/resources/static/files/saved/";
+
+    public static final Integer ONE = 1;
+    public static final Integer ZERO = 0;
 
   //  public static final String UN_UPLOADED_IDENTIFIER = "0";
 

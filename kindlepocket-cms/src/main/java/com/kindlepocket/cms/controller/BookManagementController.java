@@ -198,6 +198,9 @@ public class BookManagementController {
                             new BufferedOutputStream(new FileOutputStream(uploadedFile));
                     stream.write(bytes);
                     stream.close();
+
+                    // save file to the gridFS and collection
+                    this.gridFSService.saveFiles();
                 } catch (Exception e) {
                     if(logger.isErrorEnabled()){
                         logger.error("file upload failed!", e);

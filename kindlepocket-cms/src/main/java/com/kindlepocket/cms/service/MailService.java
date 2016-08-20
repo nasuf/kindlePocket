@@ -44,7 +44,7 @@ public class MailService {
             // 2、通过session得到transport对象
             Transport ts = session.getTransport();
             // 3、使用邮箱的用户名和密码连上邮件服务器，发送邮件时，发件人需要提交邮箱的用户名和密码给smtp服务器，用户名和密码都通过验证之后才能够正常发送邮件给收件人。
-            ts.connect("smtp.163.com", "binglingxueyou1031", "xxx");
+            ts.connect("smtp.163.com", "binglingxueyou1031", "blxyst103166");
             // 4、创建邮件
             Message message = createSimpleMail(session, title + "'s book",
                     "please do not response this email!");
@@ -126,7 +126,7 @@ public class MailService {
         message.setContent(mp);
         message.saveChanges();
         //将创建的email写入到本地存储
-        message.writeTo(new FileOutputStream(fileSavePath));
+        //message.writeTo(new FileOutputStream(fileSavePath));
         return message;
     }
 

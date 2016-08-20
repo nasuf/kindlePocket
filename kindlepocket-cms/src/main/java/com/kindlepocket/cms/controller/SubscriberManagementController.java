@@ -1,17 +1,12 @@
 package com.kindlepocket.cms.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.Subscriber;
 import com.kindlepocket.cms.service.SubscriberRepository;
-import com.mongodb.Mongo;
-import org.apache.catalina.connector.Request;
-import org.apache.el.parser.Node;
+import com.kindlepocket.cms.utils.Constants;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,7 +75,7 @@ public class SubscriberManagementController {
     @RequestMapping(value="/remove", method=RequestMethod.POST)
     public void setInActive(@RequestParam("subscriberOpenId") String subscriberOpenId){
         Subscriber temp = this.ssbRepository.findOne(subscriberOpenId);
-        temp.setIsActive(0);
+        temp.setIsActive(Constants.ZERO);
         temp.setLastChangeDate(new Date());
         this.ssbRepository.save(temp);
         if(logger.isInfoEnabled()){
@@ -97,7 +92,7 @@ public class SubscriberManagementController {
         ssb.setEmail(email);
         ssb.setEmailPwd(emailPwd);
         ssb.setKindleEmail(kindleEmail);
-        ssb.setIsBinded(1);
+        ssb.setIsBinded(Constants.ONE);
         ssb.setLastChangeDate(new Date());
 
         Subscriber newSsb = this.ssbRepository.save(ssb);
@@ -138,9 +133,16 @@ public class SubscriberManagementController {
             /*JsonNode jsonNode = MAPPER.readTree(subscriber);
             String ssbStr = jsonNode.get("Subscriber").toString();
             System.out.println("ssbStr:" + ssbStr);*/
-            System.out.println("string got:" + subscriber);
+            if(logger.isInfoEnabled()){
+                logger.info("string got:" + subscriber);
+            }
             Subscriber ssb = MAPPER.readValue(subscriber, Subscriber.class);
-            System.out.println("ssb:" + ssb);
+            ssb.setLastChangeDate(new Date());
+            ssb.setIsBinded(Constants.ONE);
+            ssb.setIsActive(Constants.ONE);
+            if(logger.isInfoEnabled()){
+                logger.info("ssb:" + ssb);
+            }
             Subscriber newSsbInfo = this.ssbRepository.save(ssb);
             return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(newSsbInfo));
         } catch (IOException e) {
