@@ -137,6 +137,11 @@ public class KindlePocketController {
         return "binding";
     }
 
+    @RequestMapping("/testToInfoUpdate")
+    public String testToInfoUpdate(){
+        return "infoUpdate";
+    }
+
     /**
      *
      * @param request
