@@ -15,6 +15,7 @@ import com.kindlepocket.cms.utils.Constants;
 import com.kindlepocket.cms.utils.DateFormatUtils;
 import com.kindlepocket.cms.utils.FileUtil;
 import org.apache.log4j.Logger;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -200,7 +201,7 @@ public class BookManagementController {
                     stream.close();
 
                     // save file to the gridFS and collection
-                    this.gridFSService.saveFiles();
+                    //this.gridFSService.saveFiles();
                 } catch (Exception e) {
                     if(logger.isErrorEnabled()){
                         logger.error("file upload failed!", e);
@@ -213,54 +214,5 @@ public class BookManagementController {
             }
         }
         return "upload successful";
-
-
-     /*   if(logger.isInfoEnabled()){
-            logger.info("ready to upload files...");
-        }
-        String parentPathStr = null;
-        String filePath = null;
-        String fileName = file.getOriginalFilename();
-        String fileType = null;
-        String fileNameUploaded = null;
-        String currentTimeStr = DateFormatUtils.parseDateToStringUnsplited(System.currentTimeMillis());
-        // 为了避免文件名重复，在文件名前加UUID
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        // String uuidFileName = uuid + fileName;
-
-        fileNameUploaded = uuid + "-uploadedIn-" + currentTimeStr + "-uploadedBy-" + uploaderName + "-named-"
-                + fileName;
-       *//* if (true == toCommonRepo) {
-            parentPathStr = request.getSession().getServletContext()
-                    .getRealPath("/files");
-            if (logger.isInfoEnabled()) {
-                logger.info(uploaderName + "正在上传该文件: " + fileName + " 到公共库");
-            }
-        } else {*//*
-            // 设置文件保存的本地路径
-            filePath = request.getSession().getServletContext().getRealPath("/files");
-            // fileName = file.getOriginalFilename();
-            fileType = fileName.split("[.]")[1];
-
-            File parentPath = new File(filePath + "/" + uploaderName);
-            if (!parentPath.exists())
-                parentPath.mkdirs();
-            parentPathStr = request.getSession().getServletContext()
-                    .getRealPath("/files/" + uploaderName + "");
-            File f = new File(parentPath + "/" + uuid + "." + fileType);
-            if (logger.isInfoEnabled()) {
-                logger.info(uploaderName + "正在上传该文件: " + fileName + " 到私人库");
-            }
-        //}
-
-        // 将文件保存到服务器
-        try {
-            FileUtil.upFile(file.getInputStream(), fileNameUploaded, parentPathStr);
-        } catch (IOException e) {
-            if(logger.isErrorEnabled()){
-                logger.error("file upload failed!", e);
-            }
-        }
-        return fileNameUploaded;*/
     }
 }

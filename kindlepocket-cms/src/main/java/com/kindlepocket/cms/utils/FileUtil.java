@@ -12,10 +12,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,7 +291,74 @@ public class FileUtil {
         }
     }
 
-    /*public static void main(String args[]){
-        new FileUtil().moveFolder("src/main/css7","src/main/css8");
-    }*/
+    public static void unZipFile(String zippedFilePath, String unZippedFilePath, boolean includeZipFileName) {
+        try {
+            if(StringUtils.isEmpty(zippedFilePath) || StringUtils.isEmpty(unZippedFilePath)) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("zippedFilePath or unZippedFilePath should not be empty!");
+                }
+            }
+            File zippedFile = new File(zippedFilePath);
+            if(includeZipFileName) {
+                String fileName = zippedFile.getName();
+                if(StringUtils.isNotEmpty(fileName)) {
+                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                }
+                unZippedFilePath = unZippedFilePath + File.separator + fileName;
+            }
+            File unzippedFileDir = new File(unZippedFilePath);
+            if(!unzippedFileDir.exists() || !unzippedFileDir.isDirectory()) {
+                unzippedFileDir.mkdirs();
+            }
+
+            // start to unzip file
+            ZipEntry entry = null;
+            String entryFilePath = null;
+            String entryDirPath = null;
+            File entryFile = null;
+            File entryDir = null;
+            int index = 0;
+            int count = 0;
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            BufferedInputStream bis = null;
+            BufferedOutputStream bos = null;
+            ZipFile zip = new ZipFile(zippedFile);
+            Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>)zip.entries();
+            while(entries.hasMoreElements()) {
+                entry = entries.nextElement();
+                entryFilePath = unZippedFilePath + File.separator + entry.getName();
+                index = entryFilePath.lastIndexOf(File.separator);
+                if(index != -1) {
+                    entryDirPath = entryFilePath.substring(0, index);
+                } else {
+                    entryDirPath = "";
+                }
+                entryDir = new File(entryDirPath);
+                if(!entryDir.exists() || !entryDir.isDirectory()){
+                    entryDir.mkdirs();
+                }
+                entryFile = new File(entryFilePath);
+                if(entryFile.exists()) {
+                    // check if file allowed to be deleted, or throw SecurityException.
+                    SecurityManager securityManager = new SecurityManager();
+                    securityManager.checkDelete(entryFilePath);
+                    entryFile.delete();
+                }
+                bos = new BufferedOutputStream(new FileOutputStream(entryFile));
+                bis = new BufferedInputStream(zip.getInputStream(entry));
+                while((count = bis.read(buffer, 0, bufferSize))!= -1){
+                    bos.write(buffer, 0, count);
+                }
+                bos.flush();
+                bos.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]){
+        new FileUtil().unZipFile("src/main/resources/static/file.zip","src/main/resources/static/temp",true);
+    }
 }

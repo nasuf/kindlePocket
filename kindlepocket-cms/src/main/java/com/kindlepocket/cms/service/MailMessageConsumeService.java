@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.RabbitMQConfig;
 import com.kindlepocket.cms.pojo.Subscriber;
+import com.kindlepocket.cms.pojo.TextBook;
+import com.kindlepocket.cms.utils.Constants;
 import com.rabbitmq.client.Channel;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.*;
@@ -32,6 +34,9 @@ public class MailMessageConsumeService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -108,6 +113,8 @@ public class MailMessageConsumeService {
             logger.info("prepared to send email for " + s.getUserName() + " from : [" + fromMail + "] to : [" + toMail + "]");
         }
         this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
+        TextBook book = this.bookRepository.findOne(bookId);
+        book.setKindleMailTimes(book.getKindleMailTimes() + Constants.ONE);
         if(logger.isInfoEnabled()){
             logger.info("mail send successfully!");
         }

@@ -140,6 +140,7 @@ public class SubscriberManagementController {
             ssb.setLastChangeDate(new Date());
             ssb.setIsBinded(Constants.ONE);
             ssb.setIsActive(Constants.ONE);
+            ssb.setSubscribeDate(this.ssbRepository.findOne(ssb.getId()).getSubscribeDate());
             if(logger.isInfoEnabled()){
                 logger.info("ssb:" + ssb);
             }
