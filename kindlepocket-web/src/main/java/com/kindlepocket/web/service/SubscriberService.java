@@ -91,7 +91,7 @@ public class SubscriberService {
     }
 
     public Boolean updateSubscriberInfo(String id, String phone, String userName, String email, String emailPwd, String kindleEmail) {
-        Subscriber subscriber = new Subscriber(id, userName, phone, email, new Date(), kindleEmail, emailPwd);
+        Subscriber subscriber = new Subscriber(id, userName, phone, email, kindleEmail, emailPwd);
         try {
             String ssb = MAPPER.writeValueAsString(subscriber);
             System.out.println("ssb:" + ssb);

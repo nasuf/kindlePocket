@@ -35,6 +35,15 @@ public class Subscriber {
         this.emailPwd = emailPwd;
     }
 
+    public Subscriber(String id, String userName, String phone, String email, String kindleEmail, String emailPwd) {
+        this.id = id;
+        this.userName = userName;
+        this.phone = phone;
+        this.email = email;
+        this.kindleEmail = kindleEmail;
+        this.emailPwd = emailPwd;
+    }
+
     public String getId() {
         return id;
     }
