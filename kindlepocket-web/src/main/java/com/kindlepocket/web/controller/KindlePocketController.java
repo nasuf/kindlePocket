@@ -2,6 +2,9 @@ package com.kindlepocket.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 import javax.servlet.http.Cookie;
@@ -73,7 +76,13 @@ public class KindlePocketController {
         Cookie cookie = null;
         Cookie temp = null;
         if(single.equals("false")){
-            cookie = new Cookie("queryParam",queryParam);
+            try {
+                cookie = new Cookie("queryParam", URLEncoder.encode(queryParam,"utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                if(logger.isErrorEnabled()){
+                    logger.error("encode queryParam: [" + queryParam + "] encounterd problems!");
+                }
+            }
             temp = new Cookie("idList", null);
         } else {
             cookie = new Cookie("idList",idList);
@@ -114,7 +123,13 @@ public class KindlePocketController {
                     String queryParam = cookie.getValue();
                     Map<String, Object> queryMap = new HashMap<String, Object>();
                     queryMap.put("key", "title");
-                    queryMap.put("value", queryParam);
+                    try {
+                        queryMap.put("value", URLDecoder.decode(queryParam, "utf-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        if(logger.isErrorEnabled()){
+                            logger.error("decode queryParam: [" + "] encountered problems!");
+                        }
+                    }
                     result = this.bookService.search(queryMap);
                     if(logger.isInfoEnabled()){
                         logger.info("query all the matched books:" + result);
@@ -412,8 +427,9 @@ public class KindlePocketController {
         }
     }
 
-    @RequestMapping(value="/sendMailMessage", method=RequestMethod.GET)
-    public void sendMailMessage(@RequestParam("bookId")String bookId, HttpServletRequest request){
+    @RequestMapping(value="/sendMailMessage", method=RequestMethod.POST)
+    @ResponseBody
+    public void sendMailMessage(HttpServletRequest request,@RequestParam("bookId")String bookId) {
         System.out.print("entered sendMail function\n");
         Cookie[] cookies = request.getCookies();
         String subscriberOpenId = null;

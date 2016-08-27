@@ -8,7 +8,7 @@ angular.module('infoUpdate',[])
         url: 'http://kindlepocket.nasuf.cn/KindlePocket/getSubscriberOpenId'
     }).success(function(data,status){
         $scope.subscriberData.openId = data;
-        alert("find open id successfully! id= " + data);
+        //alert("find open id successfully! id= " + data);
 
          $http({
                 method: 'GET',
@@ -18,7 +18,7 @@ angular.module('infoUpdate',[])
                 $scope.subscriberData.phone = data.phone;
                 $scope.subscriberData.email = data.email;
                 $scope.subscriberData.kindleEmail = data.kindleEmail;
-                alert("findInfo successfully! id= " + data.id);
+                //alert("findInfo successfully! id= " + data.id);
             }).error(function(data,status){
                 alert("findInfo error! data" + data + " status:" + status);
             })

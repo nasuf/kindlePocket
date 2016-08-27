@@ -4,6 +4,7 @@ angular.module('details',['detail.service'])
     $scope.detailsAll = {};
     $scope.initIndex = 0;
     $scope.initPageSize = 8;
+    $scope.bookId = {};
 
     $scope.getDetails = function(){
         detailService.getDetails().then(
@@ -29,8 +30,10 @@ angular.module('details',['detail.service'])
     };
 
     $scope.sendMail = function(id) {
-        //alert("id=" + id);
-        detailService.sendMail(id);
+      //  alert("id=" + id);
+        $scope.bookId = id;
+        var param = $scope.bookId;
+        detailService.sendMail(param);
     }
 
 });
