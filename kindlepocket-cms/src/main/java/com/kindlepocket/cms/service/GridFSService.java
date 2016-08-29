@@ -117,11 +117,11 @@ public class GridFSService {
                 }
                 db.requestDone();
             }
-        } else {
+        } /*else {
             if(logger.isInfoEnabled()){
                 logger.info("no files scanned!");
             }
-        }
+        }*/
     }
 
 /*    public static void main(String args[]){

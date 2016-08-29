@@ -1,6 +1,6 @@
 package com.kindlepocket.cms.service;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -9,7 +9,6 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,14 +58,13 @@ public class MailService {
         }
     }
 
-    @Test
     public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) {
         Properties prop = new Properties();
         prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
         prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
         Session session = Session.getInstance(prop);
-        session.setDebug(true);
+        //session.setDebug(true);
         try {
             Transport ts = session.getTransport();
             String fromMailPrefix = fromMail.split("@")[0];
@@ -113,9 +111,10 @@ public class MailService {
 
         // 附件
         MimeBodyPart attach = new MimeBodyPart();
-        DataHandler handler = new DataHandler(new FileDataSource(this.gridFSService.readFiles(fileObjectId)));
+        File file = this.gridFSService.readFiles(fileObjectId);
+        DataHandler handler = new DataHandler(new FileDataSource(file));
         attach.setDataHandler(handler);
-        attach.setFileName(handler.getName());
+        attach.setFileName(MimeUtility.encodeText(handler.getName()).replaceAll("\r", "").replaceAll("\n", ""));
 
         // 创建容器描述数据关系
         MimeMultipart mp = new MimeMultipart();

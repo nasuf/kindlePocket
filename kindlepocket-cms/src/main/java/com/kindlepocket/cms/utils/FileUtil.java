@@ -358,7 +358,7 @@ public class FileUtil {
         }
     }
 
-    public static void main(String args[]){
+  /*  public static void main(String args[]){
         new FileUtil().unZipFile("src/main/resources/static/file.zip","src/main/resources/static/temp",true);
-    }
+    }*/
 }

@@ -115,6 +115,7 @@ public class MailMessageConsumeService {
         this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
         TextBook book = this.bookRepository.findOne(bookId);
         book.setKindleMailTimes(book.getKindleMailTimes() + Constants.ONE);
+        this.bookRepository.save(book);
         if(logger.isInfoEnabled()){
             logger.info("mail send successfully!");
         }
