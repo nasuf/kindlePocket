@@ -115,6 +115,7 @@ public class MailService {
         DataHandler handler = new DataHandler(new FileDataSource(file));
         attach.setDataHandler(handler);
         attach.setFileName(MimeUtility.encodeText(handler.getName()).replaceAll("\r", "").replaceAll("\n", ""));
+        //attach.setHeader("Content-Type", "text/plain");
 
         // 创建容器描述数据关系
         MimeMultipart mp = new MimeMultipart();

@@ -1,9 +1,6 @@
 package com.kindlepocket.cms.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.jar.Pack200;
 
 import com.kindlepocket.cms.utils.Constants;
 import com.kindlepocket.cms.utils.DateFormatUtils;
+import com.kindlepocket.cms.utils.FileCharsetDetector;
 import com.kindlepocket.cms.utils.FileUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -53,12 +51,16 @@ public class GridFSService {
                 logger.info(files.size() + " books ready to save.");
             }
             for(File scannedFile: files){
-                String originalFileName = scannedFile.getName().substring(
+
+                //File encodedFile = FileUtil.fileCharsetConvert(scannedFile, "UTF-8");
+                File encodedFile = scannedFile;
+                String originalFileName = encodedFile.getName().substring(
                         scannedFile.getName().indexOf(Constants.UNDER_LINE)+1,
                         scannedFile.getName().length());
+
                 GridFSInputFile gfsInput;
                 try {
-                    gfsInput = new GridFS(db, "fs").createFile(scannedFile);
+                    gfsInput = new GridFS(db, "fs").createFile(encodedFile);
                     gfsInput.setId(new ObjectId(new Date()));
                     // set gridFs chunckSize as 10M
                     gfsInput.setChunkSize(1024 * 1024 * 10L);
@@ -100,9 +102,6 @@ public class GridFSService {
                         savedFile.mkdirs();
                     }
                     /*String command = "mv " + unSavedFilePath + " " + savedFile.getPath();
-                    if(logger.isInfoEnabled()){
-                        logger.info("prepared to execute command: " + command);
-                    }
                     // execute linux command to move scanned file to the destination directory.
                     Process process = Runtime.getRuntime().exec(command);*/
                     FileUtil.moveFile(unSavedFilePath,savedFile.getPath());
@@ -152,6 +151,10 @@ public class GridFSService {
             }*/
            // gfsFile.writeTo("src/main/resources/" + new Date().getTime() + "-" + uploadedFile.getName());
             gfsFile.writeTo(preparedAttachedFile);
+            String charset = new FileCharsetDetector().guessFileEncoding(preparedAttachedFile);
+            if(logger.isInfoEnabled()){
+                logger.info("file charset: " + charset);
+            }
             return preparedAttachedFile;
         } catch (IOException e) {
             e.printStackTrace();

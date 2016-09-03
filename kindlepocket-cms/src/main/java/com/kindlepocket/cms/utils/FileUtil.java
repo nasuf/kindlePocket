@@ -1,16 +1,11 @@
 package com.kindlepocket.cms.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -20,6 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -358,7 +354,45 @@ public class FileUtil {
         }
     }
 
-  /*  public static void main(String args[]){
-        new FileUtil().unZipFile("src/main/resources/static/file.zip","src/main/resources/static/temp",true);
-    }*/
+
+    public static File fileCharsetConvert(File srcFile, String desFileCharset) {
+
+        File encodedFile = new File(srcFile.getName());
+        try {
+            String srcFileCharset = new FileCharsetDetector().guessFileEncoding(srcFile);
+            if(logger.isInfoEnabled()){
+                logger.info("source file charset: " + srcFileCharset);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(srcFile),srcFileCharset));
+            ///////////////////////////////////////////
+           /* final Charset windowsCharset = Charset.forName("windows-1252");
+            final Charset utfCharset = Charset.forName("UTF-16");
+            final CharBuffer windowsEncoded = windowsCharset.decode(ByteBuffer.wrap(new byte[] {(byte) 0x91}));
+            final byte[] utfEncoded = utfCharset.encode(windowsEncoded).array();
+            System.out.println(new String(utfEncoded, utfCharset.displayName()));*/
+            //////////////////////////////////////////
+
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(encodedFile),desFileCharset));
+            int ch = 0;
+            while((ch = br.read()) != -1) {
+                bw.write(ch);
+            }
+            bw.flush();
+            br.close();
+            bw.close();
+
+            String encodedCharset = new FileCharsetDetector().guessFileEncoding(encodedFile);
+            if(logger.isInfoEnabled()){
+                logger.info("encoded file charset: " + encodedCharset);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encodedFile;
+    }
+
+    public static void main(String args[]){
+        new FileUtil().fileCharsetConvert(new File("src/main/resources/static/鲁迅全集22.txt"),"UTF-16BE");
+
+    }
 }

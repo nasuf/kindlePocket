@@ -119,6 +119,13 @@
 			<version>RELEASE</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sourceforge.jchardet</groupId>
+			<artifactId>jchardet</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
 
 	</dependencies>
 
