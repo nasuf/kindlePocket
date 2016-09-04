@@ -391,8 +391,8 @@ public class FileUtil {
         return encodedFile;
     }
 
-    public static void main(String args[]){
+   /* public static void main(String args[]){
         new FileUtil().fileCharsetConvert(new File("src/main/resources/static/鲁迅全集22.txt"),"UTF-16BE");
 
-    }
+    }*/
 }

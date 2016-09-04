@@ -3,6 +3,7 @@ package com.kindlepocket.cms.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.RabbitMQConfig;
+import com.kindlepocket.cms.pojo.DeliveryRecord;
 import com.kindlepocket.cms.pojo.Subscriber;
 import com.kindlepocket.cms.pojo.TextBook;
 import com.kindlepocket.cms.utils.Constants;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by admin on 2016/7/30.
@@ -37,6 +39,9 @@ public class MailMessageConsumeService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private DeliveryRecordRepository deliveryRecordRepository;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -114,9 +119,21 @@ public class MailMessageConsumeService {
         }
         this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
         TextBook book = this.bookRepository.findOne(bookId);
+        // update mail times
         book.setKindleMailTimes(book.getKindleMailTimes() + Constants.ONE);
         this.bookRepository.save(book);
+
+        // save delivery record;
+        DeliveryRecord record = new DeliveryRecord();
+        record.setDeliveryDate(new Date());
+        record.setFromEmailAdd(fromMail);
+        record.setToEmailAdd(toMail);
+        record.setIsDelivered(Constants.ONE);
+        record.setTextBookId(bookId);
+        this.deliveryRecordRepository.save(record);
+
         if(logger.isInfoEnabled()){
+            logger.info("save new delivery record: [" + record.toString() + "]");
             logger.info("mail send successfully!");
         }
     }

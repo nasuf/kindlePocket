@@ -77,6 +77,9 @@ public class MailService {
             Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
             ts.sendMessage(message, message.getAllRecipients());
             ts.close();
+
+
+
         } catch (Exception e) {
             if(logger.isErrorEnabled()){
                 logger.error("send fileAttachedMail failed!",e);
