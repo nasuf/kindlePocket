@@ -31,9 +31,21 @@ angular.module('details',['detail.service'])
 
     $scope.sendMail = function(id) {
       //  alert("id=" + id);
+        Materialize.toast('Send Successfully!', 4000);
         $scope.bookId = id;
         var param = $scope.bookId;
         detailService.sendMail(param);
-    }
+    };
 
+    $scope.popUpCommentModal = function(id){
+      		$('#'+id+'').openModal();
+    };
+
+    $scope.sendProblems = function (){
+        Materialize.toast('Got it !', 4000);
+    };
+
+    $scope.closeFAB = function() {
+        $('.fixed-action-btn').closeFAB();
+    };
 });
