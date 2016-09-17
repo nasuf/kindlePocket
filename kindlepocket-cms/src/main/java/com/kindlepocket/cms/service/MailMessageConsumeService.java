@@ -125,6 +125,7 @@ public class MailMessageConsumeService {
 
         // save delivery record;
         DeliveryRecord record = new DeliveryRecord();
+        record.setSubscriberOpenId(subscriberOpenId);
         record.setDeliveryDate(new Date());
         record.setFromEmailAdd(fromMail);
         record.setToEmailAdd(toMail);
