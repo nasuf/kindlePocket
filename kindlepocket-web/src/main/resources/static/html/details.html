@@ -68,8 +68,8 @@
 			<div class="col s12 m7">
 				<!--<h2 class="header">Horizontal Card</h2>-->
 				<div class="card horizontal hoverable">
-					<div class="card-image">
-						<img src="/imgs/header.jpg">
+					<div class="card-image waves-effect waves-block waves-light">
+						<img class="activator" src="/imgs/header.jpg">
 					</div>
 					<div class="card-stacked">
 						<div class="card-content">
@@ -108,6 +108,7 @@
 							</div>
 							<!-- Modal Structure End -->
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -117,19 +118,26 @@
 		<!-- pagination -->
 		<div align="center">
 			<ul class="pagination">
-				<li class="disabled"><a href="#!"><i class="material-icons">Pre</i></a></li>
+				<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
 				<li class="active"><a href="#!" ng-click="pagination(1,8)">1</a></li>
 				<li class="waves-effect"><a href="#!" ng-click="pagination(2,8)">2</a></li>
 				<li class="waves-effect"><a href="#!" ng-click="pagination(3,8)">3</a></li>
 				<li class="waves-effect"><a href="#!" ng-click="pagination(4,8)">4</a></li>
 				<li class="waves-effect"><a href="#!" ng-click="pagination(5,8)">5</a></li>
-				<li class="waves-effect"><a href="#!"><i class="material-icons">Next</i></a></li>
+				<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
 			</ul>
 		</div>
 
 	</div>
 
-	<div class="fixed-action-btn click-to-toggle" style="bottom: 110px; right: 28px;" onmouseleave="closeFAB()">
+	<!--<div class="fixed-action-btn" style="top: 20px; right: 28px;">
+		<div class="chip waves-effect z-depth-1">
+			<img src="/imgs/yuna.jpg" alt="Contact Person">
+			Jane Doe
+		</div>
+	</div>-->
+
+	<div class="fixed-action-btn click-to-toggle" id="bottomButton" style="bottom: 110px; right: 28px;" ng-mouseleave="closeFAB()">
 		<a id="floatBtn" class="btn-floating btn-middle red waves-effect z-depth-2">
 			<i class="large material-icons">add</i>
 		</a>
@@ -140,6 +148,7 @@
 			<li><a class="btn-floating blue waves-effect z-depth-2 modal-trigger" href="#bottomModal"><i class="material-icons">live_help</i></a></li>
 		</ul>
 	</div>
+
 
 	<!-- Bottom Modal -->
 	<div id="bottomModal" class="modal bottom-sheet">

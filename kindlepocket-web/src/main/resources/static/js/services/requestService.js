@@ -1,11 +1,12 @@
-angular.module('binding.services',[])
-.factory('bindingDataService', function($http){
+angular.module('request.services',[])
+.factory('requestService', function($http){
 
      console.log('entered the service')
-     var binding = function(action, params){
+     var req = function(action, params){
          return $http({
                  method: 'POST',
                  url: 'http://kindlepocket.nasuf.cn/KindlePocket/'+action+'',
+                 //url: 'http://localhost:9090/KindlePocket/'+action+'',
                  // pass in data as strings
                  data: $.param(params),
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -19,9 +20,9 @@ angular.module('binding.services',[])
      }
 
      return {
-        binding: function(action,params){
+        req: function(action,params){
          console.log('entered the function')
-            return binding(action,params);
+            return req(action,params);
         }
      }
 

@@ -1,10 +1,11 @@
-angular.module('binding',['binding.services'])
-.controller('formController',function($scope,bindingDataService){
+angular.module('binding',['request.services'])
+.controller('formController',function($scope,requestService){
     $scope.bindingData = {};
     var params = $scope.bindingData;
     console.log('params: '+params);
 
     $scope.submitForm = function(){
-        bindingDataService.binding('bindingData',params);
+        // action: bindingData
+        requestService.binding('bindingData',params);
     }
 });

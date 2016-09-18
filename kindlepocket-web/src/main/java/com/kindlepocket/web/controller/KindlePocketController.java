@@ -460,6 +460,14 @@ public class KindlePocketController {
         }
     }
 
+    @RequestMapping(value="/info", method=RequestMethod.GET)
+    public String toInfoDetail(){
+        if(logger.isInfoEnabled()){
+            logger.info("redirecting to info page...");
+        }
+        return "info";
+    }
+
   /*  @RequestMapping(value="/sendMailMessage", method=RequestMethod.GET)
     public void sendMailMessage(@RequestParam("bookId")String bookId){
         this.mailMessageSendService.sendMsg("helloRabbit");

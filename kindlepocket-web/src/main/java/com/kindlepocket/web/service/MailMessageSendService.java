@@ -40,11 +40,11 @@ public class MailMessageSendService implements RabbitTemplate.ConfirmCallback {
         }
         if(ack) {
             if(logger.isInfoEnabled()){
-                logger.info("message consumed successfully!");
+                logger.info("message has been added in Queue successfully!");
             }
         } else {
             if(logger.isWarnEnabled()){
-                logger.warn("message consumed failed!");
+                logger.warn("message added to Queue failed!");
             }
         }
     }

@@ -4,8 +4,8 @@ angular.module('detail.service',[])
     return {
         getDetails : function(){
             var deferred = $q.defer();
-            var path = 'http://localhost:9090/KindlePocket/getDetails';
-            //var path = 'http://kindlepocket.nasuf.cn/KindlePocket/getDetails';
+            //var path = 'http://localhost:9090/KindlePocket/getDetails';
+            var path = 'http://kindlepocket.nasuf.cn/KindlePocket/getDetails';
             var promise = $http.get(path).then(function(response){
                 return response;
             }, function(response){
@@ -17,8 +17,8 @@ angular.module('detail.service',[])
         sendMail : function(param){
              return $http({
                  method: 'POST',
-                 url: 'http://localhost:9090/KindlePocket/sendMailMessage',
-                 //url: 'http://kindlepocket.nasuf.cn/KindlePocket/sendMailMessage',
+                 //url: 'http://localhost:9090/KindlePocket/sendMailMessage',
+                 url: 'http://kindlepocket.nasuf.cn/KindlePocket/sendMailMessage',
                  // pass in data as strings
                  data: $.param({"bookId":param}),
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }

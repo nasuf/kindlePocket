@@ -46,6 +46,6 @@ angular.module('details',['detail.service'])
     };
 
     $scope.closeFAB = function() {
-        $('.fixed-action-btn').closeFAB();
+        $('#bottomButton').closeFAB();
     };
 });
