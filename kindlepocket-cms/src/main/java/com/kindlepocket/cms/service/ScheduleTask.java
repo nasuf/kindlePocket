@@ -16,7 +16,7 @@ public class ScheduleTask {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
-    private GridFSService gridFSService;
+    private GridFSServiceImpl gridFSService;
 
     //@Scheduled(fixedRate = 5000)
     // execute every 10 seconds.

@@ -82,7 +82,7 @@ public class BookManagementController {
             book.setId(i+"");
             book.setAuthor("nasuf_" + i);
             book.setTitle("ephemeris_No." + i);
-            book.setUploadDate(new Date().getTime());
+            book.setUploadDate(new Date());
             book.setDownloadTimes(0L);
             book.setKindleMailTimes(0L);
             book.setUploaderName("nasuf");

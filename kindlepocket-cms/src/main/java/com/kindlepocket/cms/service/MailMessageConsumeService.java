@@ -35,7 +35,7 @@ public class MailMessageConsumeService {
     SubscriberRepository ssbRepository;
 
     @Autowired
-    private MailService mailService;
+    private MailServiceImpl mailService;
 
     @Autowired
     private BookRepository bookRepository;

@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Date;
+
 // ignore unknown fields
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Document
@@ -17,7 +19,7 @@ public class TextBook {
 
     private String author;
 
-    private Long uploadDate;
+    private Date uploadDate;
 
     private String uploaderName;
 
@@ -35,7 +37,7 @@ public class TextBook {
         super();
     }
 
-    public TextBook(String title, String author, Long uploadDate, String uploaderName, Long mailTimes,
+    public TextBook(String title, String author, Date uploadDate, String uploaderName, Long mailTimes,
             Long kindleMailTimes, Long downloadTimes, Long size, String format) {
         super();
         this.title = title;
@@ -73,11 +75,11 @@ public class TextBook {
         this.author = author;
     }
 
-    public Long getUploadDate() {
+    public Date getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(Long uploadDate) {
+    public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
     }
 
