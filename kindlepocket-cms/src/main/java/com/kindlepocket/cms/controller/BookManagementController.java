@@ -109,7 +109,9 @@ public class BookManagementController {
             queryResult.addAll(booksQueriedByTitle);
             queryResult.addAll(booksQueriedByAuthor);
             if(logger.isInfoEnabled()){
-                logger.info("query results: " + queryResult.toString());
+                logger.info("=======================\n");
+                logger.info("query results size: [" + queryResult.size() + "]");
+                logger.info("=======================\n");
             }
             try {
                 return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(queryResult));
