@@ -9,6 +9,7 @@ import com.kindlepocket.cms.pojo.TextBook;
 import com.kindlepocket.cms.utils.Constants;
 import com.rabbitmq.client.Channel;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -131,6 +132,7 @@ public class MailMessageConsumeService {
         record.setToEmailAdd(toMail);
         record.setIsDelivered(Constants.ONE);
         record.setTextBookId(bookId);
+        record.setBookTitle(this.bookRepository.findOne(bookId).getTitle());
         this.deliveryRecordRepository.save(record);
 
         if(logger.isInfoEnabled()){
