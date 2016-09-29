@@ -1,4 +1,4 @@
-angular.module('binding',['request.services'])
+angular.module('binding',['request.service'])
 .controller('formController',function($scope,requestService){
     $scope.bindingData = {};
     var params = $scope.bindingData;
@@ -6,6 +6,6 @@ angular.module('binding',['request.services'])
 
     $scope.submitForm = function(){
         // action: bindingData
-        requestService.binding('bindingData',params);
+        requestService.req('bindingData',params);
     }
 });
