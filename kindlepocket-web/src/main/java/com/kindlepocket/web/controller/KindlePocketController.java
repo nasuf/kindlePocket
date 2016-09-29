@@ -67,6 +67,14 @@ public class KindlePocketController {
         return "index";
     }
 
+    @RequestMapping("/toInfo")
+    public String toInfoDetail(){
+        if(logger.isInfoEnabled()){
+            logger.info("redirecting to info page...");
+        }
+        return "info";
+    }
+
 
     @RequestMapping("/toDetailsPage")
     public String toSearchDetailPage(@RequestParam("single")String single, @RequestParam("idList")String idList, @RequestParam("queryParam")String queryParam, HttpServletRequest request, HttpServletResponse response) {
@@ -460,12 +468,37 @@ public class KindlePocketController {
         }
     }
 
-    @RequestMapping(value="/info", method=RequestMethod.GET)
-    public String toInfoDetail(){
-        if(logger.isInfoEnabled()){
-            logger.info("redirecting to info page...");
+
+    @RequestMapping(value="/getDeliveryRecords", method=RequestMethod.POST)
+    @ResponseBody
+    public String getDeliveryRecords(HttpServletRequest request){
+        System.out.println("entered the function getDeliveryRecords");
+        Cookie[] cookies = request.getCookies();
+        String subscriberOpenId = null;
+        HttpResult result = null;
+        if(null != cookies){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("subscriberOpenId")){
+                    subscriberOpenId = cookie.getValue();
+                    result = this.ssbService.findDeliveryRecords(subscriberOpenId);
+                    JsonNode node = null;
+                    try {
+                        node = MAPPER.readTree(result.getBody());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        } else {
+            if(logger.isErrorEnabled()){
+                logger.error("no cookie received!");
+            }
         }
-        return "info";
+        if(logger.isInfoEnabled()){
+            logger.info("delivery record:" + result.getBody());
+        }
+        return result.getBody();
     }
 
   /*  @RequestMapping(value="/sendMailMessage", method=RequestMethod.GET)
