@@ -20,6 +20,7 @@ public class DeliveryRecord {
     private Integer isDelivered;
     private String fromEmailAdd;
     private String toEmailAdd;
+    private String bookTitle;
 
     public String getId() {
         return id;
@@ -77,6 +78,14 @@ public class DeliveryRecord {
         this.toEmailAdd = toEmailAdd;
     }
 
+    public String getBookTitle() {
+        return bookTitle;
+    }
+
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
+    }
+
     @Override
     public String toString() {
         return "DeliveryRecord{" +
@@ -87,6 +96,7 @@ public class DeliveryRecord {
                 ", isDelivered=" + isDelivered +
                 ", fromEmailAdd='" + fromEmailAdd + '\'' +
                 ", toEmailAdd='" + toEmailAdd + '\'' +
+                ", bookTitle='" + bookTitle + '\'' +
                 '}';
     }
 }
