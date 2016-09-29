@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by admin on 2016/6/18.
@@ -80,7 +81,9 @@ public class SubscriberService {
             HttpResult result = this.apiService.doPost(CMS_SUBSCRIBER_URL+"/findSubscriberInfo", map);
             String body = result.getBody();
             Integer code = result.getCode();
-            System.out.println("body:"+body+" code:"+code);
+            if(logger.isDebugEnabled()){
+                logger.debug("body:"+body+" code:"+code);
+            }
             return result;
         } catch (Exception e) {
             if(logger.isWarnEnabled()){
@@ -105,5 +108,25 @@ public class SubscriberService {
             return false;
         }
         return false;
+    }
+
+    public HttpResult findDeliveryRecords(String subscriberOpenId){
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("subscriberOpenId", subscriberOpenId);
+        try {
+            HttpResult result = this.apiService.doPost(CMS_SUBSCRIBER_URL + "/findDeliveryRecords", param);
+            String body = result.getBody();
+            Integer code = result.getCode();
+            if(logger.isDebugEnabled()){
+                logger.debug("body:"+body+" code:"+code);
+            }
+            return result;
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("get delivery record failed! subscriberOpenId is [" + subscriberOpenId + "]");
+            }
+            return null;
+        }
+
     }
 }
