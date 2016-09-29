@@ -44,7 +44,7 @@ public class TextBookService {
             // String result = this.apiService.doGet("http://127.0.0.1:8081/search/title", contentMap);
             String result = this.apiService.doGet(CMS_BOOK_URL + "/findAll", queryMap);
             JsonNode readTree = MAPPER.readTree(result);
-            System.out.println("readTree: " + readTree);
+            //System.out.println("readTree: " + readTree);
             return readTree;
            /* Iterator<JsonNode> iterator = readTree.iterator();
             while (iterator.hasNext()) {
