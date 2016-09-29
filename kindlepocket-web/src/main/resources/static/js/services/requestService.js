@@ -1,4 +1,4 @@
-angular.module('request.services',[])
+angular.module('request.service',[])
 .factory('requestService', function($http){
 
      console.log('entered the service')
@@ -12,9 +12,9 @@ angular.module('request.services',[])
                  headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
              }).success(function(data,status){
                  console.log("success! status:"+status);
-                 alert("binding successfully!")
+                 //alert("request successfully!")
              }).error(function(data,status){
-                 alert("binding error!")
+                 //alert("request error!")
                  console.log("error! status:"+status);
              })
      }
