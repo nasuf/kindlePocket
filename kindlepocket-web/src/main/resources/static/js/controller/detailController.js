@@ -1,5 +1,5 @@
-angular.module('details',['detail.service'])
-.controller('detailController', function($scope, detailService){
+angular.module('details',['detail.service','request.service'])
+.controller('detailController', function($scope, detailService, requestService){
     $scope.detail = {};
     $scope.detailsAll = {};
     $scope.initIndex = 0;
@@ -38,7 +38,7 @@ angular.module('details',['detail.service'])
     };
 
     $scope.popUpCommentModal = function(id){
-      		$('#'+id+'').openModal();
+      	$('#'+id+'').openModal();
     };
 
     $scope.sendProblems = function (){
@@ -48,4 +48,5 @@ angular.module('details',['detail.service'])
     $scope.closeFAB = function() {
         $('#bottomButton').closeFAB();
     };
+
 });
