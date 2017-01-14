@@ -469,7 +469,7 @@ public class KindlePocketController {
     }
 
 
-    @RequestMapping(value="/getDeliveryRecords", method=RequestMethod.POST)
+    @RequestMapping(value="/getDeliveryRecords", method=RequestMethod.GET)
     @ResponseBody
     public String getDeliveryRecords(HttpServletRequest request){
         System.out.println("entered the function getDeliveryRecords");
