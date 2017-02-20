@@ -66,6 +66,11 @@ public class KindlePocketController {
         }
         return "index";
     }
+    
+    @RequestMapping("/vue")
+    public String toVuePage() {
+    	return "vue";
+    }
 
     @RequestMapping("/toInfo")
     public String toInfoDetail(){

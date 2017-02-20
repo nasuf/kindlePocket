@@ -63,7 +63,7 @@ $("#file_upload").uploadify({
     'fileSizeLimit':'1000MB',
 
     //允许上传的文件的最大数量。当达到或超过这个数字，onSelectError事件被触发。
-    'queueSizeLimit' : 400,
+    'queueSizeLimit' : 4000,
 
     //选择上传文件后调用
     'onSelect' : function(file) {

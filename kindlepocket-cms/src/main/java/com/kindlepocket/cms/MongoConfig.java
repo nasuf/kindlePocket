@@ -23,7 +23,7 @@ public class MongoConfig {
     private static Logger logger = Logger.getLogger(MongoConfig.class);
 
     @Bean
-    public MongoClient client() {
+    public MongoClient client() { 
         MongoClient client = null;
         try {
             client = new MongoClient(new ServerAddress("120.25.224.11", 27017));
