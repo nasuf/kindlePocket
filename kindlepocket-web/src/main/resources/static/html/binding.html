@@ -2,135 +2,113 @@
 <html lang="en" ng-app="binding">
 
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-    <title>Kindle Binding</title>
+<meta charset="UTF-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Kindle Binding</title>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
 </head>
 
-<!-- Loading Bootstrap -->
-<link href="/css/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="/css/jasny-bootstrap.min.css" rel="stylesheet"/>
-<link href="/css/navmenu-push.css" rel="stylesheet"/>
-
-<!-- Loading Flat UI -->
-<link href="/css/flat-ui.css" rel="stylesheet"/>
-
-<link href="/imgs/favicon.ico" rel="shortcut icon"/>
-
-<script src="/js/lib/jquery.min.js"></script>
-<script src="/js/lib/flat-ui.min.js"></script>
-<script src="/js/lib/application.js"></script>
-<script src="/js/lib/angular-1.3.0.js"></script>
-<script src="/js/lib/jasny-bootstrap.min.js"></script>
-<script src="/js/controller/bindingController.js"></script>
-<script src="/js/services/requestService.js"></script>
 
 <style>
-      body {
-       <!-- min-height: 2000px;-->
-        width: 100%;
-        height:100%;
-        overflow-x: hidden;
-      }
+body {<!--
+	min-height: 2000px; -->
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+}
 
+#register_form {
+	margin-top: 20px;
+}
 </style>
 
 <script>
-      $(function () {
-        $('[data-toggle=tooltip]').tooltip();
-
-        //ensure the tooltip will not display immediately when the page opened.
-        $('.tooltip-hide').tooltip('hide');
-      });
+	
 </script>
 
 
 <body>
-
-    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas">
-        <a class="navmenu-brand" href="#"><b>Kindle Pocket</b></a>
-        <ul class="nav navmenu-nav">
-            <li><a href="#">Top 10</a></li>
-            <li class="active"><a href="#">Binding</a></li>
-            <li><a href="#">Search</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <ul class="nav navmenu-nav">
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">More <b class="caret"></b></a>
-                <ul class="dropdown-menu navmenu-nav">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-    <div class="navbar navbar-default navbar-fixed-top">
-        <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-
-    <div class="container">
-<div class="login">
-    <!-- <div class="login-screen">-->
-        <form class="login-form" name="bindingForm" ng-controller="formController" novalidate ng-submit="submitForm()">
-
-            <div class="form-group">
-                <input type="text" class="form-control login-field tooltip-hide" value="" placeholder="请输入手机号"
-                       id="binding-phone" name="phone" ng-model="bindingData.phone" ng-minlength="11" ng-maxlength="11"
-                       required data-placement="top" data-toggle="tooltip"
-                       title="手机号是日后网页端应用上线后，绑定您的账号的凭证之一，但请放心填写，我们不会通过短信打扰您; 手机号长度11位，请不要输错"/>
-                <label class="login-field-icon fui-user" for="binding-phone"></label>
-            </div>
-
-            <div class="form-group">
-                <input type="text" class="form-control login-field tooltip-hide" value="" placeholder="请输入用户名"
-                       id="binding-userName" name="userName" ng-model="bindingData.userName" ng-minlength="5" ng-maxlength="20"
-                       required data-placement="top" data-toggle="tooltip"
-                       title="起个用户名，听起来不错;用户名长度：5 ~ 20 位"/>
-                <label class="login-field-icon fui-user" for="binding-userName"></label>
-            </div>
-
-            <div class="form-group">
-                <input type="email" class="form-control login-field tooltip-hide" value="" placeholder="请输入个人邮箱"
-                       id="binding-email" name="email"
-                       ng-model="bindingData.email" required data-placement="top" data-toggle="tooltip"
-                       title="我们将会通过您的个人邮箱给您的kindle推送书籍; 邮箱地址格式: example@163.com"/>
-                <label class="login-field-icon fui-mail" for="binding-email"></label>
-            </div>
-
-            <div class="form-group">
-                <input type="password" class="form-control login-field tooltip-hide" value="" placeholder="请输入个人邮箱密码或授权码"
-                       name="emailPwd"
-                       id="binding-emailPwd" ng-model="bindingData.emailPwd" required data-placement="top"
-                       data-toggle="tooltip" title="请放心，密码不会泄露，当然授权码听起来似乎更安全一些"/>
-                <label class="login-field-icon fui-lock" for="binding-emailPwd"></label>
-            </div>
-
-            <div class="form-group">
-                <input type="email" class="form-control login-field  tooltip-hide" value="" placeholder="请输入kindle邮箱"
-                       id="binding-kindleEmail" name="kindleEmail" ng-model="bindingData.kindleEmail" required
-                       data-placement="top" data-toggle="tooltip"
-                       title="您可以在kindle设备的「设置」-「设备选项」-「个性化您的kindle」中找到您的个人kindle设备邮箱地址">
-                <label class="login-field-icon fui-mail" for="binding-kindleEmail"></label>
-            </div>
-            <button class="btn btn-primary btn-lg btn-block" type="submit" href="#"  ng-disabled="bindingForm.$invalid">绑定！</button>
-            <a class="login-link" href="#">Any problem ?</a>
-
-        </form>
-    </div>
-    <!-- </div>-->
-</div>
+	<div id="register">
+		<div class="navbar-fixed">
+			<nav>
+				<div class="nav-wrapper black">
+					<a href="#" class="brand-logo" style="margin-left: 20px">Kindle
+						Pocket</a>
+					<ul id="nav-mobile" class="right hide-on-med-and-down">
+						<li><a href="#">注册</a></li>
+						<li><a href="#">登录</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+		<div class="container">
+			<!-- register form start -->
+			<div id="register_form" class="row" v-if="registerFlag == false">
+				<form class="col s12">
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">account_circle</i> <input
+								id="icon_prefix" type="text" class="validate"
+								v-model="newUserInfo.userName" /> <label for="icon_prefix">用户名</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">phone</i> <input
+								id="icon_telephone" type="tel" class="validate"
+								v-model="newUserInfo.phone"> <label for="icon_telephone">手机号</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">email</i> <input id="icon_email"
+								type="email" class="validate" v-model="newUserInfo.email">
+							<label for="icon_email">个人邮箱</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">lock</i> <input
+								id="icon_password" type="password" class="validate"
+								v-model="newUserInfo.emailPwd"> <label
+								for="icon_password">个人邮箱密码或授权码</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">email</i> <input
+								id="icon_kindle_email" type="email" class="validate"
+								v-model="newUserInfo.kindleEmail"> <label
+								for="icon_kindle_email">Kindle邮箱</label>
+						</div>
+					</div>
+					<button type="button" style="float:right; margin-right:20px"
+						class="btn waves-effect waves-light black"
+						v-on:click="register()">
+						<font color="white">注册</font>
+					</button>
+				</form>
+			</div>
+			<!-- register form end -->
+			<div v-if="registerFlag == true">
+				<p align="center"><font color="green">注册成功！</font></p>
+			</div>
+		</div>
+	</div>
 
 </body>
+
+<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+<script
+	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script>
+<script src="/js/vue/register.js"></script>
+<script
+	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
 </html>

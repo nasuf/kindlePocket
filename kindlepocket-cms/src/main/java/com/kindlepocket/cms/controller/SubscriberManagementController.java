@@ -93,15 +93,33 @@ public class SubscriberManagementController {
     public ResponseEntity<String> bindInfo(@RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("phone") String phone, @RequestParam("userName")String userName, @RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
 
         Subscriber ssb = this.ssbRepository.findOne(subscriberOpenId);
-        ssb.setPhone(phone);
-        ssb.setUserName(userName);
-        ssb.setEmail(email);
-        ssb.setEmailPwd(emailPwd);
-        ssb.setKindleEmail(kindleEmail);
-        ssb.setIsBinded(Constants.ONE);
-        ssb.setLastChangeDate(new Date());
+        Subscriber newSsb = null;
+        if(null == ssb) {
+        	 Subscriber s = new Subscriber();
+             s.setIsBinded(0);
+             s.setId(subscriberOpenId);
+             s.setSubscribeDate(new Date());
+             s.setIsActive(1);
+             s.setPhone(phone);
+             s.setUserName(userName);
+             s.setEmail(email);
+             s.setEmailPwd(emailPwd);
+             s.setKindleEmail(kindleEmail);
+             s.setIsBinded(Constants.ONE);
+             s.setLastChangeDate(new Date());
+             newSsb = this.ssbRepository.insert(s);
+        } else {
+        	  ssb.setPhone(phone);
+              ssb.setUserName(userName);
+              ssb.setEmail(email);
+              ssb.setEmailPwd(emailPwd);
+              ssb.setKindleEmail(kindleEmail);
+              ssb.setIsBinded(Constants.ONE);
+              ssb.setLastChangeDate(new Date());
+              newSsb = this.ssbRepository.save(ssb);
+        }
+      
 
-        Subscriber newSsb = this.ssbRepository.save(ssb);
         if(null == newSsb){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         } else {
