@@ -77,12 +77,12 @@ public class KindlePocketController {
 		return "vue";
 	}
 
-	@RequestMapping("/toInfo")
+	@RequestMapping("/toDeliveryRecords")
 	public String toInfoDetail() {
 		if (logger.isInfoEnabled()) {
-			logger.info("redirecting to info page...");
+			logger.info("redirecting to delivery records page...");
 		}
-		return "info";
+		return "deliveryRecords";
 	}
 
 	@RequestMapping("/toDetailsPage")
@@ -167,7 +167,7 @@ public class KindlePocketController {
 	@RequestMapping("/testToBindingPage")
 	public String testToBindingPage(Model model) {
 		model.addAttribute("testKey", "testValue");
-		return "binding";
+		return "register";
 	}
 
 	@RequestMapping("/testToInfoUpdate")
@@ -208,7 +208,7 @@ public class KindlePocketController {
 			if (logger.isInfoEnabled()) {
 				logger.info("redirecting to binding page; openId:" + subscriberOpenId + " isBinded:" + isBinded);
 			}
-			return "binding";
+			return "register";
 		}
 
 	}
@@ -476,7 +476,7 @@ public class KindlePocketController {
 		}
 	}
 
-	@RequestMapping(value = "/sendMailMessage", method = RequestMethod.POST)
+	@RequestMapping(value = "/sendMailMessage", method = RequestMethod.GET)
 	@ResponseBody
 	public void sendMailMessage(HttpServletRequest request, @RequestParam("bookId") String bookId) {
 		System.out.print("entered sendMail function\n");

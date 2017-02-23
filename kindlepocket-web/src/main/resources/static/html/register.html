@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="binding">
-
+<html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport"
@@ -11,9 +10,11 @@
 	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
+<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- <script
+	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script> -->
 </head>
-
-
 <style>
 body {<!--
 	min-height: 2000px; -->
@@ -26,13 +27,8 @@ body {<!--
 	margin-top: 20px;
 }
 </style>
-
-<script>
-	
-</script>
-
-
 <body>
+
 	<div id="register">
 		<div class="navbar-fixed">
 			<nav>
@@ -48,7 +44,7 @@ body {<!--
 		</div>
 		<div class="container">
 			<!-- register form start -->
-			<div id="register_form" class="row" v-if="registerFlag == false">
+			<div id="register_form" class="row">
 				<form class="col s12">
 					<div class="row">
 						<div class="input-field col s12">
@@ -87,25 +83,21 @@ body {<!--
 								for="icon_kindle_email">Kindle邮箱</label>
 						</div>
 					</div>
-					<button type="button" style="float:right; margin-right:20px"
-						class="btn waves-effect waves-light black"
-						v-on:click="register()">
+					<button type="button" style="float: right; margin-right: 20px"
+						class="btn waves-effect waves-light black" @click="register">
 						<font color="white">注册</font>
 					</button>
+					<button type="button" style="float: right; margin-right: 20px"
+						class="btn waves-effect waves-light black" @click="test">
+						<font color="white">测试</font>
+					</button>
 				</form>
-			</div>
-			<!-- register form end -->
-			<div v-if="registerFlag == true">
-				<p align="center"><font color="green">注册成功！</font></p>
 			</div>
 		</div>
 	</div>
 
 </body>
 
-<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
-<script
-	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script>
 <script src="/js/vue/register.js"></script>
 <script
 	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
