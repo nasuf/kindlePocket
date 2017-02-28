@@ -117,7 +117,7 @@ public class KindlePocketController {
 
 	@RequestMapping("/getDetails")
 	@ResponseBody
-	public String getDetails(HttpServletRequest request) {
+	public Object getDetails(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		JsonNode result = null;
 		if (!(null == cookies)) {
@@ -155,7 +155,7 @@ public class KindlePocketController {
 					break;
 				}
 			}
-			return result.toString();
+			return result;
 		} else {
 			if (logger.isInfoEnabled()) {
 				logger.info("no cookies received");
@@ -170,8 +170,8 @@ public class KindlePocketController {
 		return "register";
 	}
 
-	@RequestMapping("/testToInfoUpdate")
-	public String testToInfoUpdate() {
+	@RequestMapping("/toInfoUpdate")
+	public String toInfoUpdate() {
 		return "infoUpdate";
 	}
 
@@ -215,7 +215,7 @@ public class KindlePocketController {
 
 	@RequestMapping(value = "/bindingData")
 	@ResponseBody
-	public String bindingData(HttpServletRequest request, HttpServletResponse response,
+	public Boolean bindingData(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("phone") String phone, @RequestParam("userName") String userName,
 			@RequestParam("email") String email, @RequestParam("emailPwd") String emailPwd,
 			@RequestParam("kindleEmail") String kindleEmail) {
@@ -224,8 +224,10 @@ public class KindlePocketController {
 					+ " kindleEmail:" + kindleEmail);
 		}
 		String info = null;
+		Subscriber s = new Subscriber();
 		
 		Cookie[] cookies = request.getCookies();
+		Boolean flag = false;
 		if (null != cookies) {
 			for (Cookie cookie : cookies) {
 
@@ -239,18 +241,14 @@ public class KindlePocketController {
 						logger.info("subscriber: " + subscriberOpenId + " has binded information!");
 					}
 					if(this.isBinded(subscriberOpenId)) {
-						info = this.ssbService.findSubscriberInfo(subscriberOpenId).getBody();
-					}
+						flag = true;
+					} 
 				} else {
-					if (logger.isInfoEnabled()) {
-						logger.info("no valid subscriber information received!");
-					}
+					continue;
 				}
 			}
-		} else {
-			System.out.println("no cookie received");
-		}
-		return info;
+		} 
+		return flag;
 	}
 
 	@RequestMapping(value = "/inPocket.do", method = RequestMethod.GET)
@@ -409,10 +407,20 @@ public class KindlePocketController {
 		}
 	}
 
-	@RequestMapping(value = "/getSubscriberInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "/getSubscriberInfo", method = RequestMethod.GET)
 	@ResponseBody
-	private String getSubscriberInfo(@RequestParam("subscriberOpenId") String subscriberOpenId,
-			HttpServletResponse response) {
+	private Object getSubscriberInfo(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		String subscriberOpenId = null;
+		for (Cookie cookie : cookies) {
+
+			if (cookie.getName().equalsIgnoreCase("subscriberOpenId")) {
+				subscriberOpenId = cookie.getValue();
+			} else {
+				continue;
+			}
+		}
+		
 		if (logger.isInfoEnabled()) {
 			logger.info("search for subscriber info; openId: " + subscriberOpenId);
 		}
@@ -425,7 +433,8 @@ public class KindlePocketController {
 		try {
 			JsonNode node = MAPPER.readTree(result.getBody());
 			System.out.println("node:" + node.toString());
-			return result.getBody();
+			return node;
+			//return result.getBody();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -433,17 +442,19 @@ public class KindlePocketController {
 	}
 
 	@RequestMapping(value = "/updateSubscriberInfo", method = RequestMethod.POST)
-	private String updateSubscriberInfo(HttpServletRequest request, HttpServletResponse response,
+	@ResponseBody
+	private Boolean updateSubscriberInfo(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("subscriberOpenId") String openId, @RequestParam("phone") String phone,
 			@RequestParam("userName") String userName, @RequestParam("email") String email,
 			@RequestParam("emailPwd") String emailPwd, @RequestParam("kindleEmail") String kindleEmail) {
 		if (logger.isInfoEnabled()) {
 			logger.info("openId:" + openId + " phone:" + phone + " userName" + userName + " email:" + email
 					+ " emailPwd:" + emailPwd + " kindleEmail:" + kindleEmail);
-			Boolean updated = this.ssbService.updateSubscriberInfo(openId, phone, userName, email, emailPwd,
-					kindleEmail);
 		}
-		return null;
+		Boolean updated = this.ssbService.updateSubscriberInfo(openId, phone, userName, email, emailPwd,
+					kindleEmail);
+		
+		return updated;
 	}
 
 	@RequestMapping(value = "/getSubscriberOpenId", method = RequestMethod.GET)
@@ -512,7 +523,7 @@ public class KindlePocketController {
 
 	@RequestMapping(value = "/getDeliveryRecords", method = RequestMethod.GET)
 	@ResponseBody
-	public String getDeliveryRecords(HttpServletRequest request) {
+	public Object getDeliveryRecords(HttpServletRequest request) {
 		System.out.println("entered the function getDeliveryRecords");
 		Cookie[] cookies = request.getCookies();
 		String subscriberOpenId = null;
@@ -539,7 +550,7 @@ public class KindlePocketController {
 		if (logger.isInfoEnabled()) {
 			logger.info("delivery record:" + result.getBody());
 		}
-		return result.getBody();
+		return result;
 	}
 
 	/*

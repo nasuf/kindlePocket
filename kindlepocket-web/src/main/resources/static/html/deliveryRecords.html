@@ -12,14 +12,6 @@
 
 <link href="/imgs/favicon.ico" rel="shortcut icon"/>
 
-<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
-<!-- <script
-	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script> -->
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script
-	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
 <link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -34,8 +26,12 @@
                     </div>
                     <div class="col s10">
                           <span class="black-text">
-                            This is a square image. Add the "circle" class to it to make it appear circular.
-                            This is a square image. Add the "circle" class to it to make it appear circular.
+                             用户&nbsp;<a>{{userInfo.userName}}</a>&nbsp;您好，您的个人邮箱是：&nbsp;<a>{{userInfo.email}}</a>，
+                             kindle邮箱是&nbsp;<a>{{userInfo.kindleEmail}}</a>.<br/><br/>
+                             <button type="button" style="float: right; margin-right: 20px"
+								class="btn waves-effect waves-light black">
+								<a href="toInfoUpdate"><font color="white">更新</font></a>
+							</button>
                           </span>
                     </div>
                 </div>
@@ -79,5 +75,14 @@
     </div>
 
 </body>
+
+<script
+	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+<!-- <script
+	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script> -->
+<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
 <script src="/js/vue/deliveryRecords.js"></script>
 </html>

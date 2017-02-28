@@ -7,20 +7,54 @@ var app = new Vue({
 	
 	data: {
 		getDeliveryRecordsUrl: '/KindlePocket/getDeliveryRecords',
-		records: []
+		getSubscriberInfoUrl: '/KindlePocket/getSubscriberInfo',
+		records: [],
+		userInfo: {
+			userName:'',
+			email:'',
+			kindleEmail:''
+		}
 	},
 	
 	methods: {
 		getDeliveryRecords: function() {
-//			this.$http.get(this.getDeliveryRecordsUrl, { emulateJSON: true })
-//			.then((response) => {
-//				this.records = response.data;
-//			})
-			axios.get(this.getDeliveryRecordsUrl)
+			// jquery
+			 var rs = this.records;
+			 $.get(this.getDeliveryRecordsUrl)
+			    .success(function(result) { 
+			    	var r = JSON.parse(result.body);
+			    	for(var i in r) {
+			    		rs.push(r[i]);
+			    	}
+			 });
+			//vue-resource
+		/*	this.$http.get(this.getDeliveryRecordsUrl, { emulateJSON: true })
+			.then((response) => {
+				this.records = response.data;
+			})	*/
+			
+			// axios
+			/*axios.get(this.getDeliveryRecordsUrl)
 			     .then((response) => {
 					this.records = response.data;
-				  })
+				  }) */
 			 
+		},
+		getSubscriberInfo: function() {
+			var user = this.userInfo;
+			//jquery
+			 $.get(this.getSubscriberInfoUrl)
+			    .success(function(result) { 
+			    	 user.userName = result.userName;
+					 user.phone = result.phone;
+					 user.email = result.email;
+					 user.kindleEmail = result.kindleEmail;
+			    })
+			// axios
+			/*axios.get(this.getSubscriberInfoUrl)
+				 .then((response) => {
+					 this.subscriberInfo = response.data;
+				 })*/
 		},
 		renderStatus: function(originalStatus){
 			
@@ -44,5 +78,6 @@ var app = new Vue({
 	
 	created: function() {
 		this.getDeliveryRecords();
+		this.getSubscriberInfo();
 	}
 })

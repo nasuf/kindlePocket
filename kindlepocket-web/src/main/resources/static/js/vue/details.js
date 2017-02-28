@@ -20,30 +20,49 @@ var app = new Vue({
 	
 	methods: {
 		getDetails: function() {
-			axios.get(this.getDetailsUrl)
+			var rs = this.details;
+			// jquery
+			 $.get(this.getDetailsUrl)
+			    .success(function(result) { 
+			    	var r = result;
+			    	for(var i in r) {
+			    		rs.push(r[i]);
+			    	}
+			 });
+			 
+			// axios
+			/*axios.get(this.getDetailsUrl)
 		     .then((response) => {
 				this.details = response.data;
-			})
-//			this.$http.get(this.getDetailsUrl, { emulateJSON: true })
-//			.then((response) => {
-//				this.details = response.data;
-//			})
+			})*/
+			
+			// vue-resource
+			/*this.$http.get(this.getDetailsUrl, { emulateJSON: true })
+			.then((response) => {
+				this.details = response.data;
+			})*/
 		},
 		
 		sendMail: function(id) {
 			Materialize.toast('Send Successfully!', 4000);
-			axios.get(this.sendMailUrl,{
+			
+			//jquery
+			$.get(this.sendMailUrl + "?bookId=" + id)
+			
+			// axios
+			/*axios.get(this.sendMailUrl,{
 			    params: {
 			        bookId: id
 			      }
 			    })
 		    .then((response) => {
-				//console.log(response.data);
-			})
-//			this.$http.get(this.sendMailUrl + "?bookId=" + id , { emulateJSON: true })
-//			.then((response) => {
-//				console.log(response.data);
-//			})
+			})*/
+			
+			// vue-resource
+			/*this.$http.get(this.sendMailUrl + "?bookId=" + id , { emulateJSON: true })
+			.then((response) => {
+				console.log(response.data);
+			})*/
 		},
 		
 		sendProblems: function (){
