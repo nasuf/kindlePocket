@@ -67,13 +67,32 @@ body {<!--
 		$(document).ready(function(){
 		    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
 		    $('.modal').modal();
+		    $('#searchModal').modal({
+		        startingTop: '10%', // Starting top style attribute
+		        endingTop: '20%' // Ending top style attribute
+		      }
+		    );
 		  });
+		
 		
 	</script>
 
 	<main>
 	<div id="details" class="container">
-
+		<!--  <div v-if="searchBarDisplay" class="navbar-fixed"> -->
+			<nav v-if="searchBarDisplay" class="navbar-fixed grey lighten-3">
+			    <div class="nav-wrapper">
+				      <form>
+				        <div class="input-field">
+				          <!-- <input id="search" type="search"  v-on:blur="toggleSearchBar()" required v-model="searchContent"> -->
+				          <input id="search" type="search" required v-model="searchContent">
+				          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+				          <i class="material-icons" v-on:click="search(searchContent)">trending_flat</i>
+				        </div>
+				      </form>
+			    </div>
+			</nav>
+		 <!-- </div> -->
 		<!-- loading -->
 		<div class="row" v-if="loading">
 
@@ -124,8 +143,8 @@ body {<!--
 				      <div class="row">
 				        <div class="input-field col s12">
 				          <i class="material-icons prefix">mode_edit</i>
-				          <textarea id="icon_prefix2" length="140" class="materialize-textarea"></textarea>
-				          <label for="icon_prefix2">写下您的评论：</label>
+				          <textarea id="comment_textarea" length="140" class="materialize-textarea"></textarea>
+				          <label for="comment_textarea">写下您的评论：</label>
 				        </div>
 				      </div>
 				  </div>
@@ -169,11 +188,14 @@ body {<!--
 					href="toDeliveryRecords"><i class="material-icons">perm_identity</i></a></li>
 				<li><a class="btn-floating red  waves-effect z-depth-2"><i
 						class="material-icons">message</i></a></li>
-				<li><a class="btn-floating green waves-effect z-depth-2"><i
-						class="material-icons">search</i></a></li>
-				<li><a
-					class="btn-floating blue waves-effect z-depth-2 modal-trigger"
-					href="#bottomModal"><i class="material-icons">live_help</i></a></li>
+				<li>
+					<a class="btn-floating green waves-effect z-depth-2 modal-trigger"
+					v-on:click="toggleSearchBar()" href="javascript:scroll(0,0)">
+						<i class="material-icons" >search</i>
+					</a>
+				</li>
+				<li><a class="btn-floating blue waves-effect z-depth-2 modal-trigger"
+					href="#suggestionModal"><i class="material-icons">live_help</i></a></li>
 			</ul>
 		</div>
 
@@ -183,26 +205,39 @@ body {<!--
 
 
 
-	<!-- Bottom Modal -->
-	<div id="bottomModal" class="modal bottom-sheet">
+	<!-- Suggestion Modal Start -->
+	<div id="suggestionModal" class="modal bottom-sheet">
 		<div class="modal-content">
-			<h8>Any problems? Please feel free to let me know.</h8>
 			<div class="row">
-				<form class="col s12">
-					<div class="row">
-						<div class="input-field col s12">
-							<textarea id="questions" class="materialize-textarea"></textarea>
-						</div>
-					</div>
-				</form>
-			</div>
+			      <div class="row">
+			        <div class="input-field col s12">
+			          <i class="material-icons prefix">mode_edit</i>
+			          <textarea id="suggestion_textarea" length="140" class="materialize-textarea"></textarea>
+			          <label for="suggestion_textarea">写下您的意见或建议：</label>
+			        </div>
+			      </div>
+			  </div>
 		</div>
 		<div class="modal-footer">
 			<a href="#!"
-				class=" modal-action modal-close waves-effect waves-green btn-flat"
-				ng-click="sendProblems()">Send</a>
+				class="modal-action modal-close waves-effect btn-flat z-depth-1"
+				type="submit">提交</a>
 		</div>
 	</div>
+	<!-- Suggestion Modal End -->
+	
+	<!-- Search Modal Start -->
+	<!-- <div id="searchModal" class="modal modal-fixed-footer">
+		<div class="modal-content">
+            <input id="search" width="100px"><i class="material-icons">search</i>
+		</div>
+		<div class="modal-footer">
+			<a href="#!"
+				class="modal-action modal-close waves-effect btn-flat z-depth-1"
+				type="submit">提交</a>
+		</div>
+	</div> -->
+	<!-- Search Modal End -->
 
 	</main>
 
