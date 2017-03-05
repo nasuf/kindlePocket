@@ -4,18 +4,23 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-    <title>User Info</title>
+    <title>Kindle Pocket</title>
+    <!-- <link rel="stylesheet" href="/js/vue/material_icons.css?randomId=<%=Math.random()%>"> -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/js/vue/materialize.min.css?randomId=<%=Math.random()%>">
+    <link href="/imgs/favicon.ico" rel="shortcut icon"/>
+    <link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
 </head>
-
-<!-- Loading Bootstrap -->
-<link href="/css/materialize.min.css" rel="stylesheet"/>
-
-<link href="/imgs/favicon.ico" rel="shortcut icon"/>
-
-<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- <script
+	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script> -->
+<!-- <script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script> -->
 
 <body>
+
+	<script src="/js/vue/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/vue/materialize.min.js?randomId=<%=Math.random()%>"></script>
+	<script src="/js/vue/vue.js"></script>
+
     <div id="deliveryRecords" class="container">
 
         <div class="col s12 m8 offset-m2 l6 offset-l3">
@@ -27,7 +32,7 @@
                     <div class="col s10">
                           <span class="black-text">
                              用户&nbsp;<a>{{userInfo.userName}}</a>&nbsp;您好，您的个人邮箱是：&nbsp;<a>{{userInfo.email}}</a>，
-                             kindle邮箱是&nbsp;<a>{{userInfo.kindleEmail}}</a>.<br/><br/>
+                             kindle邮箱是：&nbsp;<a>{{userInfo.kindleEmail}}</a>.<br/><br/>
                              <button type="button" style="float: right; margin-right: 20px"
 								class="btn waves-effect waves-light black">
 								<a href="toInfoUpdate"><font color="white">更新</font></a>
@@ -43,23 +48,23 @@
             <li>
                 <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Delivery Record</div>
                 <div class="collapsible-body">
-                    <table class="striped centered">
+                    <table class="centered highlight">
                         <thead>
                         <tr>
-                            <th data-field="id">Name</th>
-                            <th data-field="name">Delivery Date</th>
-                            <th data-field="price">Delivery Status</th>
-                            <th data-field="price">Action</th>
+                            <th data-field="id" width="40%">Name</th>
+                            <th data-field="name" width="30%">Delivery Date</th>
+                            <th data-field="price" width="10%">Delivery Status</th>
+                            <th data-field="price" width="20%">Action</th>
                         </tr>
                         </thead>
 
                         <tbody v-for="record in records">
 
                             <tr>
-                                <td>{{record.bookTitle}}</td>
-                                <td>{{renderDate(record.deliveryDate)}}</td>
-                                <td>{{renderStatus(record.isDelivered)}}</td>
-                                <td>
+                                <td width="40%">{{record.bookTitle}}</td>
+                                <td width="30%">{{renderDate(record.deliveryDate)}}</td>
+                                <td width="10%">{{renderStatus(record.isDelivered)}}</td>
+                                <td width="20%">
                                     <a class="waves-effect waves-light btn-small">RESEND</a>
                                     <a class="waves-effect waves-light btn-small">DELETE</a>
                                 </td>
@@ -76,13 +81,11 @@
 
 </body>
 
-<script
-	src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
 <!-- <script
 	src="https://unpkg.com/vue-resource@1.1.2/dist/vue-resource.min.js"></script> -->
 <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+<!-- <script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script> -->
+
 <script src="/js/vue/deliveryRecords.js"></script>
 </html>

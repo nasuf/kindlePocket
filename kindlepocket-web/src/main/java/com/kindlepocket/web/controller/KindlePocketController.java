@@ -87,7 +87,9 @@ public class KindlePocketController {
 
 	@RequestMapping("/toDetailsPage")
 	public String toSearchDetailPage(@RequestParam("single") String single, @RequestParam("idList") String idList,
-			@RequestParam("queryParam") String queryParam, HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam("queryParam") String queryParam, 
+			@RequestParam("subscriberOpenId") String subscriberOpenId,
+			HttpServletRequest request, HttpServletResponse response) {
 		if (logger.isInfoEnabled()) {
 			logger.info("redirecting to details page...");
 		}
@@ -112,6 +114,12 @@ public class KindlePocketController {
 		temp.setPath("/");
 		response.addCookie(cookie);
 		response.addCookie(temp);
+		
+		Cookie subscriberOpenIdCookie = new Cookie("subscriberOpenId", subscriberOpenId);
+		subscriberOpenIdCookie.setPath("/");
+		subscriberOpenIdCookie.setMaxAge(Integer.MAX_VALUE);
+		response.addCookie(subscriberOpenIdCookie);
+		
 		return "details";
 	}
 
@@ -186,9 +194,9 @@ public class KindlePocketController {
 	 */
 	@RequestMapping("/toBindingPage")
 	public String toBindingPage(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(value = "subscriberOpenId", required = false) String subscriberOpenId, 
-			@RequestParam(value = "isBinded", required = false) String isBinded,
-			Model model) {
+			@RequestParam(value = "subscriberOpenId", required = false) String subscriberOpenId //, 
+			//@RequestParam(value = "isBinded", required = false) String isBinded, 
+			) {
 
 		// model.addAttribute("subscriberOpenId",subscriberOpenId);
 		if(null != subscriberOpenId && !subscriberOpenId.isEmpty()) {
@@ -197,16 +205,16 @@ public class KindlePocketController {
 			cookie.setMaxAge(Integer.MAX_VALUE);
 			response.addCookie(cookie);
 		}
-		model.addAttribute("subscriberOpenId", subscriberOpenId);
-
-		if (null != isBinded && !isBinded.isEmpty() && isBinded.equalsIgnoreCase("true")) {
+		//model.addAttribute("subscriberOpenId", subscriberOpenId);
+		Boolean flag = this.isBinded(subscriberOpenId);
+		if (null != flag && flag.equals(true)) {
 			if (logger.isInfoEnabled()) {
-				logger.info("redirecting to info update page; openId:" + subscriberOpenId + " isBinded:" + isBinded);
+				logger.info("redirecting to info update page; openId:" + subscriberOpenId + " isBinded:" + flag);
 			}
 			return "infoUpdate";
 		} else {
 			if (logger.isInfoEnabled()) {
-				logger.info("redirecting to binding page; openId:" + subscriberOpenId + " isBinded:" + isBinded);
+				logger.info("redirecting to binding page; openId:" + subscriberOpenId + " isBinded:" + flag);
 			}
 			return "register";
 		}
@@ -315,13 +323,9 @@ public class KindlePocketController {
 							"kindle text books sharing platform", "/imgs/welcome.jpg", "/KindlePocket/binding");
 					break;
 				case MENU_ITEM_STRING_TWO:
-					Boolean isBinded = false;
-					if (isBinded(fromUserName)) {
-						isBinded = true;
-					}
-					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定步骤",
-							"点击绑定kindle; \n输入\"menu\"或\"菜单\"查看更多选项", "/imgs/welcome.jpg",
-							"/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName + "&isBinded=" + isBinded);
+					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定/更新",
+							"点击绑定或更新个人信息; \n输入\"menu\"或\"菜单\"查看更多选项", "/imgs/welcome.jpg",
+							"/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName);
 					break;
 				case MENU_ITEM_INIT_ENG:
 				case MENU_ITEM_INIT_CHI:
@@ -332,6 +336,10 @@ public class KindlePocketController {
 					// fromUserName, MessageUtil.menuText());
 					// List<String> titleList =
 					// this.bookService.search(content);
+					Boolean isBinded = false;
+					if (isBinded(fromUserName)) {
+						isBinded = true;
+					}
 					Map<String, Object> queryMap = new HashMap<String, Object>();
 					queryMap.put("key", "title");
 					queryMap.put("value", content);
@@ -347,7 +355,7 @@ public class KindlePocketController {
 					}
 					logger.info("找到" + titleList.size() + "本书籍");
 					responseMessage = MessageUtil.initSearchResultsPicTextMessage(toUserName, fromUserName, titleList,
-							idList, content);
+							idList, content, isBinded);
 					break;
 				}
 

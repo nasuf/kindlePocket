@@ -15,21 +15,30 @@ var app = new Vue({
 			format:'',
 			kindleMailTimes:''
 		},
-		details: []
+		details: [],
+		loading: true
 	},
 	
 	methods: {
+		
+		toggleLoading: function(show) {
+        	this.loading = show
+        },
+		
 		getDetails: function() {
-			var rs = this.details;
+			//var toggle =  this.toggleLoading(false);
+			//var rs = this.details;
+			var thiz = this;
 			// jquery
 			 $.get(this.getDetailsUrl)
 			    .success(function(result) { 
-			    	var r = result;
+			    	thiz.details = result;
+			    	/*var r = result;
 			    	for(var i in r) {
 			    		rs.push(r[i]);
-			    	}
+			    	}*/
+			    	thiz.loading = false;
 			 });
-			 
 			// axios
 			/*axios.get(this.getDetailsUrl)
 		     .then((response) => {

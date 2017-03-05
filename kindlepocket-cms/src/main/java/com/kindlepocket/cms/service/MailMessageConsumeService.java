@@ -118,26 +118,35 @@ public class MailMessageConsumeService {
         if(logger.isInfoEnabled()){
             logger.info("prepared to send email for " + s.getUserName() + " from : [" + fromMail + "] to : [" + toMail + "]");
         }
-        this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
-        TextBook book = this.bookRepository.findOne(bookId);
-        // update mail times
-        book.setKindleMailTimes(book.getKindleMailTimes() + Constants.ONE);
-        this.bookRepository.save(book);
-
         // save delivery record;
         DeliveryRecord record = new DeliveryRecord();
         record.setSubscriberOpenId(subscriberOpenId);
         record.setDeliveryDate(new Date());
         record.setFromEmailAdd(fromMail);
         record.setToEmailAdd(toMail);
-        record.setIsDelivered(Constants.ONE);
         record.setTextBookId(bookId);
         record.setBookTitle(this.bookRepository.findOne(bookId).getTitle());
-        this.deliveryRecordRepository.save(record);
+        
+        try {
+			this.mailService.sendFileAttachedMail(fromMail,toMail,fromMailPwd,bookId);
+			TextBook book = this.bookRepository.findOne(bookId);
+	        // update mail times
+	        book.setKindleMailTimes(book.getKindleMailTimes() + Constants.ONE);
+	        this.bookRepository.save(book);
+	        // set record status as success
+	        record.setIsDelivered(Constants.ONE);
+		} catch (Exception e) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]", e);
+			}
+			// set record status as failed
+			record.setIsDelivered(Constants.ZERO);
+		}
+
+        this.deliveryRecordRepository.insert(record);
 
         if(logger.isInfoEnabled()){
             logger.info("save new delivery record: [" + record.toString() + "]");
-            logger.info("mail send successfully!");
         }
     }
 

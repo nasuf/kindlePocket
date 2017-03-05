@@ -10,7 +10,7 @@ public interface MailService {
 
     void sendSimpleMail(String title);
 
-    void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId);
+    void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) throws Exception;
 
     MimeMessage createSimpleMail(Session session, String subject, String content);
 

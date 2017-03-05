@@ -19,13 +19,15 @@ var app = new Vue({
 	methods: {
 		getDeliveryRecords: function() {
 			// jquery
-			 var rs = this.records;
+			// var rs = this.records;
+			 var thiz = this;
 			 $.get(this.getDeliveryRecordsUrl)
 			    .success(function(result) { 
-			    	var r = JSON.parse(result.body);
-			    	for(var i in r) {
+			    	//var r = JSON.parse(result.body);
+			    	thiz.records = JSON.parse(result.body);
+			    	/*for(var i in r) {
 			    		rs.push(r[i]);
-			    	}
+			    	}*/
 			 });
 			//vue-resource
 		/*	this.$http.get(this.getDeliveryRecordsUrl, { emulateJSON: true })
@@ -67,7 +69,7 @@ var app = new Vue({
 		renderDate: function(millisecond) {
 			var date = new Date(millisecond);
 			return date.getFullYear() 
-					+ "-" + date.getMonth() + 1
+					+ "-" + (date.getMonth() + 1)
 					+ "-" + date.getDate() 
 					+ " " + date.getHours() 
 					+ ":" + date.getMinutes()

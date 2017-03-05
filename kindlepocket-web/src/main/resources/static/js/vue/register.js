@@ -19,7 +19,6 @@ var app = new Vue({
 	
 	methods: {
 		register: function() {
-			 alert("Entered the register function! And the newUserInfo.userName: " + this.newUserInfo.userName);
 			 
 			 if(this.newUserInfo.userName.trim() == ''
 				 || this.newUserInfo.phone.trim() == ''

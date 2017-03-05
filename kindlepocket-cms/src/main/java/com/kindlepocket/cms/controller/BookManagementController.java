@@ -57,7 +57,7 @@ public class BookManagementController {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @RequestMapping("/sendMail")
+/*    @RequestMapping("/sendMail")
     public void sendMail(@RequestParam("bookId")String bookId, @RequestParam("subscriberOpenId")String subscriberOpenId){
 
         Subscriber s = this.ssbRepository.findOne(subscriberOpenId);
@@ -71,7 +71,7 @@ public class BookManagementController {
         if(logger.isInfoEnabled()){
             logger.info("mail send successfully!");
         }
-    }
+    }	*/
 
     @RequestMapping("/insert")
     public void testInsert() {

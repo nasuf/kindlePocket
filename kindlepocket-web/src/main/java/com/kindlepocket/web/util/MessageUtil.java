@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.kindlepocket.web.controller.KindlePocketController;
 import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.Main;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -156,53 +157,99 @@ public class MessageUtil {
         message = picTextMessageToXml(picTextMessage);
         return message;
     }
+    
+//    public static void main(String[] args) {
+//    	String title = "2014最新版）华图教你赢面试系列丛书·公务员面试华图专家详解1000题 - 伍景玉 & 张协云.mobi";
+//    	String format = title.split("\\.")[title.split("\\.").length-1].toLowerCase();
+//    	System.out.println(format);
+//	}
 
-    public static String initSearchResultsPicTextMessage(String toUserName, String fromUserName, List<String> titles, List<String> idList, String queryParam) {
+    public static String initSearchResultsPicTextMessage(String toUserName, 
+    		String fromUserName, List<String> titles, 
+    		List<String> idList, String queryParam, Boolean isBinded) {
         String message = null;
         List<PicText> picTextList = new ArrayList<PicText>();
         PicTextMessage picTextMessage = new PicTextMessage();
-
+        String[] formats = {"epub","mobi","pdf","txt"};
         if (titles.size() > 0) {
             if(titles.size() >= 5){
             	 PicText headerPicText = new PicText();
-            	 headerPicText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
+            	 if (titles.size() >= 50) {
+            		 headerPicText.setTitle("共找到" + titles.size() + "本书，请细化关键字；点击查看全部");
+            	 } else {
+            		 headerPicText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
+            	 }
             	 headerPicText.setDescription("kindle text books sharing platform");
-            	 headerPicText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+            	 headerPicText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/kindlePocket.png");
                  // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                  // picText.setUrl(picText.getUrl().replace("\"", ""));
-            	 headerPicText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam);
+            	 headerPicText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam + "&subscriberOpenId=" + fromUserName);
                  System.out.println("url:" + headerPicText.getUrl());
                  picTextList.add(headerPicText);
                 for (int i = 0; i < 5; i++) {
                     PicText picText = new PicText();
-                    picText.setTitle(titles.get(i).substring(1, titles.get(i).length()-1));
+                    String title = titles.get(i).substring(1, titles.get(i).length()-1);
+                    System.out.println("title: " + title);
+                    String format = title.split("\\.")[title.split("\\.").length-1].toLowerCase();
+                    Boolean flag = false;
+                    for(String f: formats) {
+                    	if (null != format && f.equals(format)) {
+                    		picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/"+format+".png");
+                    		flag = true;
+                    		break;
+                    	} else {
+                    		continue;
+                    	}
+                    }
+                    if(flag == false){
+                    	picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+                    }
+                    picText.setTitle(title);
                     picText.setDescription("kindle text books sharing platform");
-                    picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+                    
                     // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                     // picText.setUrl(picText.getUrl().replace("\"", ""));
-                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
+                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam + "&subscriberOpenId=" + fromUserName);
                     System.out.println("url:" + picText.getUrl());
                     picTextList.add(picText);
                 }
                
             } else {
             	 PicText headerPicText = new PicText();
-            	 headerPicText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
+            	 if (titles.size() >= 50) {
+            		 headerPicText.setTitle("共找到" + titles.size() + "本书，请细化关键字；点击查看全部");
+            	 } else {
+            		 headerPicText.setTitle("共找到" + titles.size() + "本书，点击查看全部");
+            	 }
             	 headerPicText.setDescription("kindle text books sharing platform");
-            	 headerPicText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+            	 headerPicText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/kindlePocket.png");
                  // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                  // picText.setUrl(picText.getUrl().replace("\"", ""));
-            	 headerPicText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam);
+            	 headerPicText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" + queryParam + "&subscriberOpenId=" + fromUserName);
                  System.out.println("url:" + headerPicText.getUrl());
                  picTextList.add(headerPicText);
                 for (int i = 0; i < titles.size(); i++) {
                     PicText picText = new PicText();
-                    picText.setTitle(titles.get(i).substring(1, titles.get(i).length()-1));
+                    String title = titles.get(i).substring(1, titles.get(i).length()-1);
+                    String format = title.split("\\.")[title.split("\\.").length-1].toLowerCase();
+                    Boolean flag = false;
+                    for(String f: formats) {
+                    	if (null != format && f.equals(format)) {
+                    		picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/"+format+".png");
+                    		flag = true;
+                    		break;
+                    	} else {
+                    		continue;
+                    	}
+                    }
+                    if(flag == false){
+                    	picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+                    }
+                    picText.setTitle(title);
                     picText.setDescription("kindle text books sharing platform");
-                    picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
                     // picText.setUrl("http://44055713.nat123.net/bookManage/findall?title=" + title);
                     // picText.setUrl(picText.getUrl().replace("\"", ""));
-                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam);
+                    picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toDetailsPage?single=true&idList="+idList.get(i)+"&queryParam="+queryParam + "&subscriberOpenId=" + fromUserName);
                     System.out.println("url:" + picText.getUrl());
                     picTextList.add(picText);
                 }
@@ -216,7 +263,16 @@ public class MessageUtil {
             picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/homepage");
             picTextList.add(picText);
         }
-
+        
+        if(!isBinded) {
+        	 // user has not binded information
+        	 PicText toBindingPagePicText = new PicText();
+        	 toBindingPagePicText.setTitle("*您尚未绑定账户信息，点击绑定*");
+        	 toBindingPagePicText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+        	 toBindingPagePicText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName);
+	         picTextList.add(toBindingPagePicText);
+        }
+        
         picTextMessage.setToUserName(fromUserName);
         picTextMessage.setFromUserName(toUserName);
         picTextMessage.setCreateTime(new Date().getTime());

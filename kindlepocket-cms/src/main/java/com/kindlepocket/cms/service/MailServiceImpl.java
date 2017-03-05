@@ -60,33 +60,24 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) {
+    public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) throws Exception {
         Properties prop = new Properties();
         prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
         prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
         Session session = Session.getInstance(prop);
         //session.setDebug(true);
-        try {
-            Transport ts = session.getTransport();
-            String fromMailPrefix = fromMail.split("@")[0];
-            ts.connect(MAIL_HOST_VALUE,fromMailPrefix, fromMailPwd);
-            //String fromAdd = "binglingxueyou1031@163.com";
-            //String toAdd = "842100455@qq.com";
-            String subject = "FILE ATTACHED MAIL TEST";
-            String content = "Mail Content RE";
-            String fileSavePath = "E://attachMail.eml";
-            Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
-            ts.sendMessage(message, message.getAllRecipients());
-            ts.close();
-
-
-
-        } catch (Exception e) {
-            if(logger.isErrorEnabled()){
-                logger.error("send fileAttachedMail failed!",e);
-            }
-        }
+        Transport ts = session.getTransport();
+        String fromMailPrefix = fromMail.split("@")[0];
+        ts.connect(MAIL_HOST_VALUE,fromMailPrefix, fromMailPwd);
+        //String fromAdd = "binglingxueyou1031@163.com";
+        //String toAdd = "842100455@qq.com";
+        String subject = "FILE ATTACHED MAIL TEST";
+        String content = "Mail Content RE";
+        String fileSavePath = "E://attachMail.eml";
+        Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
+        ts.sendMessage(message, message.getAllRecipients());
+        ts.close();
     }
 
     @Override
