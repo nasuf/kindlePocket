@@ -48,8 +48,12 @@ public class KindlePocketController {
 	private static final String BINDED = "1";
 	private static final String MENU_ITEM_STRING_ONE = "1";
 	private static final String MENU_ITEM_STRING_TWO = "2";
+	private static final String MENU_ITEM_STRING_BINDING = "绑定";
+	private static final String MENU_ITEM_STRING_UPDATE = "更新";
 	private static final String MENU_ITEM_INIT_ENG = "menu";
 	private static final String MENU_ITEM_INIT_CHI = "菜单";
+	private static final String MENU_ITEM_INTRODUCTION = "介绍";
+	private static final String MENU_ITEM_GUIDE = "指南";
 
 	@Autowired
 	private TextBookService bookService;
@@ -63,6 +67,11 @@ public class KindlePocketController {
 	private static Logger logger = Logger.getLogger(KindlePocketController.class);
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+	
+	@RequestMapping("/toIntroduction")
+	public String toIntroduction() {
+		return "introduction";
+	}
 
 	@RequestMapping("/homepage")
 	public String toIndex() {
@@ -338,19 +347,23 @@ public class KindlePocketController {
 			if (MessageUtil.MESSAGE_TEXT.equals(msgType)) {
 
 				switch (content) {
-				case MENU_ITEM_STRING_ONE:
-					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "kindlePocket",
-							"kindle text books sharing platform", "/imgs/welcome.jpg", "/KindlePocket/binding");
+				case MENU_ITEM_STRING_ONE:	// 1
+				case MENU_ITEM_INTRODUCTION:	// 介绍
+				case MENU_ITEM_GUIDE:	// 指南
+					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket使用说明",
+							"点击查看详细使用说明和操作步骤", "/imgs/welcome.jpg", "/KindlePocket/toIntroduction");
 					break;
 				case MENU_ITEM_STRING_TWO:
+				case MENU_ITEM_STRING_BINDING:
+				case MENU_ITEM_STRING_UPDATE:
 					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "绑定/更新",
-							"点击绑定或更新个人信息; \n输入\"menu\"或\"菜单\"查看更多选项", "/imgs/welcome.jpg",
+							"点击绑定或更新个人信息; \n输入\"介绍\"或\"指南\"查看公众号使用说明", "/imgs/welcome.jpg",
 							"/KindlePocket/toBindingPage?subscriberOpenId=" + fromUserName);
 					break;
-				case MENU_ITEM_INIT_ENG:
-				case MENU_ITEM_INIT_CHI:
-					responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-					break;
+//				case MENU_ITEM_INIT_ENG:
+//				case MENU_ITEM_INIT_CHI:
+//					responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+//					break;
 				default:
 					// responseMessage = MessageUtil.initText(toUserName,
 					// fromUserName, MessageUtil.menuText());
@@ -396,7 +409,9 @@ public class KindlePocketController {
 				String eventType = map.get("Event");
 				if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
 					this.ssbService.add(fromUserName);
-					responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.welcomeText());
+					//responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.welcomeText());
+					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket使用说明",
+							"点击查看详细使用说明和操作步骤", "/imgs/welcome.jpg", "/KindlePocket/toIntroduction");
 
 				} else if (MessageUtil.MESSAGE_UNSUBSCRIBE.equals(eventType)) {
 					this.ssbService.remove(fromUserName);

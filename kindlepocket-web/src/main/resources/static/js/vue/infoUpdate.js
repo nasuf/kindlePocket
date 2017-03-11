@@ -16,7 +16,8 @@ var app = new Vue({
 			kindleEmail:'',
 			subscriberOpenId:''
 		},
-		updatedFlag: false
+		updatedFlag: false,
+		emailTypes: ['163','126','qq']
 	},
 	
 	methods: {
@@ -53,12 +54,24 @@ var app = new Vue({
 		},
 		
 		update: function() {
+			var emailType = this.userInfo.email.split('@')[1].split('\.')[0];
+			var emailTypeValidated = false;
+			for (var i in this.emailTypes) {
+				if (emailType == this.emailTypes[i]) {
+					emailTypeValidated = true;
+					break;
+				} else 
+					continue;
+			}
 			if(this.userInfo.userName.trim() == '' 
 				|| this.userInfo.phone.trim() == '' 
 				|| this.userInfo.email.trim() == ''
 				|| this.userInfo.emailPwd.trim() == ''
 				|| this.userInfo.kindleEmail.trim() == '') {
 				alert("信息不完整啊！");
+				return ;
+			} else if (!emailTypeValidated) {
+				alert('个人邮箱类型[ '+ emailType +' ]不支持。暂支持163,126和qq邮箱');
 				return ;
 			} else {
 				//jquery

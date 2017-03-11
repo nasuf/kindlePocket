@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet"
+	href="/js/vue/materialize.min.css?randomId=<%=Math.random()%>">
+<title>Introduction</title>
+</head>
+<body>
+
+	<script src="/js/vue/jquery.min.js"></script>
+	<script src="/js/vue/materialize.min.js?randomId=<%=Math.random()%>"></script>
+
+	<div class="container">
+		<div id="popout" class="section scrollspy">
+			<ul class="collapsible collapsible-accordion"
+				data-collapsible="accordion">
+				<li>
+					<div class="collapsible-header active waves-effect">
+						<i class="material-icons">subtitles</i>Kindle Pocket 使用说明
+					</div>
+					<div class="collapsible-body">
+						<span>
+							1. 本公众号不做商业用途，仅提供个人电子图书推送业务，并以亚马逊Kindle设备为主；<br/><br/>
+							2. 在本公众号对话界面，输入电子书关键字，如：“人”，即可搜索带有此关键字的书目；输入数字“ 2 ” 或“绑定”或“更新”，即可进行个人邮箱和Kindle设备的绑定；输入数字“ 1 ”或“介绍”或“指南”，即可重新接收此【 Kindle Pocket使用说明 】。
+						</span>
+					</div>
+				</li>
+				<li>
+					<div class="collapsible-header waves-effect">
+						<i class="material-icons">subtitles</i>绑定步骤说明
+					</div>
+					<div class="collapsible-body">
+						<span>
+							1. 本公众号通过您授权绑定的个人邮箱账户和授权码（或密码）向您的Kindle设备邮箱（或任意其他您想绑定的邮箱）推送电子书文件；为了您的个人邮箱账户安全，请尽量使用邮箱的授权码进行绑定；<br/><br/>
+							2. 若您使用启用了独立密码的QQ邮箱，请使用独立密码进行绑定（或授权码）而非QQ邮箱登录密码；<br/><br/>
+							3. 个人邮箱暂只支持163,126和QQ邮箱，其他邮箱的推送功能也将在今后逐步完善；<br/><br/>
+							4. 本公众号电子书资源以mobi格式文件为主，在除Kindle设备外的其他电子书阅读软件上可能无法浏览；另有pdf，txt，epub等其他格式的资源文件；<br/><br/>
+							5. 如果您所要推送的邮箱是Kindle邮箱，请将个人邮箱添加到亚马逊Kindle设备的信任邮箱列表中；<br/><br/>
+							6. 请确保个人邮箱已经开启了【IMAP/SMTP服务】。
+						</span>
+					</div>
+				</li>
+				<li>
+					<div class="collapsible-header waves-effect">
+						<i class="material-icons">subtitles</i>如何启用IMAP/SMTP服务和授权码
+					</div>
+					<div class="collapsible-body">
+						<span>
+							1. 以QQ邮箱为例；请登录QQ邮箱；<br/><br/>
+							2. 点击 “设置 -> 账户 -> POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务”；<br/><br/>
+							3. 查看IMAP/SMTP服务，点击“开启”；可能需要您进一步验证密保；<br/><br/>
+							4. 开启后会提示您的授权码；您可以在本公众号的绑定界面中，将个人邮箱的密码填写为本授权码；<br/><br/>
+							5. 其他类型邮箱（如163，126）操作类似。
+						</span>
+					</div>
+				</li>
+				<li>
+					<div class="collapsible-header waves-effect">
+						<i class="material-icons">subtitles</i>如何添加Kindle信任邮箱
+					</div>
+					<div class="collapsible-body">
+						<span>
+							1. 登录亚马逊网站；<br/><br/>
+							2. 点击 “我的账户 -> 管理我的内容和设备 -> 设置 -> 个人文档设置”；<br/><br/>
+							3. 查看 “已认可的发件人电子邮箱列表”；<br/><br/>
+							4. 点击 “添加认可的电子邮箱”；<br/><br/>
+							5. 将您需要绑定的个人邮箱添加到此邮箱列表中。
+						</span>
+					</div>
+				</li>
+				<li>
+					<div class="collapsible-header waves-effect">
+						<i class="material-icons">subtitles</i>如何查看Kindle邮箱账号
+					</div>
+					<div class="collapsible-body">
+						<span>
+							1. 启动Kindle设备并登录亚马逊账号；<br/><br/>
+							2. 点击 “设置 -> 我的账户”；<br/><br/>
+							3. 查看 “【发送至Kindle】电子邮箱地址”；<br/><br/>
+							4. 提示：当您的Kindle设备登录了亚马逊账户后，您使用个人邮箱（已添加到Kindle信任邮箱列表中的）推送到Kindle设备邮箱的文件，就可以被亚马逊服务器推送到Kindle设备中。
+						</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
