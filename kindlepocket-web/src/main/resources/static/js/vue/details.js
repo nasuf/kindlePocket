@@ -56,7 +56,7 @@ var app = new Vue({
 		},
 		
 		sendMail: function(id) {
-			Materialize.toast('Send Successfully!', 4000);
+			Materialize.toast('推送请求已发送！请等待若干分钟', 4000);
 			
 			//jquery
 			$.get(this.sendMailUrl + "?bookId=" + id)
