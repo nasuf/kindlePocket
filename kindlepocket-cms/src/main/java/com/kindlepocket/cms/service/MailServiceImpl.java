@@ -13,13 +13,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kindlepocket.cms.pojo.TextBook;
+
 @Component
 public class MailServiceImpl implements MailService{
 
     private static Logger logger = Logger.getLogger(MailServiceImpl.class);
 
     private static final String MAIL_HOST = "mail.host";
-    private static final String MAIL_HOST_VALUE = "smtp.163.com";
+    private static final String MAIL_HOST_VALUE_QQ = "smtp.qq.com";
+    private static final String MAIL_HOST_VALUE_163 = "smtp.163.com";
+    private static final String MAIL_HOST_VALUE_126 = "smtp.126.com";
     private static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
     private static final String MAIL_TRANSPORT_PROTOCOL_VALUE = "smtp";
     private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
@@ -28,11 +32,13 @@ public class MailServiceImpl implements MailService{
 
     @Autowired
     private GridFSService gridFSService;
-
+    @Autowired
+    private BookRepository bookRepository;
+    
     @Override
     public void sendSimpleMail(String title) {
         Properties prop = new Properties();
-        prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
+        prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE_163);
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
         prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
         // 使用JavaMail发送邮件的5个步骤
@@ -60,24 +66,40 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) throws Exception {
+    public void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) 
+    		throws AuthenticationFailedException,NoSuchProviderException,MessagingException{
         Properties prop = new Properties();
-        prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE);
+        String userEmailHost = fromMail.split("\\.")[0].split("@")[1];
+        String host = null;
+        if (userEmailHost.equals("163")) {
+        	prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE_163);
+        	host = MAIL_HOST_VALUE_163;
+        } else if (userEmailHost.equals("qq")) {
+        	prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE_QQ);
+        	host = MAIL_HOST_VALUE_QQ;
+        } else if (userEmailHost.equals("126")) {
+        	prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE_126);
+        	host = MAIL_HOST_VALUE_126;
+        } else {
+        	host = "smtp." + userEmailHost + ".com";
+        	prop.setProperty(MAIL_HOST, host);
+        }
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
         prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
         Session session = Session.getInstance(prop);
         //session.setDebug(true);
-        Transport ts = session.getTransport();
-        String fromMailPrefix = fromMail.split("@")[0];
-        ts.connect(MAIL_HOST_VALUE,fromMailPrefix, fromMailPwd);
-        //String fromAdd = "binglingxueyou1031@163.com";
-        //String toAdd = "842100455@qq.com";
-        String subject = "FILE ATTACHED MAIL TEST";
-        String content = "Mail Content RE";
-        String fileSavePath = "E://attachMail.eml";
-        Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
-        ts.sendMessage(message, message.getAllRecipients());
-        ts.close();
+		Transport ts = session.getTransport();
+		String fromMailPrefix = fromMail.split("@")[0];
+		ts.connect(host,fromMailPrefix, fromMailPwd);
+		//String fromAdd = "binglingxueyou1031@163.com";
+		//String toAdd = "842100455@qq.com";
+		TextBook book = this.bookRepository.findById(bookId);
+		String subject = "Kindle Pocket 电子书 【 " + book.getTitle() + " 】";
+		String content = "Kindle Your Kindle";
+		String fileSavePath = "E://attachMail.eml";
+		Message message = createFileAttachedMail(session, fromMail, toMail, subject, content, bookId, fileSavePath);
+		ts.sendMessage(message, message.getAllRecipients());
+		ts.close();
     }
 
     @Override

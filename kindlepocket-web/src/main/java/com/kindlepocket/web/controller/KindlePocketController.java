@@ -125,51 +125,71 @@ public class KindlePocketController {
 
 	@RequestMapping("/getDetails")
 	@ResponseBody
-	public Object getDetails(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		JsonNode result = null;
-		if (!(null == cookies)) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("idList")) {
-					// query single book with id
-					String idList = cookie.getValue();
-					if (logger.isInfoEnabled()) {
-						logger.info("idList: " + idList);
-					}
-					Map<String, Object> queryMap = new HashMap<String, Object>();
-					queryMap.put("key", "id");
-					queryMap.put("value", idList);
-					result = this.bookService.search(queryMap);
-					if (logger.isInfoEnabled()) {
-						logger.info("query single result:" + result);
-					}
-					break;
-				} else if (cookie.getName().equals("queryParam")) {
-					// query all the matched books
-					String queryParam = cookie.getValue();
-					Map<String, Object> queryMap = new HashMap<String, Object>();
-					queryMap.put("key", "title");
-					try {
-						queryMap.put("value", URLDecoder.decode(queryParam, "utf-8"));
-					} catch (UnsupportedEncodingException e) {
-						if (logger.isErrorEnabled()) {
-							logger.error("decode queryParam: [" + "] encountered problems!");
-						}
-					}
-					result = this.bookService.search(queryMap);
-					if (logger.isInfoEnabled()) {
-						logger.info("query all the matched books:" + result);
-					}
-					break;
+	public Object getDetails(HttpServletRequest request, 
+			@RequestParam(value="inPageSearch",required=false)String inPageSearch,
+			@RequestParam(value="keyWords",required=false)String keyWords) {
+		if (null != inPageSearch && inPageSearch.equals("true") && null != keyWords) {
+			Map<String, Object> queryMap = new HashMap<String, Object>();
+			queryMap.put("key", "title");
+			try {
+				queryMap.put("value", URLDecoder.decode(keyWords, "utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				if (logger.isErrorEnabled()) {
+					logger.error("decode queryParam: [" + "] encountered problems!");
 				}
+			}
+			JsonNode result = this.bookService.search(queryMap);
+			if (logger.isInfoEnabled()) {
+				logger.info("query all the matched books:" + result);
 			}
 			return result;
 		} else {
-			if (logger.isInfoEnabled()) {
-				logger.info("no cookies received");
+			Cookie[] cookies = request.getCookies();
+			JsonNode result = null;
+			if (!(null == cookies)) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("idList")) {
+						// query single book with id
+						String idList = cookie.getValue();
+						if (logger.isInfoEnabled()) {
+							logger.info("idList: " + idList);
+						}
+						Map<String, Object> queryMap = new HashMap<String, Object>();
+						queryMap.put("key", "id");
+						queryMap.put("value", idList);
+						result = this.bookService.search(queryMap);
+						if (logger.isInfoEnabled()) {
+							logger.info("query single result:" + result);
+						}
+						break;
+					} else if (cookie.getName().equals("queryParam")) {
+						// query all the matched books
+						String queryParam = cookie.getValue();
+						Map<String, Object> queryMap = new HashMap<String, Object>();
+						queryMap.put("key", "title");
+						try {
+							queryMap.put("value", URLDecoder.decode(queryParam, "utf-8"));
+						} catch (UnsupportedEncodingException e) {
+							if (logger.isErrorEnabled()) {
+								logger.error("decode queryParam: [" + "] encountered problems!");
+							}
+						}
+						result = this.bookService.search(queryMap);
+						if (logger.isInfoEnabled()) {
+							logger.info("query all the matched books:" + result);
+						}
+						break;
+					}
+				}
+				return result;
+			} else {
+				if (logger.isInfoEnabled()) {
+					logger.info("no cookies received");
+				}
+				return null;
 			}
-			return null;
 		}
+		
 	}
 
 	@RequestMapping("/testToBindingPage")

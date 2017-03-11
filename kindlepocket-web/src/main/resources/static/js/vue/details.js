@@ -94,31 +94,17 @@ var app = new Vue({
 	    	this.searchBarDisplay = !this.searchBarDisplay;
 	    },
 	    
-	    getSubscriberOpenId: function() {
-		  var strCookie=document.cookie; 
-		  var arrCookie=strCookie.split("; "); 
-		  for(var i=0;i<arrCookie.length;i++){ 
-		    var arr=arrCookie[i].split("="); 
-		    if(arr[0]=="subscriberOpenId"){
-		      return this.subscriberOpenId = unescape(arr[1]);
-		    }
-		  } 
-		},
-	    
 	    search: function(content) {
 	    	this.toggleSearchBar();
 	    	this.loading = true;
-	    /*	var thiz = this;
+	    	var thiz = this;
 	    	thiz.loading = true;
-	    	var searchUrl = "/KindlePocket/toDetailsPage?single=false&idList=all&queryParam=" 
-	    			+ this.searchContent
-	    			+ "&subscriberOpenId=" + this.getSubscriberOpenId()
-	    			+ "&inPageSearch=true";
+	    	var searchUrl = "/KindlePocket/getDetails?inPageSearch=true&keyWords=" + content;
 	    	 $.get(searchUrl)
 			    .success(function(result) { 
 			    	thiz.details = result;
 			    	thiz.loading = false;
-			 });	*/
+			 });
 	    }
 	},
 	

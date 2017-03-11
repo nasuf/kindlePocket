@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+
 /**
  * Created by admin on 2016/7/30.
  */
@@ -135,11 +139,30 @@ public class MailMessageConsumeService {
 	        this.bookRepository.save(book);
 	        // set record status as success
 	        record.setIsDelivered(Constants.ONE);
-		} catch (Exception e) {
-			if(logger.isErrorEnabled()) {
-				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]", e);
+	        record.setInfo("已投递");
+		} catch(AuthenticationFailedException e){
+			if (logger.isErrorEnabled()) {
+				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]");
+				logger.error("邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！", e);
 			}
 			// set record status as failed
+			record.setInfo("邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！");
+			record.setIsDelivered(Constants.ZERO);
+		} catch (NoSuchProviderException e) {
+			if (logger.isErrorEnabled()) {
+				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]");
+				logger.error("邮箱类型不支持！",e);
+			}
+			// set record status as failed
+			record.setInfo("邮箱类型不支持！");
+			record.setIsDelivered(Constants.ZERO);
+		} catch (MessagingException e) {
+			if (logger.isErrorEnabled()) {
+				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]");
+				logger.error("邮箱类型不支持！", e);
+			}
+			// set record status as failed
+			record.setInfo("邮箱类型不支持！");
 			record.setIsDelivered(Constants.ZERO);
 		}
 

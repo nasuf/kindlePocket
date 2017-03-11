@@ -51,23 +51,24 @@
                     <table class="centered highlight">
                         <thead>
                         <tr>
-                            <th data-field="id" width="40%">Name</th>
-                            <th data-field="name" width="30%">Delivery Date</th>
-                            <th data-field="price" width="10%">Delivery Status</th>
-                            <th data-field="price" width="20%">Action</th>
+                            <th data-field="id" width="30%">书名</th>
+                            <th data-field="name" width="30%">时间</th>
+                            <th data-field="price" width="20%">状态</th>
+                            <th data-field="price" width="20%">信息</th>
                         </tr>
                         </thead>
 
                         <tbody v-for="record in records">
 
                             <tr>
-                                <td width="40%">{{record.bookTitle}}</td>
+                                <td width="30%">{{record.bookTitle}}</td>
                                 <td width="30%">{{renderDate(record.deliveryDate)}}</td>
-                                <td width="10%">{{renderStatus(record.isDelivered)}}</td>
-                                <td width="20%">
+                                <td width="20%">{{renderStatus(record.isDelivered)}}</td>
+                                <td width="20%"><font color="#ef6c00">{{record.info}}</font></td>
+                                <!-- <td width="20%">
                                     <a class="waves-effect waves-light btn-small">RESEND</a>
                                     <a class="waves-effect waves-light btn-small">DELETE</a>
-                                </td>
+                                </td> -->
                             </tr>
 
                         </tbody>

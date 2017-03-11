@@ -61,9 +61,9 @@ var app = new Vue({
 		renderStatus: function(originalStatus){
 			
             if(originalStatus == '1'){
-                return 'success';
+                return '✅';
             } else {
-                return 'failed';
+                return '❌';
             }
         },
 		renderDate: function(millisecond) {

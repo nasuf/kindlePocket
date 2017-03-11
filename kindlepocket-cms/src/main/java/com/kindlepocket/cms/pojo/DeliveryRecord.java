@@ -21,8 +21,17 @@ public class DeliveryRecord {
     private String fromEmailAdd;
     private String toEmailAdd;
     private String bookTitle;
+    private String info;
 
-    public String getId() {
+    public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+	public String getId() {
         return id;
     }
 
@@ -86,17 +95,12 @@ public class DeliveryRecord {
         this.bookTitle = bookTitle;
     }
 
-    @Override
-    public String toString() {
-        return "DeliveryRecord{" +
-                "id='" + id + '\'' +
-                ", subscriberOpenId='" + subscriberOpenId + '\'' +
-                ", textBookId='" + textBookId + '\'' +
-                ", deliveryDate=" + deliveryDate +
-                ", isDelivered=" + isDelivered +
-                ", fromEmailAdd='" + fromEmailAdd + '\'' +
-                ", toEmailAdd='" + toEmailAdd + '\'' +
-                ", bookTitle='" + bookTitle + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "DeliveryRecord [id=" + id + ", subscriberOpenId=" + subscriberOpenId + ", textBookId=" + textBookId
+				+ ", deliveryDate=" + deliveryDate + ", isDelivered=" + isDelivered + ", fromEmailAdd=" + fromEmailAdd
+				+ ", toEmailAdd=" + toEmailAdd + ", bookTitle=" + bookTitle + ", info=" + info + "]";
+	}
+
+   
 }
