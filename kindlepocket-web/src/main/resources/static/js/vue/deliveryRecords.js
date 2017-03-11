@@ -8,18 +8,19 @@ var app = new Vue({
 	data: {
 		getDeliveryRecordsUrl: '/KindlePocket/getDeliveryRecords',
 		getSubscriberInfoUrl: '/KindlePocket/getSubscriberInfo',
+		getCommentsUrl: '/KindlePocket/getCommentsInfo',
 		records: [],
 		userInfo: {
 			userName:'',
 			email:'',
 			kindleEmail:''
-		}
+		},
+		subscriberOpenId: '',
+		comments: []
 	},
 	
 	methods: {
 		getDeliveryRecords: function() {
-			// jquery
-			// var rs = this.records;
 			 var thiz = this;
 			 $.get(this.getDeliveryRecordsUrl)
 			    .success(function(result) { 
@@ -42,6 +43,27 @@ var app = new Vue({
 				  }) */
 			 
 		},
+		
+		 getSubscriberOpenId: function() {
+			  var strCookie = document.cookie; 
+			  var arrCookie = strCookie.split("; "); 
+			  for(var i=0; i<arrCookie.length; i++) { 
+			    var arr = arrCookie[i].split("="); 
+			    if(arr[0] == "subscriberOpenId"){
+			      this.subscriberOpenId = unescape(arr[1]);
+			    }
+			  } 
+			},
+		
+		getCommentRecords: function() {
+			this.getSubscriberOpenId();
+			var thiz = this;
+			$.get(this.getCommentsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
+		    .success(function(result) { 
+		    	 thiz.comments = JSON.parse(result.body);
+		    })
+		},
+		
 		getSubscriberInfo: function() {
 			var user = this.userInfo;
 			//jquery
@@ -58,6 +80,7 @@ var app = new Vue({
 					 this.subscriberInfo = response.data;
 				 })*/
 		},
+		
 		renderStatus: function(originalStatus){
 			
             if(originalStatus == '1'){
@@ -81,5 +104,6 @@ var app = new Vue({
 	created: function() {
 		this.getDeliveryRecords();
 		this.getSubscriberInfo();
+		this.getCommentRecords();
 	}
 })

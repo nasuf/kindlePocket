@@ -1,21 +1,27 @@
 package com.kindlepocket.cms.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kindlepocket.cms.pojo.DeliveryRecord;
-import com.kindlepocket.cms.pojo.Subscriber;
-import com.kindlepocket.cms.service.DeliveryRecordRepository;
-import com.kindlepocket.cms.service.SubscriberRepository;
-import com.kindlepocket.cms.utils.Constants;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kindlepocket.cms.pojo.Comment;
+import com.kindlepocket.cms.pojo.DeliveryRecord;
+import com.kindlepocket.cms.pojo.Subscriber;
+import com.kindlepocket.cms.service.CommentRepository;
+import com.kindlepocket.cms.service.DeliveryRecordRepository;
+import com.kindlepocket.cms.service.SubscriberRepository;
+import com.kindlepocket.cms.utils.Constants;
 
 /**
  * Created by admin on 2016/6/18.
@@ -30,6 +36,9 @@ public class SubscriberManagementController {
 
     @Autowired
     DeliveryRecordRepository deliveryRecordRepository;
+    
+    @Autowired
+    CommentRepository commentRepository;
 
     private static Logger logger = Logger.getLogger(SubscriberManagementController.class);
 
@@ -163,6 +172,28 @@ public class SubscriberManagementController {
         if(null != recordList){
             try {
                 return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(recordList));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
+    
+    @RequestMapping(value = "/findCommentsInfo", method = RequestMethod.POST)
+    public ResponseEntity<String> findCommentsInfo(@RequestParam(value = "subscriberOpenId")String subscriberOpenId) {
+        if (logger.isInfoEnabled()) {
+            logger.info("finding comments info for: [" + subscriberOpenId + "]");
+        }
+        List<Comment> comments = this.commentRepository.findBySubscriberOpenId(subscriberOpenId);
+        
+        if(logger.isInfoEnabled()) {
+            logger.info("dilivery record list: [" + comments.toString() + "]");
+        }
+        if(null != comments){
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(comments));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

@@ -127,6 +127,25 @@ public class SubscriberService {
             }
             return null;
         }
-
     }
+    
+    public HttpResult findCommentsInfo(String subscriberOpenId) {
+    	Map<String, Object> param = new HashMap<String, Object>();
+        param.put("subscriberOpenId", subscriberOpenId);
+        try {
+            HttpResult result = this.apiService.doPost(CMS_SUBSCRIBER_URL + "/findCommentsInfo", param);
+            String body = result.getBody();
+            Integer code = result.getCode();
+            if(logger.isDebugEnabled()){
+                logger.debug("body:"+body+" code:"+code);
+            }
+            return result;
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("get comments info failed! subscriberOpenId is [" + subscriberOpenId + "]");
+            }
+            return null;
+        }
+    }
+    
 }

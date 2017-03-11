@@ -21,6 +21,7 @@ import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -592,6 +593,23 @@ public class KindlePocketController {
 		}
 		if (logger.isInfoEnabled()) {
 			logger.info("delivery record:" + result.getBody());
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/sendBookComment", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean sendBookComment(@RequestParam("bookId")String bookId, @RequestParam("subscriberOpenId")String subscriberOpenId, @RequestParam("content")String content) {
+		this.bookService.sendBookComment(bookId, subscriberOpenId, content);
+		return true;
+	}
+	
+	@RequestMapping(value = "/getCommentsInfo", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getCommentsInfo(@RequestParam("subscriberOpenId")String subscriberOpenId) {
+		HttpResult result = this.ssbService.findCommentsInfo(subscriberOpenId);
+		if(logger.isInfoEnabled()) {
+			logger.info("Get user comments info: [ " + result + " ]");
 		}
 		return result;
 	}

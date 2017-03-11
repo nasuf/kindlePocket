@@ -7,9 +7,10 @@
 	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <title>Kindle Pocket</title>
 <!-- <link rel="stylesheet" href="/js/vue/material_icons.css?randomId=<%=Math.random()%>"> -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="/js/vue/materialize.min.css?randomId=<%=Math.random()%>">
-<link rel="stylesheet" href="/js/vue/mint-ui.css"> 
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="/js/vue/materialize.min.css">
+<link rel="stylesheet" href="/js/vue/mint-ui.css">
 </head>
 
 <!-- <link rel="stylesheet"
@@ -46,54 +47,50 @@ body {<!--
 <body class="grey lighten-3">
 
 	<script src="/js/vue/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/vue/materialize.min.js?randomId=<%=Math.random()%>"></script>
+	<script type="text/javascript" src="/js/vue/materialize.min.js"></script>
 	<script src="/js/vue/vue.js"></script>
 	<script src="/js/vue/mint-ui.js"></script>
 
 	<script>
-
 		var closeFAB = function() {
 			//$('.fixed-action-btn').closeFAB();
 		}
-	
+
 		function popUpCommentModal(id) {
 			$('#' + id + '').modal();
 		};
-	
+
 		function closeFAB() {
 			$('#bottomButton').closeFAB();
 		}
-		
-		$(document).ready(function(){
-		    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-		    $('.modal').modal();
-		    $('#searchModal').modal({
-		        startingTop: '10%', // Starting top style attribute
-		        endingTop: '20%' // Ending top style attribute
-		      }
-		    );
-		  });
-		
-		
+
+		$(document).ready(function() {
+			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+			$('.modal').modal();
+			$('#searchModal').modal({
+				startingTop : '10%', // Starting top style attribute
+				endingTop : '20%' // Ending top style attribute
+			});
+		});
 	</script>
 
 	<main>
 	<div id="details" class="container">
 		<!--  <div v-if="searchBarDisplay" class="navbar-fixed"> -->
-			<nav v-if="searchBarDisplay" class="navbar-fixed grey lighten-3">
-			    <div class="nav-wrapper">
-				      <form>
-				        <div class="input-field">
-				          <!-- <input id="search" type="search"  v-on:blur="toggleSearchBar()" required v-model="searchContent"> -->
-				          <input id="search" type="search" required v-model="searchContent">
-				          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-				          <i class="material-icons" v-on:click="search(searchContent)"
-				          	>trending_flat</i>
-				        </div>
-				      </form>
-			    </div>
-			</nav>
-		 <!-- </div> -->
+		<nav v-if="searchBarDisplay" class="navbar-fixed grey lighten-3">
+			<div class="nav-wrapper">
+				<form>
+					<div class="input-field">
+						<!-- <input id="search" type="search"  v-on:blur="toggleSearchBar()" required v-model="searchContent"> -->
+						<input id="search" type="search" required v-model="searchContent">
+						<label class="label-icon" for="search"><i
+							class="material-icons">search</i></label> <i class="material-icons"
+							v-on:click="search(searchContent)">trending_flat</i>
+					</div>
+				</form>
+			</div>
+		</nav>
+		<!-- </div> -->
 		<!-- loading -->
 		<div class="row" v-if="loading">
 
@@ -126,37 +123,38 @@ body {<!--
 							<a turnToSuccess href="###"
 								class="btn-small waves-effect lighten-4 z-depth-0"
 								v-on:click="sendMail(detail.id)"><font size="2px">Send
-									To Kindle</font></a> <a href="#comment"
+									To Kindle</font></a> 
+							<a href="#comment" v-on:click="saveBookId(detail.id)"
 								class="modal-trigger btn-small waves-effect lighten-4 z-depth-0"
-								:name="detail.id" v-on:clic><font
-								size="2px">COMMENT</font></a>
+								:name="detail.id"><font size="2px">COMMENT</font></a>
 						</div>
 
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		<!-- Comments Modal -->
+
+		<!-- Comments Modal Start -->
 		<div id="comment" class="modal bottom-sheet">
 			<div class="modal-content">
 				<div class="row">
-				      <div class="row">
-				        <div class="input-field col s12">
-				          <i class="material-icons prefix">mode_edit</i>
-				          <textarea id="comment_textarea" length="140" class="materialize-textarea"></textarea>
-				          <label for="comment_textarea">写下您的评论：</label>
-				        </div>
-				      </div>
-				  </div>
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">mode_edit</i>
+							<textarea id="comment_textarea" length="140"
+								class="materialize-textarea" v-model="comment.content"></textarea>
+							<label for="comment_textarea">写下您的评论：</label>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<a href="#!"
+				<a v-on:click="sendBookComment()"
 					class="modal-action modal-close waves-effect btn-flat z-depth-1"
-					type="submit">提交</a>
+					>提交</a>
 			</div>
 		</div>
-		<!-- Modal Structure End -->
+		<!-- Comments Modal End -->
 
 
 		<!-- pagination -->
@@ -187,16 +185,17 @@ body {<!--
 			<ul>
 				<li><a class="btn-floating yellow darken-1 z-depth-2"
 					href="toDeliveryRecords"><i class="material-icons">perm_identity</i></a></li>
-				<li><a class="btn-floating red  waves-effect z-depth-2"><i
-						class="material-icons">message</i></a></li>
-				<li>
-					<a class="btn-floating green waves-effect z-depth-2 modal-trigger"
-					v-on:click="toggleSearchBar()" href="javascript:scroll(0,0)">
-						<i class="material-icons" >search</i>
-					</a>
-				</li>
-				<li><a class="btn-floating blue waves-effect z-depth-2 modal-trigger"
-					href="#suggestionModal"><i class="material-icons">live_help</i></a></li>
+				<li><a class="btn-floating red  waves-effect z-depth-2"
+					href="#suggestionModal"><i class="material-icons">message</i></a></li>
+				<li><a
+					class="btn-floating green waves-effect z-depth-2 modal-trigger"
+					v-on:click="toggleSearchBar()" href="javascript:scroll(0,0)"> <i
+						class="material-icons">search</i>
+				</a></li>
+				<li><a
+					class="btn-floating blue waves-effect z-depth-2 modal-trigger"
+					href="toIntroduction"><i
+						class="material-icons">live_help</i></a></li>
 			</ul>
 		</div>
 
@@ -210,14 +209,15 @@ body {<!--
 	<div id="suggestionModal" class="modal bottom-sheet">
 		<div class="modal-content">
 			<div class="row">
-			      <div class="row">
-			        <div class="input-field col s12">
-			          <i class="material-icons prefix">mode_edit</i>
-			          <textarea id="suggestion_textarea" length="140" class="materialize-textarea"></textarea>
-			          <label for="suggestion_textarea">写下您的意见或建议：</label>
-			        </div>
-			      </div>
-			  </div>
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="material-icons prefix">mode_edit</i>
+						<textarea id="suggestion_textarea" length="140"
+							class="materialize-textarea"></textarea>
+						<label for="suggestion_textarea">写下您的意见或建议：</label>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="modal-footer">
 			<a href="#!"
@@ -225,10 +225,7 @@ body {<!--
 				type="submit">提交</a>
 		</div>
 	</div>
-	<!-- Suggestion Modal End -->
-	
-	<!-- Search Modal Start -->
-	<!-- <div id="searchModal" class="modal modal-fixed-footer">
+	<!-- Suggestion Modal End --> <!-- Search Modal Start --> <!-- <div id="searchModal" class="modal modal-fixed-footer">
 		<div class="modal-content">
             <input id="search" width="100px"><i class="material-icons">search</i>
 		</div>
@@ -237,10 +234,7 @@ body {<!--
 				class="modal-action modal-close waves-effect btn-flat z-depth-1"
 				type="submit">提交</a>
 		</div>
-	</div> -->
-	<!-- Search Modal End -->
-
-	</main>
+	</div> --> <!-- Search Modal End --> </main>
 
 </body>
 

@@ -69,6 +69,20 @@ public class TextBookService {
             }
         }
     }
+    
+    public void sendBookComment(String bookId, String subscriberOpenId, String content) {
+    	Map<String, Object> map = new HashMap<String, Object> ();
+    	map.put("bookId", bookId);
+    	map.put("subscriberOpenId", subscriberOpenId);
+    	map.put("content", content);
+    	try {
+			this.apiService.doPost(CMS_BOOK_URL + "/sendBookComment", map);
+		} catch (IOException e) {
+			if(logger.isErrorEnabled()) {
+				logger.error("Send book comment failed! bookId: [ " + bookId + " ], subscriberOpenId: [ " + subscriberOpenId + " ], content: [ " + content + " ]", e);
+			}
+		}
+    }
 
 
 }
