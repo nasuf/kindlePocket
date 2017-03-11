@@ -139,7 +139,7 @@ public class MailMessageConsumeService {
 	        this.bookRepository.save(book);
 	        // set record status as success
 	        record.setIsDelivered(Constants.ONE);
-	        record.setInfo("已投递");
+	        record.setInfo("已推送");
 		} catch(AuthenticationFailedException e){
 			if (logger.isErrorEnabled()) {
 				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]");
