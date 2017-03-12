@@ -148,4 +148,43 @@ public class SubscriberService {
         }
     }
     
+    public Boolean sendSuggestion(String subscriberOpenId, String content) {
+    	Map<String, Object> param = new HashMap<String, Object>();
+        param.put("subscriberOpenId", subscriberOpenId);
+        param.put("content", content);
+        Boolean flag = false;
+        try {
+            HttpResult result = this.apiService.doPost(CMS_SUBSCRIBER_URL + "/sendSuggestion", param);
+            Integer code = result.getCode();
+            if(code.equals(200)){
+            	flag = true;
+            }
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("get comments info failed! subscriberOpenId is [" + subscriberOpenId + "]");
+            }
+        }
+        return flag;
+    }
+
+	public HttpResult findSuggestions(String subscriberOpenId) {
+		Map<String, Object> param = new HashMap<String, Object>();
+        param.put("subscriberOpenId", subscriberOpenId);
+        try {
+            HttpResult result = this.apiService.doPost(CMS_SUBSCRIBER_URL + "/findSuggestions", param);
+            String body = result.getBody();
+            Integer code = result.getCode();
+            if(logger.isDebugEnabled()){
+                logger.debug("body:"+body+" code:"+code);
+            }
+            return result;
+        } catch (IOException e) {
+            if(logger.isErrorEnabled()){
+                logger.error("get suggestions info failed! subscriberOpenId is [" + subscriberOpenId + "]");
+            }
+            return null;
+        }
+	}
+    
+    
 }

@@ -35,11 +35,13 @@ var app = new Vue({
 				 || this.newUserInfo.emailPwd.trim() == ''
 				 || this.newUserInfo.kindleEmail.trim() == '') {
 				 
-				 alert("信息不完整啊！");
+				 //alert("信息不完整啊！");
+				 Materialize.toast('信息不完整！请继续填写.', 3000);
 				 return ;
 				 
 			 } else if (!emailTypeValidated) {
-				 alert('个人邮箱类型[ '+ emailType +' ]不支持。暂支持163,126和qq邮箱');
+				// alert('个人邮箱类型[ '+ emailType +' ]不支持。暂支持163,126和qq邮箱');
+				 Materialize.toast('个人邮箱类型 [ '+ emailType +' ] 不支持,暂支持163,126和qq邮箱', 5000);
 				 return ;
 			 } else {
 				// alert("ready to register");
@@ -51,14 +53,17 @@ var app = new Vue({
 				 $.post(this.registerUrl, this.newUserInfo)
 				    .success(function(result) { 
 				    	if(result && result == true) {
-				    		alert("注册成功！");
+				    		//alert("注册成功！");
+				    		 Materialize.toast('注册成功！', 1000, '', function(){
+				    			 window.location.href = "/KindlePocket/toDeliveryRecords";
+				    		 });
 				    	} else {
-				    		alert("注册失败！");
+				    		 Materialize.toast('注册失败！', 1500);
 				    	}
 				    })
 				    .error(function(result) { 
 				    	console.log(result);
-				    	alert("注册失败！"); 
+				    	Materialize.toast('注册失败！', 1500);
 				    });
 				 
 				 // axios

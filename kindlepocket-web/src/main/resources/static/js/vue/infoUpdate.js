@@ -68,21 +68,29 @@ var app = new Vue({
 				|| this.userInfo.email.trim() == ''
 				|| this.userInfo.emailPwd.trim() == ''
 				|| this.userInfo.kindleEmail.trim() == '') {
-				alert("信息不完整啊！");
+				//alert("信息不完整啊！");
+				Materialize.toast('信息不完整！请继续填写.', 3000);
 				return ;
 			} else if (!emailTypeValidated) {
-				alert('个人邮箱类型[ '+ emailType +' ]不支持。暂支持163,126和qq邮箱');
+				//alert('个人邮箱类型[ '+ emailType +' ]不支持。暂支持163,126和qq邮箱');
+				Materialize.toast('个人邮箱类型 [ '+ emailType +' ] 不支持,暂只支持163,126和qq邮箱', 5000);
 				return ;
 			} else {
 				//jquery
 				 $.post(this.updateUrl, this.userInfo)
 				    .success(function(result) { 
 				    	 if(result && result == true) {
-				    		 alert('更新成功！');
+				    		 //alert('更新成功！');
+				    		 Materialize.toast('更新成功！', 1000, '', function(){
+				    			 window.location.href = "/KindlePocket/toDeliveryRecords";
+				    		 });
+				    	 } else {
+				    		 Materialize.toast('更新失败！', 1500);
 				    	 }
 				    })
 				    .error(function(result){
-				    	alert('更新失败！');
+				    	//alert('更新失败！');
+				    	Materialize.toast('更新失败！', 1500);
 				    })
 				    
 				    

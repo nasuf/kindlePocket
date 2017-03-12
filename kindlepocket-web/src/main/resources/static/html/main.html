@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="/js/vue/materialize.min.css">
+<title>Main</title>
+</head>
+<body>
+
+	<script src="/js/vue/jquery.min.js"></script>
+	<script src="/js/vue/materialize.min.js"></script>
+	<nav class="nav-extended col s12">
+		<div class="nav-content">
+			<ul class="tabs tabs-transparent">
+				<li class="tab col s4"><a class="active black" href="#top7">7日排行</a></li>
+				<li class="tab col s4"><a class="black" href="#top30">30日排行</a></li>
+				<li class="tab col s4"><a class="black" href="#topAll">总排行</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<div id="top7" class="row">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator" src="/imgs/kindlePocket.png">
+				</div>
+				<div class="card-content">
+					<span class="card-title activator grey-text text-darken-4">Card
+						Title<i class="material-icons right">more_vert</i>
+					</span>
+				</div>
+				<div class="card-reveal">
+					<span class="card-title grey-text text-darken-4">Card Title<i
+						class="material-icons right">close</i></span>
+					<p>Here is some more information about this product that is
+						only revealed once clicked on.</p>
+				</div>
+				<div class="card-action">
+					<a href="#">Send To Kindle</a>
+					<a href="#">Comment</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -139,7 +139,7 @@ public class BookManagementController {
 	}
 
 	@RequestMapping(value = "/sendBookComment", method = RequestMethod.POST)
-	public void saveBookComment(@RequestParam("bookId") String bookId,
+	public ResponseEntity<String> saveBookComment(@RequestParam("bookId") String bookId,
 			@RequestParam("subscriberOpenId") String subscriberOpenId, @RequestParam("content") String content) {
 		Comment comment = new Comment();
 		comment.setBookId(bookId);
@@ -151,6 +151,12 @@ public class BookManagementController {
 		this.commentRepository.insert(comment);
 		if(logger.isInfoEnabled()) {
 			logger.info("Save comment: " + comment);
+		}
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(comment));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 

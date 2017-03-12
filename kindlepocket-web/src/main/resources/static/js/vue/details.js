@@ -9,6 +9,7 @@ var app = new Vue({
 		getDetailsUrl: "/KindlePocket/getDetails",
 		sendMailUrl: "/KindlePocket/sendMailMessage",
 		sendBookCommentUrl: "/KindlePocket/sendBookComment",
+		sendSuggestionUrl: "/KindlePocket/sendSuggestion",
 		detail: {
 			title:'',
 			author:'',
@@ -20,8 +21,13 @@ var app = new Vue({
 		loading: true,
 		searchBarDisplay: false,
 		searchContent:'',
+		subscriberOpenId: '',
 		comment: {
 			bookId: '',
+			subscriberOpenId: '',
+			content: ''
+		},
+		suggestion:{
 			subscriberOpenId: '',
 			content: ''
 		}
@@ -118,7 +124,7 @@ var app = new Vue({
 		  for(var i=0; i<arrCookie.length; i++) { 
 		    var arr = arrCookie[i].split("="); 
 		    if(arr[0] == "subscriberOpenId"){
-		      this.comment.subscriberOpenId = unescape(arr[1]);
+		      this.subscriberOpenId = unescape(arr[1]);
 		    }
 		  } 
 		},
@@ -128,7 +134,7 @@ var app = new Vue({
 	    },
 	    
 	    sendBookComment: function() {
-	    	this.getSubscriberOpenId();
+	    	this.comment.subscriberOpenId = this.subscriberOpenId;
 	    	$.post(this.sendBookCommentUrl, this.comment)
 		    .success(function(result) { 
 		    	 if(result && result == true) {
@@ -138,11 +144,25 @@ var app = new Vue({
 		    .error(function(result){
 		    	Materialize.toast('评论发送失败', 4000);
 		    })
+	    },
+	    
+	    sendSuggestion: function() {
+	    	this.suggestion.subscriberOpenId = this.subscriberOpenId;
+	    	$.post(this.sendSuggestionUrl, this.suggestion)
+		    .success(function(result) { 
+		    	 if(result && result == true) {
+		    		 Materialize.toast('意见发送成功', 4000);
+		    	 }
+		    })
+		    .error(function(result){
+		    	Materialize.toast('意见发送失败', 4000);
+		    })
 	    }
 	},
 	
 	created: function() {
 		this.getDetails();
+		this.getSubscriberOpenId();
 	}
 	
 })

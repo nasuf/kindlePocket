@@ -9,6 +9,7 @@ var app = new Vue({
 		getDeliveryRecordsUrl: '/KindlePocket/getDeliveryRecords',
 		getSubscriberInfoUrl: '/KindlePocket/getSubscriberInfo',
 		getCommentsUrl: '/KindlePocket/getCommentsInfo',
+		getSuggestionsUrl: '/KindlePocket/getSuggestions',
 		records: [],
 		userInfo: {
 			userName:'',
@@ -16,7 +17,8 @@ var app = new Vue({
 			kindleEmail:''
 		},
 		subscriberOpenId: '',
-		comments: []
+		comments: [],
+		suggestions: []
 	},
 	
 	methods: {
@@ -56,11 +58,18 @@ var app = new Vue({
 			},
 		
 		getCommentRecords: function() {
-			this.getSubscriberOpenId();
 			var thiz = this;
 			$.get(this.getCommentsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
 		    .success(function(result) { 
 		    	 thiz.comments = JSON.parse(result.body);
+		    })
+		},
+		
+		getSuggestionRecords: function() {
+			var thiz = this;
+			$.get(this.getSuggestionsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
+		    .success(function(result) { 
+		    	 thiz.suggestions = JSON.parse(result.body);
 		    })
 		},
 		
@@ -102,8 +111,10 @@ var app = new Vue({
 	},
 	
 	created: function() {
+		this.getSubscriberOpenId();
 		this.getDeliveryRecords();
 		this.getSubscriberInfo();
 		this.getCommentRecords();
+		this.getSuggestionRecords();
 	}
 })

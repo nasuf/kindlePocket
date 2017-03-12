@@ -3,6 +3,7 @@ package com.kindlepocket.web.service;
 import java.io.IOException;
 import java.util.*;
 
+import com.kindlepocket.web.pojo.HttpResult;
 import com.kindlepocket.web.pojo.Subscriber;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,18 +71,23 @@ public class TextBookService {
         }
     }
     
-    public void sendBookComment(String bookId, String subscriberOpenId, String content) {
+    public Boolean sendBookComment(String bookId, String subscriberOpenId, String content) {
     	Map<String, Object> map = new HashMap<String, Object> ();
     	map.put("bookId", bookId);
     	map.put("subscriberOpenId", subscriberOpenId);
     	map.put("content", content);
+    	Boolean flag = false;
     	try {
-			this.apiService.doPost(CMS_BOOK_URL + "/sendBookComment", map);
+			HttpResult result = this.apiService.doPost(CMS_BOOK_URL + "/sendBookComment", map);
+			if (result.getCode().equals(200)) {
+				flag = true;
+			}
 		} catch (IOException e) {
 			if(logger.isErrorEnabled()) {
 				logger.error("Send book comment failed! bookId: [ " + bookId + " ], subscriberOpenId: [ " + subscriberOpenId + " ], content: [ " + content + " ]", e);
 			}
 		}
+    	return flag;
     }
 
 

@@ -106,7 +106,35 @@
             </li>
         </ul>
         <!-- comments records end -->
+		
+		 <!-- suggestion records start -->
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>意见记录</div>
+                <div class="collapsible-body">
+                    <table class="centered highlight">
+                        <thead>
+                        <tr>
+                            <th data-field="name" width="30%">时间</th>
+                            <th data-field="price" width="40%">内容</th>
+                            <th data-field="price" width="40%">反馈</th>
+                        </tr>
+                        </thead>
 
+                        <tbody v-for="suggestion in suggestions">
+
+                            <tr>
+                                <td width="30%">{{renderDate(suggestion.createdDate)}}</td>
+                                <td width="30%"><font color="#009688">{{suggestion.content}}</font></td>
+                                <td width="40%"><font color="#ef6c00">{{suggestion.callback}}</font></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+        </ul>
+        <!-- suggestion records end -->
 
     </div>
 

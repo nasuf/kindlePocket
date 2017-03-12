@@ -69,6 +69,11 @@ public class KindlePocketController {
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 	
+	@RequestMapping("/main")
+	public String toMain() {
+		return "main";
+	}
+	
 	@RequestMapping("/toIntroduction")
 	public String toIntroduction() {
 		return "introduction";
@@ -351,7 +356,7 @@ public class KindlePocketController {
 				case MENU_ITEM_STRING_ONE:	// 1
 				case MENU_ITEM_INTRODUCTION:	// 介绍
 				case MENU_ITEM_GUIDE:	// 指南
-					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket使用说明",
+					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket 使用指南",
 							"点击查看详细使用说明和操作步骤", "/imgs/welcome.jpg", "/KindlePocket/toIntroduction");
 					break;
 				case MENU_ITEM_STRING_TWO:
@@ -411,7 +416,7 @@ public class KindlePocketController {
 				if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
 					this.ssbService.add(fromUserName);
 					//responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.welcomeText());
-					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket使用说明",
+					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket 使用指南",
 							"点击查看详细使用说明和操作步骤", "/imgs/welcome.jpg", "/KindlePocket/toIntroduction");
 
 				} else if (MessageUtil.MESSAGE_UNSUBSCRIBE.equals(eventType)) {
@@ -600,8 +605,8 @@ public class KindlePocketController {
 	@RequestMapping(value = "/sendBookComment", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean sendBookComment(@RequestParam("bookId")String bookId, @RequestParam("subscriberOpenId")String subscriberOpenId, @RequestParam("content")String content) {
-		this.bookService.sendBookComment(bookId, subscriberOpenId, content);
-		return true;
+		Boolean flag = this.bookService.sendBookComment(bookId, subscriberOpenId, content);
+		return flag;
 	}
 	
 	@RequestMapping(value = "/getCommentsInfo", method = RequestMethod.GET)
@@ -610,6 +615,23 @@ public class KindlePocketController {
 		HttpResult result = this.ssbService.findCommentsInfo(subscriberOpenId);
 		if(logger.isInfoEnabled()) {
 			logger.info("Get user comments info: [ " + result + " ]");
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/sendSuggestion", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean sendSuggestion(@RequestParam("subscriberOpenId")String subscriberOpenId, @RequestParam("content")String content) {
+		Boolean flag = this.ssbService.sendSuggestion(subscriberOpenId, content);
+		return flag;
+	}
+	
+	@RequestMapping(value = "/getSuggestions", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getSuggestions(@RequestParam("subscriberOpenId")String subscriberOpenId) {
+		HttpResult result = this.ssbService.findSuggestions(subscriberOpenId);
+		if(logger.isInfoEnabled()) {
+			logger.info("Get user suggestions info: [ " + result + " ]");
 		}
 		return result;
 	}

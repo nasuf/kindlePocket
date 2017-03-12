@@ -18,9 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.Comment;
 import com.kindlepocket.cms.pojo.DeliveryRecord;
 import com.kindlepocket.cms.pojo.Subscriber;
+import com.kindlepocket.cms.pojo.Suggestion;
 import com.kindlepocket.cms.service.CommentRepository;
 import com.kindlepocket.cms.service.DeliveryRecordRepository;
 import com.kindlepocket.cms.service.SubscriberRepository;
+import com.kindlepocket.cms.service.SuggestionRepository;
 import com.kindlepocket.cms.utils.Constants;
 
 /**
@@ -39,6 +41,9 @@ public class SubscriberManagementController {
     
     @Autowired
     CommentRepository commentRepository;
+    
+    @Autowired
+    SuggestionRepository suggestionRepository;
 
     private static Logger logger = Logger.getLogger(SubscriberManagementController.class);
 
@@ -189,11 +194,33 @@ public class SubscriberManagementController {
         List<Comment> comments = this.commentRepository.findBySubscriberOpenId(subscriberOpenId);
         
         if(logger.isInfoEnabled()) {
-            logger.info("dilivery record list: [" + comments.toString() + "]");
+            logger.info("comments record list: [" + comments.toString() + "]");
         }
         if(null != comments){
             try {
                 return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(comments));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
+    
+    @RequestMapping(value = "/findSuggestions", method = RequestMethod.POST)
+    public ResponseEntity<String> findSugestions(@RequestParam(value = "subscriberOpenId")String subscriberOpenId) {
+        if (logger.isInfoEnabled()) {
+            logger.info("finding suggestions info for: [" + subscriberOpenId + "]");
+        }
+        List<Suggestion> suggestions = this.suggestionRepository.findBySubscriberOpenId(subscriberOpenId);
+        
+        if(logger.isInfoEnabled()) {
+            logger.info("suggestions record list: [" + suggestions.toString() + "]");
+        }
+        if(null != suggestions){
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(suggestions));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -227,4 +254,21 @@ public class SubscriberManagementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
+    @RequestMapping(value = "/sendSuggestion", method = RequestMethod.POST)
+    public ResponseEntity<String> sendSuggestion(@RequestParam("subscriberOpenId")String subscriberOpenId, @RequestParam("content")String content) {
+    	Suggestion suggestion = new Suggestion();
+    	suggestion.setSubscriberOpenId(subscriberOpenId);
+    	suggestion.setContent(content);
+    	suggestion.setCreatedDate(new Date());
+    	suggestion.setCallback("待回复");
+    	this.suggestionRepository.insert(suggestion);
+    	try {
+			return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(suggestion));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+    }
+    	
 }
