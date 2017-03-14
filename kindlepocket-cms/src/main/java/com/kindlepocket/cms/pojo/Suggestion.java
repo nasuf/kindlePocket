@@ -2,8 +2,13 @@ package com.kindlepocket.cms.pojo;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class Suggestion {
 	
+	@Id
 	private String id;
 	private String subscriberOpenId;
 	private Date createdDate;

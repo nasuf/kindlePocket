@@ -10,6 +10,7 @@ var app = new Vue({
 		getSubscriberInfoUrl: '/KindlePocket/getSubscriberInfo',
 		getCommentsUrl: '/KindlePocket/getCommentsInfo',
 		getSuggestionsUrl: '/KindlePocket/getSuggestions',
+		toBindingPageUrl: '/KindlePocket/toBindingPage',
 		records: [],
 		userInfo: {
 			userName:'',
@@ -18,7 +19,8 @@ var app = new Vue({
 		},
 		subscriberOpenId: '',
 		comments: [],
-		suggestions: []
+		suggestions: [],
+		isBinded: true
 	},
 	
 	methods: {
@@ -74,14 +76,22 @@ var app = new Vue({
 		},
 		
 		getSubscriberInfo: function() {
-			var user = this.userInfo;
+			//var user = this.userInfo;
+			var thiz = this;
+			var isBinded = this.isBinded;
 			//jquery
-			 $.get(this.getSubscriberInfoUrl)
+			 $.get(this.getSubscriberInfoUrl + "?subscriberOpenId=" + this.subscriberOpenId)
 			    .success(function(result) { 
-			    	 user.userName = result.userName;
-					 user.phone = result.phone;
-					 user.email = result.email;
-					 user.kindleEmail = result.kindleEmail;
+			    	if(null != result && result == false) {
+			    		thiz.isBinded = false;
+			    	} else {
+			    		thiz.isBinded = true;
+			    		thiz.userInfo.userName = result.userName;
+						thiz.userInfo.phone = result.phone;
+						thiz.userInfo.email = result.email;
+						thiz.userInfo.kindleEmail = result.kindleEmail;
+			    	}
+			    	
 			    })
 			// axios
 			/*axios.get(this.getSubscriberInfoUrl)
@@ -106,14 +116,18 @@ var app = new Vue({
 					+ " " + date.getHours() 
 					+ ":" + date.getMinutes()
 					+ ":" + date.getSeconds();
+		},
+		
+		redirectToBindingPage: function() {
+			window.location.href = "/KindlePocket/toBindingPage?subscriberOpenId=" + this.subscriberOpenId;
 		}
 		
 	},
 	
 	created: function() {
 		this.getSubscriberOpenId();
-		this.getDeliveryRecords();
 		this.getSubscriberInfo();
+		this.getDeliveryRecords();
 		this.getCommentRecords();
 		this.getSuggestionRecords();
 	}

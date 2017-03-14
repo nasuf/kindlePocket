@@ -257,10 +257,10 @@ public class MessageUtil {
         } else {
             PicText picText = new PicText();
             picText.setTitle("抱歉，您搜索的书籍尚未收录。");
-            picText.setDescription("点击查看其它热门书籍");
-            picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
+            picText.setDescription("请搜索其他关键字，如：\"红楼梦\"");
+            // picText.setPicUrl(KINDLE_POCKET_HOST+"/imgs/welcome.jpg");
             // picText.setUrl("www.nasuf.cn");
-            picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/homepage");
+            // picText.setUrl(KINDLE_POCKET_HOST+"/KindlePocket/homepage");
             picTextList.add(picText);
         }
         

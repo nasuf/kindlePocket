@@ -30,12 +30,19 @@
                         <img src="/imgs/yuna.jpg" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
                     </div>
                     <div class="col s10">
-                          <span class="black-text">
+                          <span class="black-text" v-if="isBinded">
                              用户&nbsp;<a>{{userInfo.userName}}</a>&nbsp;您好，您的个人邮箱是：&nbsp;<a>{{userInfo.email}}</a>，
                              kindle邮箱是：&nbsp;<a>{{userInfo.kindleEmail}}</a>.<br/><br/>
                              <button type="button" style="float: right; margin-right: 20px"
 								class="btn waves-effect waves-light black">
 								<a href="toInfoUpdate"><font color="white">更新</font></a>
+							</button>
+                          </span>
+                          <span class="black-text" v-else>
+                             您尚未绑定个人邮箱信息。点击注册进行绑定。<br/><br/>
+                             <button type="button" style="float: right; margin-right: 20px"
+								class="btn waves-effect waves-light black">
+								<a v-on:click="redirectToBindingPage()"><font color="white">注册</font></a>
 							</button>
                           </span>
                     </div>

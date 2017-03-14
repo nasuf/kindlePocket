@@ -16,6 +16,7 @@ var app = new Vue({
 			kindleEmail:'',
 			subscriberOpenId:''
 		},
+		subscriberOpenId: '',
 		updatedFlag: false,
 		emailTypes: ['163','126','qq']
 	},
@@ -24,7 +25,7 @@ var app = new Vue({
 		loadUserInfo: function() {
 			var user = this.userInfo;
 			//jquery
-			 $.get(this.getSubscriberInfoUrl)
+			 $.get(this.getSubscriberInfoUrl + '?subscriberOpenId=' + this.subscriberOpenId)
 			    .success(function(result) { 
 			    	 user.userName = result.userName;
 					 user.phone = result.phone;
@@ -131,6 +132,7 @@ var app = new Vue({
 		    var arr=arrCookie[i].split("="); 
 		    if(arr[0]=="subscriberOpenId"){
 		      this.userInfo.subscriberOpenId = unescape(arr[1]);
+		      this.subscriberOpenId = unescape(arr[1]);
 		    }
 		  } 
 		}

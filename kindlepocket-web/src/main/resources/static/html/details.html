@@ -116,7 +116,7 @@ body {<!--
 							<b v-cloak>{{detail.title}}</b><br />
 							<p v-cloak>作者：{{detail.author}} &nbsp;&nbsp;&nbsp;
 								大小：{{process(detail.size)}}</p>
-							<p v-cloak>格式：{{detail.format}} &nbsp;&nbsp;&nbsp;
+							<p v-cloak>格式：{{getFormat(detail.title)}} &nbsp;&nbsp;&nbsp;
 								发送次数：{{detail.kindleMailTimes}}</p>
 						</div>
 						<div class="card-action">

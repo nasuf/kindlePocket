@@ -142,12 +142,14 @@ public class KindlePocketController {
 	@ResponseBody
 	public Object getDetails(HttpServletRequest request, 
 			@RequestParam(value="inPageSearch",required=false)String inPageSearch,
-			@RequestParam(value="keyWords",required=false)String keyWords) {
+			@RequestParam(value="keyWords",required=false)String keyWords,
+			@RequestParam(value="subscriberOpenId") String subscriberOpenId) {
 		if (null != inPageSearch && inPageSearch.equals("true") && null != keyWords) {
 			Map<String, Object> queryMap = new HashMap<String, Object>();
 			queryMap.put("key", "title");
 			try {
 				queryMap.put("value", URLDecoder.decode(keyWords, "utf-8"));
+				queryMap.put("subscriberOpenId", subscriberOpenId);
 			} catch (UnsupportedEncodingException e) {
 				if (logger.isErrorEnabled()) {
 					logger.error("decode queryParam: [" + "] encountered problems!");
@@ -172,6 +174,7 @@ public class KindlePocketController {
 						Map<String, Object> queryMap = new HashMap<String, Object>();
 						queryMap.put("key", "id");
 						queryMap.put("value", idList);
+						queryMap.put("subscriberOpenId", subscriberOpenId);
 						result = this.bookService.search(queryMap);
 						if (logger.isInfoEnabled()) {
 							logger.info("query single result:" + result);
@@ -184,6 +187,7 @@ public class KindlePocketController {
 						queryMap.put("key", "title");
 						try {
 							queryMap.put("value", URLDecoder.decode(queryParam, "utf-8"));
+							queryMap.put("subscriberOpenId", subscriberOpenId);
 						} catch (UnsupportedEncodingException e) {
 							if (logger.isErrorEnabled()) {
 								logger.error("decode queryParam: [" + "] encountered problems!");
@@ -382,6 +386,7 @@ public class KindlePocketController {
 					Map<String, Object> queryMap = new HashMap<String, Object>();
 					queryMap.put("key", "title");
 					queryMap.put("value", content);
+					queryMap.put("subscriberOpenId", fromUserName);
 					JsonNode result = this.bookService.search(queryMap);
 					List<String> titleList = new ArrayList<String>();
 					List<String> idList = new ArrayList<String>();
@@ -458,18 +463,7 @@ public class KindlePocketController {
 
 	@RequestMapping(value = "/getSubscriberInfo", method = RequestMethod.GET)
 	@ResponseBody
-	private Object getSubscriberInfo(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		String subscriberOpenId = null;
-		for (Cookie cookie : cookies) {
-
-			if (cookie.getName().equalsIgnoreCase("subscriberOpenId")) {
-				subscriberOpenId = cookie.getValue();
-			} else {
-				continue;
-			}
-		}
-		
+	private Object getSubscriberInfo(HttpServletRequest request, @RequestParam("subscriberOpenId")String subscriberOpenId) {
 		if (logger.isInfoEnabled()) {
 			logger.info("search for subscriber info; openId: " + subscriberOpenId);
 		}
@@ -482,12 +476,15 @@ public class KindlePocketController {
 		try {
 			JsonNode node = MAPPER.readTree(result.getBody());
 			System.out.println("node:" + node.toString());
-			return node;
-			//return result.getBody();
+			if(node.get("isBinded").toString().equals(BINDED)) {
+				return node;
+			} else {
+				return false;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-		return null;
 	}
 
 	@RequestMapping(value = "/updateSubscriberInfo", method = RequestMethod.POST)
@@ -538,36 +535,25 @@ public class KindlePocketController {
 
 	@RequestMapping(value = "/sendMailMessage", method = RequestMethod.GET)
 	@ResponseBody
-	public void sendMailMessage(HttpServletRequest request, @RequestParam("bookId") String bookId) {
-		System.out.print("entered sendMail function\n");
-		Cookie[] cookies = request.getCookies();
-		String subscriberOpenId = null;
-		if (null != cookies) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("subscriberOpenId")) {
-					subscriberOpenId = cookie.getValue();
-					if (logger.isInfoEnabled()) {
-						logger.info(
-								"ready to send the book; bookId:" + bookId + " subscriberOpenId:" + subscriberOpenId);
-					}
-					// this.bookService.sendMail(bookId,subscriberOpenId);
-					Map<String, String> params = new HashMap<String, String>();
-					params.put("bookId", bookId);
-					params.put("subscriberOpenId", subscriberOpenId);
-					try {
-						String paramsStr = MAPPER.writeValueAsString(params);
-						if (logger.isInfoEnabled()) {
-							logger.info("sendMailMessage params: " + paramsStr);
-						}
-						this.mailMessageSendService.sendMsg(paramsStr);
-					} catch (JsonProcessingException e) {
-						e.printStackTrace();
-					}
-				}
+	public Boolean sendMailMessage(HttpServletRequest request, @RequestParam("bookId") String bookId,
+			@RequestParam("subscriberOpenId")String subscriberOpenId) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("bookId", bookId);
+		params.put("subscriberOpenId", subscriberOpenId);
+		Boolean flag = false;
+		try {
+			String paramsStr = MAPPER.writeValueAsString(params);
+			if (logger.isInfoEnabled()) {
+				logger.info("sendMailMessage params: " + paramsStr);
 			}
-		} else {
-			System.out.print("no cookie received");
+			if(this.isBinded(subscriberOpenId)) {
+				this.mailMessageSendService.sendMsg(paramsStr);
+				flag = true;
+			} 
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
+		return flag;
 	}
 
 	@RequestMapping(value = "/getDeliveryRecords", method = RequestMethod.GET)

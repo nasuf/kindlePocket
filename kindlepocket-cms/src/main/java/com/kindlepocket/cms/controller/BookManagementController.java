@@ -25,12 +25,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kindlepocket.cms.pojo.Comment;
+import com.kindlepocket.cms.pojo.SearchRecord;
 import com.kindlepocket.cms.pojo.TextBook;
 import com.kindlepocket.cms.service.BookRepository;
 import com.kindlepocket.cms.service.CommentRepository;
 import com.kindlepocket.cms.service.FileProcess;
 import com.kindlepocket.cms.service.GridFSService;
 import com.kindlepocket.cms.service.MailService;
+import com.kindlepocket.cms.service.SearchRecordRepository;
 import com.kindlepocket.cms.service.SubscriberRepository;
 import com.kindlepocket.cms.utils.Constants;
 import com.kindlepocket.cms.utils.DateFormatUtils;
@@ -58,6 +60,10 @@ public class BookManagementController {
 	
 	@Autowired
 	private CommentRepository commentRepository;
+	
+	@Autowired
+	private SearchRecordRepository srRepository;
+	
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -84,13 +90,21 @@ public class BookManagementController {
 	@RequestMapping(value = "/findAll", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<String> findAll(@RequestParam(value = "key") String key,
-			@RequestParam(value = "value") String value) {
+			@RequestParam(value = "value") String value,
+			@RequestParam(value = "subscriberOpenId") String subscriberOpenId) {
 		List<TextBook> queryResult = new ArrayList<TextBook>();
 		List<TextBook> booksQueriedByTitle = new ArrayList<TextBook>();
 		List<TextBook> booksQueriedByAuthor = new ArrayList<TextBook>();
 		if (logger.isInfoEnabled()) {
 			logger.info("query key: " + key + " query value: " + value);
 		}
+		
+		SearchRecord sr = new SearchRecord();
+		sr.setContent(value);
+		sr.setSubscriberOpenId(subscriberOpenId);
+		sr.setSearchDate(new Date());
+		this.srRepository.insert(sr);
+		
 		if (key.toString().equals("title")) {
 			// books = this.bookRepository.findByTitleLike(value);
 			booksQueriedByTitle = this.bookRepository.findByTitleLikeIgnoreCase(value);

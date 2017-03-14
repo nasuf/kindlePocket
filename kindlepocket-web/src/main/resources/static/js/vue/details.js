@@ -44,7 +44,7 @@ var app = new Vue({
 			//var rs = this.details;
 			var thiz = this;
 			// jquery
-			 $.get(this.getDetailsUrl)
+			 $.get(this.getDetailsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
 			    .success(function(result) { 
 			    	thiz.details = result;
 			    	/*var r = result;
@@ -67,10 +67,17 @@ var app = new Vue({
 		},
 		
 		sendMail: function(id) {
-			Materialize.toast('推送请求已发送！请等待若干分钟', 4000);
-			
 			//jquery
-			$.get(this.sendMailUrl + "?bookId=" + id)
+			$.get(this.sendMailUrl + "?bookId=" + id + "&subscriberOpenId=" + this.subscriberOpenId)
+				.success(function(result){
+					if (result && result == true) {
+						Materialize.toast('推送请求已发送！请等待若干分钟', 4000);
+					} else {
+						Materialize.toast('您尚未绑定邮箱信息，即将跳转到绑定界面', 4000, '', function(){
+							window.location.href = "/KindlePocket/toBindingPage?subscriberOpenId=" + this.subscriberOpenId;
+						});
+					}
+				})
 			
 			// axios
 			/*axios.get(this.sendMailUrl,{
@@ -157,12 +164,17 @@ var app = new Vue({
 		    .error(function(result){
 		    	Materialize.toast('意见发送失败', 4000);
 		    })
+	    },
+	    
+	    getFormat: function(title) {
+	    	return title.split('\.')[title.split('\.').length-1];
 	    }
+	    
 	},
 	
 	created: function() {
-		this.getDetails();
 		this.getSubscriberOpenId();
+		this.getDetails();
 	}
 	
 })
