@@ -71,7 +71,7 @@ var app = new Vue({
 			$.get(this.sendMailUrl + "?bookId=" + id + "&subscriberOpenId=" + this.subscriberOpenId)
 				.success(function(result){
 					if (result && result == true) {
-						Materialize.toast('推送请求已发送！请等待若干分钟', 4000);
+						Materialize.toast('推送请求已发送！请在个人信息页面中查看推送状态', 4000);
 					} else {
 						Materialize.toast('您尚未绑定邮箱信息，即将跳转到绑定界面', 4000, '', function(){
 							window.location.href = "/KindlePocket/toBindingPage?subscriberOpenId=" + this.subscriberOpenId;

@@ -1,18 +1,30 @@
 package com.kindlepocket.cms.service;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.*;
-import javax.mail.internet.*;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kindlepocket.cms.pojo.Subscriber;
 import com.kindlepocket.cms.pojo.TextBook;
 
 @Component
@@ -34,29 +46,49 @@ public class MailServiceImpl implements MailService{
     private GridFSService gridFSService;
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private SubscriberRepository ssbRepository;
     
     @Override
-    public void sendSimpleMail(String title) {
+    public void sendSimpleMail(String type, String subscriberOpenId) {
         Properties prop = new Properties();
         prop.setProperty(MAIL_HOST, MAIL_HOST_VALUE_163);
         prop.setProperty(MAIL_TRANSPORT_PROTOCOL, MAIL_TRANSPORT_PROTOCOL_VALUE);
         prop.setProperty(MAIL_SMTP_AUTH, MAIL_SMTP_AUTH_VALUE);
+        String subject = "";
+        String content = "";
         // 使用JavaMail发送邮件的5个步骤
         // 1、创建session
         Session session = Session.getInstance(prop);
         // 开启Session的debug模式，这样就可以查看到程序发送Email的运行状态
-        session.setDebug(true);
+        // session.setDebug(true); 
         try {
             // 2、通过session得到transport对象
             Transport ts = session.getTransport();
             // 3、使用邮箱的用户名和密码连上邮件服务器，发送邮件时，发件人需要提交邮箱的用户名和密码给smtp服务器，用户名和密码都通过验证之后才能够正常发送邮件给收件人。
-            ts.connect("smtp.163.com", "binglingxueyou1031", "blxyst103166");
+            ts.connect("smtp.163.com", "kindlepocket", "kpsafe19921031");
             // 4、创建邮件
-            Message message = createSimpleMail(session, title + "'s book",
-                    "please do not response this email!");
+            int size = this.ssbRepository.findAll().size();
+            int isActiveSize = this.ssbRepository.findByIsActive(1).size();
+            int isBindedSize = this.ssbRepository.findByIsBinded(new Integer(1)).size();
+            if(type.equals("subscribe")) {
+            	subject = "【" + subscriberOpenId + "】关注了公众号"; 
+            	content = "【关注时间】" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            } else if (type.equals("unsubscribe")) {
+            	subject = "【" + subscriberOpenId + "】取关了公众号";
+            	content = "【取关时间】" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            } else if (type.equals("binding")) {
+            	subject = "【" + subscriberOpenId + "】绑定了邮箱信息";
+            	content = "【绑定时间】" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            }
+            content += "<br/>"
+            		+ "**********"
+            		+ "<br/>"
+            		+ "【总人数】" + size + "	【取关人数】" + (size - isActiveSize) + "	【已绑定人数】" + isBindedSize;
+            Message message = createSimpleMail(session, subject, content);
             // 5、发送邮件
             ts.sendMessage(message, message.getAllRecipients());
-            logger.info("email send successfully");
+            logger.info("Info Mail Send Successfully! subject: " + subject);
             ts.close();
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
@@ -108,9 +140,9 @@ public class MailServiceImpl implements MailService{
             // 创建邮件对象
             MimeMessage message = new MimeMessage(session);
             // 指明邮件的发件人
-            message.setFrom(new InternetAddress("binglingxueyou1031@163.com"));
+            message.setFrom(new InternetAddress("kindlepocket@163.com"));
             // 指明邮件的收件人，现在发件人和收件人是一样的，那就是自己给自己发
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress("840104066@qq.com"));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress("kindlepocket@163.com"));
             // 邮件的标题
             message.setSubject(subject);
             // 邮件的文本内容

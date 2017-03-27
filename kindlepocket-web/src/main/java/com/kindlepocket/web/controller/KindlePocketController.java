@@ -21,7 +21,6 @@ import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -279,13 +278,22 @@ public class KindlePocketController {
 			for (Cookie cookie : cookies) {
 
 				System.out.println("cookieName:" + cookie.getName() + " cookieValue:" + cookie.getValue());
-
 				String subscriberOpenIdKey = cookie.getName();
 				String subscriberOpenId = cookie.getValue();
+				
 				if (subscriberOpenIdKey.equalsIgnoreCase("subscriberOpenId")) {
 					this.ssbService.binding(subscriberOpenId, phone, userName, email, emailPwd, kindleEmail);
 					if (logger.isInfoEnabled()) {
 						logger.info("subscriber: " + subscriberOpenId + " has binded information!");
+					}
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("type", "binding");
+					params.put("subscriberOpenId", subscriberOpenId);
+					try {
+						String paramsStr = MAPPER.writeValueAsString(params);
+						this.mailMessageSendService.sendMsg(paramsStr);
+					} catch (JsonProcessingException e) {
+						e.printStackTrace();
 					}
 					if(this.isBinded(subscriberOpenId)) {
 						flag = true;
@@ -420,12 +428,24 @@ public class KindlePocketController {
 				String eventType = map.get("Event");
 				if (MessageUtil.MESSAGE_SUBSCRIBE.equals(eventType)) {
 					this.ssbService.add(fromUserName);
+					// send mail to info manager
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("type", "subscribe");
+					params.put("subscriberOpenId", fromUserName);
+					String paramsStr = MAPPER.writeValueAsString(params);
+					this.mailMessageSendService.sendMsg(paramsStr);
 					//responseMessage = MessageUtil.initText(toUserName, fromUserName, MessageUtil.welcomeText());
 					responseMessage = MessageUtil.initSinglePicTextMessage(toUserName, fromUserName, "Kindle Pocket 使用指南",
 							"点击查看详细使用说明和操作步骤", "/imgs/welcome.jpg", "/KindlePocket/toIntroduction");
 
 				} else if (MessageUtil.MESSAGE_UNSUBSCRIBE.equals(eventType)) {
 					this.ssbService.remove(fromUserName);
+					// send mail to info manager
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("type", "unsubscribe");
+					params.put("subscriberOpenId", fromUserName);
+					String paramsStr = MAPPER.writeValueAsString(params);
+					this.mailMessageSendService.sendMsg(paramsStr);
 				}
 			}
 			if (logger.isInfoEnabled()) {
@@ -538,6 +558,7 @@ public class KindlePocketController {
 	public Boolean sendMailMessage(HttpServletRequest request, @RequestParam("bookId") String bookId,
 			@RequestParam("subscriberOpenId")String subscriberOpenId) {
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("type", "sendRequest");
 		params.put("bookId", bookId);
 		params.put("subscriberOpenId", subscriberOpenId);
 		Boolean flag = false;
@@ -608,6 +629,19 @@ public class KindlePocketController {
 	@RequestMapping(value = "/sendSuggestion", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean sendSuggestion(@RequestParam("subscriberOpenId")String subscriberOpenId, @RequestParam("content")String content) {
+		
+		/*try {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("type", "suggestion");
+			params.put("subscriberOpenId", subscriberOpenId);
+			params.put("content", content);
+			String paramsStr = MAPPER.writeValueAsString(params);
+			this.mailMessageSendService.sendMsg(paramsStr);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
 		Boolean flag = this.ssbService.sendSuggestion(subscriberOpenId, content);
 		return flag;
 	}

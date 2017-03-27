@@ -48,6 +48,14 @@ public class SubscriberManagementController {
     private static Logger logger = Logger.getLogger(SubscriberManagementController.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    
+    @RequestMapping("/testSize")
+    public void test() {
+    	int size = this.ssbRepository.findAll().size();
+        int isActiveSize = this.ssbRepository.findByIsActive(1).size();
+        int isBindedSize = this.ssbRepository.findByIsBinded(new Integer(1)).size();
+        System.out.println(size + " " + isActiveSize + "\n" + isBindedSize);
+    }
 
     @RequestMapping(value="/add", method = RequestMethod.POST)
     public ResponseEntity<String> add(@RequestParam("subscriberOpenId")String subscriberOpenId){

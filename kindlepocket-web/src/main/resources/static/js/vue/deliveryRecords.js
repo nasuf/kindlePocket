@@ -29,7 +29,7 @@ var app = new Vue({
 			 $.get(this.getDeliveryRecordsUrl)
 			    .success(function(result) { 
 			    	//var r = JSON.parse(result.body);
-			    	thiz.records = JSON.parse(result.body);
+			    	thiz.records = JSON.parse(result.body).reverse();
 			    	/*for(var i in r) {
 			    		rs.push(r[i]);
 			    	}*/
@@ -63,7 +63,7 @@ var app = new Vue({
 			var thiz = this;
 			$.get(this.getCommentsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
 		    .success(function(result) { 
-		    	 thiz.comments = JSON.parse(result.body);
+		    	 thiz.comments = JSON.parse(result.body).reverse();
 		    })
 		},
 		
@@ -71,7 +71,7 @@ var app = new Vue({
 			var thiz = this;
 			$.get(this.getSuggestionsUrl + "?subscriberOpenId=" + this.subscriberOpenId)
 		    .success(function(result) { 
-		    	 thiz.suggestions = JSON.parse(result.body);
+		    	 thiz.suggestions = JSON.parse(result.body).reverse();
 		    })
 		},
 		

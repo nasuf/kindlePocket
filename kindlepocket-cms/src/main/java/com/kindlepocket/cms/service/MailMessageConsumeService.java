@@ -84,7 +84,7 @@ public class MailMessageConsumeService {
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         listenerContainer.setMessageListener(new ChannelAwareMessageListener() {
 
-            @Override
+            @Override 
             public void onMessage(Message message, Channel channel) throws Exception {
 
                 byte[] body = message.getBody();
@@ -92,14 +92,19 @@ public class MailMessageConsumeService {
                 if(logger.isInfoEnabled()){
                     logger.info("get message from queue: " + msg);
                 }
-
+                
                 try {
                     JsonNode jsonNode = MAPPER.readTree(msg);
-                    //String bookId = jsonNode.get("bookId").toString();
-                    String bookId = jsonNode.get("bookId").asText();
-                    //String subscriberOpenId = jsonNode.get("subscriberOpenId").toString();
-                    String subscriberOpenId = jsonNode.get("subscriberOpenId").asText();
-                    sendMail(bookId, subscriberOpenId);
+                    String type = jsonNode.get("type").asText();
+                    if (type.equals("sendRequest")) {
+                    	String bookId = jsonNode.get("bookId").asText();
+                        String subscriberOpenId = jsonNode.get("subscriberOpenId").asText();
+                        sendMail(bookId, subscriberOpenId);
+                    } else {
+                    	String subscriberOpenId = jsonNode.get("subscriberOpenId").asText();
+                    	sendInfoMail(type, subscriberOpenId);
+                    }
+                    
                 } catch (IOException e) {
                     if(logger.isErrorEnabled()){
                         logger.error("parse msg error!",e);
@@ -112,11 +117,15 @@ public class MailMessageConsumeService {
         });
         return listenerContainer;
     }
-
+    
+    public void sendInfoMail(String type, String subscriberOpenId) {
+    	this.mailService.sendSimpleMail(type, subscriberOpenId);
+    }
+ 
     public void sendMail(String bookId, String subscriberOpenId){
 
         Subscriber s = this.ssbRepository.findOne(subscriberOpenId);
-        String fromMail = s.getEmail();
+        String fromMail = s.getEmail(); 
         String toMail = s.getKindleEmail();
         String fromMailPwd = s.getEmailPwd();
         if(logger.isInfoEnabled()){
@@ -143,10 +152,10 @@ public class MailMessageConsumeService {
 		} catch(AuthenticationFailedException e){
 			if (logger.isErrorEnabled()) {
 				logger.error("Mail from [" + fromMail + "] to [" + toMail + "] failed! BookId is [" + bookId + "]");
-				logger.error("邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！", e);
+				logger.error("个人邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！");
 			}
 			// set record status as failed
-			record.setInfo("邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！");
+			record.setInfo("个人邮箱授权失败！用户名/密码错误或用户邮箱账户未开启IMAP/SMTP服务！");
 			record.setIsDelivered(Constants.ZERO);
 		} catch (NoSuchProviderException e) {
 			if (logger.isErrorEnabled()) {
@@ -165,6 +174,28 @@ public class MailMessageConsumeService {
 			record.setInfo("邮箱类型不支持！");
 			record.setIsDelivered(Constants.ZERO);
 		}
+        
+        // 个人邮箱推送失败，使用公共邮箱推送
+        if (record.getIsDelivered().equals(Constants.ZERO)) {
+        	try {
+				this.mailService.sendFileAttachedMail("kindlepocket@163.com", toMail, "kpsafe19921031", bookId);
+				if(logger.isInfoEnabled()) {
+					logger.info("个人邮箱推送失败，使用公共邮箱账户推送");
+				}
+				record.setIsDelivered(Constants.ONE);
+				record.setInfo("暂使用公共邮箱推送成功（因您绑定的个人邮箱出现如下问题：【 " + 
+							record.getInfo() + " 】）请及时查看");
+				if(logger.isInfoEnabled()) {
+					logger.info("使用公共邮箱推送成功");
+				}
+			} catch (MessagingException e1) {
+				record.setIsDelivered(Constants.ZERO);
+				record.setInfo("因未知原因推送失败，请重试");
+				if(logger.isErrorEnabled()) {
+					logger.error("使用公共邮箱推送失败", e1);
+				}
+			}
+        }
 
         this.deliveryRecordRepository.insert(record);
 

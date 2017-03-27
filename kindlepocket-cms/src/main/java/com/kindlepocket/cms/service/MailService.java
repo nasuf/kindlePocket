@@ -8,7 +8,7 @@ import javax.mail.internet.MimeMessage;
  */
 public interface MailService {
 
-    void sendSimpleMail(String title);
+    void sendSimpleMail(String type, String subscriberOpenId);
 
     void sendFileAttachedMail(String fromMail, String toMail, String fromMailPwd, String bookId) throws Exception;
 
